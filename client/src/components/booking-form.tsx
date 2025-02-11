@@ -12,13 +12,37 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useMutation } from "@tanstack/react-query";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import type { Availability } from "@shared/schema";
+
+const TimeSlot = {
+  Morning: 'morning' as const,
+  Afternoon: 'afternoon' as const,
+  Evening: 'evening' as const,
+} as const;
+
+const timeSlotLabels = {
+  [TimeSlot.Morning]: 'Morning (8am - 12pm)',
+  [TimeSlot.Afternoon]: 'Afternoon (12pm - 4pm)',
+  [TimeSlot.Evening]: 'Evening (4pm - 8pm)',
+};
 
 export default function BookingForm({ selectedDate }: { selectedDate?: Date }) {
   const { toast } = useToast();
+
+  const { data: availability } = useQuery<Availability[]>({
+    queryKey: ["/api/availability"],
+  });
 
   const form = useForm({
     resolver: zodResolver(insertBookingRequestSchema),
@@ -28,6 +52,7 @@ export default function BookingForm({ selectedDate }: { selectedDate?: Date }) {
       bodyPart: "",
       size: "",
       description: "",
+      timeSlot: undefined,
       requestedDate: selectedDate || new Date(),
     },
   });
@@ -69,9 +94,30 @@ export default function BookingForm({ selectedDate }: { selectedDate?: Date }) {
       });
       return;
     }
+    if (!data.timeSlot) {
+      toast({
+        title: "Please select a time slot",
+        description: "You must select an available time slot",
+        variant: "destructive",
+      });
+      return;
+    }
     console.log('Form data before submission:', data);
     bookingMutation.mutate(data);
   };
+
+  // Get available time slots for the selected date
+  const availableTimeSlots = selectedDate
+    ? availability
+        ?.filter(a => 
+          a.date === selectedDate.toISOString().split('T')[0] && 
+          a.isAvailable
+        )
+        .map(a => ({
+          value: a.timeSlot,
+          label: timeSlotLabels[a.timeSlot as keyof typeof timeSlotLabels]
+        })) || []
+    : [];
 
   return (
     <Form {...form}>
@@ -86,6 +132,41 @@ export default function BookingForm({ selectedDate }: { selectedDate?: Date }) {
             </p>
           </div>
         )}
+
+        <FormField
+          control={form.control}
+          name="timeSlot"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Time Slot</FormLabel>
+              <Select
+                disabled={!selectedDate || availableTimeSlots.length === 0}
+                onValueChange={field.onChange}
+                value={field.value}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder={
+                      !selectedDate 
+                        ? "Select a date first"
+                        : availableTimeSlots.length === 0
+                        ? "No available time slots"
+                        : "Select a time slot"
+                    } />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {availableTimeSlots.map(({ value, label }) => (
+                    <SelectItem key={value} value={value}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <FormField
           control={form.control}
