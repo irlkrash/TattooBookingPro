@@ -155,7 +155,7 @@ function AvailabilityManager() {
     queryKey: ["/api/availability"],
   });
 
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+  const [selectedTimeSlots, setSelectedTimeSlots] = useState<Set<TimeSlotType>>(new Set());
   const { toast } = useToast();
 
   const setAvailabilityMutation = useMutation({
@@ -175,17 +175,41 @@ function AvailabilityManager() {
     },
   });
 
-  const toggleTimeSlot = (date: Date, timeSlot: TimeSlotType) => {
-    const dateStr = date.toISOString().split('T')[0];
-    const existingSlot = availability?.find(
-      a => a.date === dateStr && a.timeSlot === timeSlot
-    );
-
-    setAvailabilityMutation.mutate({
-      date,
-      timeSlot,
-      isAvailable: !existingSlot?.isAvailable
+  const toggleTimeSlot = (timeSlot: TimeSlotType) => {
+    setSelectedTimeSlots(prev => {
+      const newSet = new Set(prev);
+      if (prev.has(timeSlot)) {
+        newSet.delete(timeSlot);
+      } else {
+        newSet.add(timeSlot);
+      }
+      return newSet;
     });
+  };
+
+  const handleDateSelect = async (date: Date) => {
+    if (selectedTimeSlots.size === 0) {
+      toast({
+        title: "No time slots selected",
+        description: "Please select at least one time slot (Morning/Afternoon/Evening) first",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Apply all selected time slots to the date
+    for (const timeSlot of selectedTimeSlots) {
+      try {
+        await setAvailabilityMutation.mutateAsync({
+          date,
+          timeSlot,
+          isAvailable: true
+        });
+      } catch (error) {
+        // Error is already handled by the mutation
+        break;
+      }
+    }
   };
 
   const getDateAvailability = (date: string) => {
@@ -212,33 +236,23 @@ function AvailabilityManager() {
       <CardContent>
         <div className="mb-4">
           <p className="text-sm text-muted-foreground mb-2">
-            {selectedDate 
-              ? `Select time slots for ${format(selectedDate, 'MMMM d, yyyy')}:`
-              : "Click a date to manage its availability"}
+            First, select time slots below, then click on dates to set availability:
           </p>
           <div className="flex gap-2">
             {Object.entries(TimeSlot).map(([name, slot]) => {
-              const isAvailable = selectedDate && 
-                isTimeSlotAvailable(
-                  selectedDate.toISOString().split('T')[0], 
-                  slot
-                );
+              const isSelected = selectedTimeSlots.has(slot);
 
               return (
                 <Badge
                   key={slot}
-                  variant={isAvailable ? "default" : "outline"}
+                  variant={isSelected ? "default" : "outline"}
                   className={`
                     ${timeSlotColors[slot]} 
-                    ${isAvailable ? 'bg-opacity-100' : 'bg-opacity-20'} 
-                    ${selectedDate ? 'cursor-pointer hover:bg-opacity-80' : 'opacity-50 cursor-not-allowed'}
+                    ${isSelected ? 'bg-opacity-100' : 'bg-opacity-20'} 
+                    cursor-pointer hover:bg-opacity-80
                     transition-all
                   `}
-                  onClick={() => {
-                    if (selectedDate) {
-                      toggleTimeSlot(selectedDate, slot);
-                    }
-                  }}
+                  onClick={() => toggleTimeSlot(slot)}
                 >
                   {name}
                 </Badge>
@@ -249,27 +263,25 @@ function AvailabilityManager() {
 
         <Calendar
           mode="single"
-          selected={selectedDate}
-          onSelect={setSelectedDate}
+          selected={undefined}
+          onSelect={(date) => {
+            if (date) {
+              handleDateSelect(date);
+            }
+          }}
           className="rounded-md border"
           modifiers={{
             morning: (date) => {
               const dateStr = date.toISOString().split('T')[0];
-              return getDateAvailability(dateStr).some(a => 
-                a.timeSlot === TimeSlot.Morning && a.isAvailable
-              );
+              return isTimeSlotAvailable(dateStr, TimeSlot.Morning);
             },
             afternoon: (date) => {
               const dateStr = date.toISOString().split('T')[0];
-              return getDateAvailability(dateStr).some(a => 
-                a.timeSlot === TimeSlot.Afternoon && a.isAvailable
-              );
+              return isTimeSlotAvailable(dateStr, TimeSlot.Afternoon);
             },
             evening: (date) => {
               const dateStr = date.toISOString().split('T')[0];
-              return getDateAvailability(dateStr).some(a => 
-                a.timeSlot === TimeSlot.Evening && a.isAvailable
-              );
+              return isTimeSlotAvailable(dateStr, TimeSlot.Evening);
             },
           }}
           modifiersStyles={{
