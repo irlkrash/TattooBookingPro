@@ -13,7 +13,8 @@ import { TimeSlot as TimeSlotType, type BookingRequest, type Inquiry, type Avail
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Check, X, Upload } from "lucide-react";
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import debounce from "lodash/debounce";
 
 // Create a local TimeSlot enum that matches the schema
 const TimeSlot = {
@@ -361,11 +362,13 @@ function DesignManager() {
 
   const updateDesignMutation = useMutation({
     mutationFn: async ({ key, value, type, section }: { key: string; value: string; type: string; section: string }) => {
+      if (!value.trim()) {
+        throw new Error("Value cannot be empty");
+      }
       await apiRequest("POST", "/api/design-config", { key, value, type, section });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/design-config"] });
-      toast({ title: "Design configuration updated" });
     },
     onError: (error: Error) => {
       toast({
@@ -375,6 +378,19 @@ function DesignManager() {
       });
     },
   });
+
+  // Debounced update function
+  const debouncedUpdate = useCallback(
+    debounce(
+      (key: string, value: string, type: string, section: string) => {
+        if (value.trim()) {
+          updateDesignMutation.mutate({ key, value, type, section });
+        }
+      },
+      500
+    ),
+    []
+  );
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>, configKey: string) => {
     const file = event.target.files?.[0];
@@ -463,29 +479,29 @@ function DesignManager() {
                     <div className="flex items-center gap-4">
                       <Input
                         type="color"
-                        value={config.value}
+                        defaultValue={config.value}
                         className="w-24 h-10"
-                        onChange={(e) => 
-                          updateDesignMutation.mutate({
-                            key: config.key,
-                            value: e.target.value,
-                            type: config.type,
-                            section: config.section,
-                          })
+                        onChange={(e) =>
+                          debouncedUpdate(
+                            config.key,
+                            e.target.value,
+                            config.type,
+                            config.section
+                          )
                         }
                       />
                       <span className="text-sm text-muted-foreground">{config.value}</span>
                     </div>
                   ) : config.type === 'font' ? (
                     <Select
-                      value={config.value}
+                      defaultValue={config.value}
                       onValueChange={(value) =>
-                        updateDesignMutation.mutate({
-                          key: config.key,
+                        debouncedUpdate(
+                          config.key,
                           value,
-                          type: config.type,
-                          section: config.section,
-                        })
+                          config.type,
+                          config.section
+                        )
                       }
                     >
                       <SelectTrigger className="w-full">
@@ -501,14 +517,14 @@ function DesignManager() {
                     </Select>
                   ) : (
                     <Input
-                      value={config.value}
+                      defaultValue={config.value}
                       onChange={(e) =>
-                        updateDesignMutation.mutate({
-                          key: config.key,
-                          value: e.target.value,
-                          type: config.type,
-                          section: config.section,
-                        })
+                        debouncedUpdate(
+                          config.key,
+                          e.target.value,
+                          config.type,
+                          config.section
+                        )
                       }
                       type="text"
                       className="w-full"
