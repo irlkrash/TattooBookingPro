@@ -19,12 +19,15 @@ export default function AvailabilityCalendar() {
     );
   }
 
-  const availableDates = new Set(
-    availability?.filter(a => a.isAvailable).map(a => a.date.toString())
-  );
-
+  // If no availability data yet, treat all dates as available
   const isDateAvailable = (date: Date) => {
-    return availableDates.has(date.toISOString().split('T')[0]);
+    if (!availability || availability.length === 0) {
+      return true; // All dates available if no restrictions set
+    }
+    return availability.some(a => 
+      a.isAvailable && 
+      a.date.toString().split('T')[0] === date.toISOString().split('T')[0]
+    );
   };
 
   return (
@@ -33,10 +36,18 @@ export default function AvailabilityCalendar() {
         mode="single"
         selected={selectedDate}
         onSelect={setSelectedDate}
-        disabled={(date) => !isDateAvailable(date)}
+        disabled={(date) => {
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          return date < today || !isDateAvailable(date);
+        }}
         className="rounded-md border"
         modifiers={{
-          available: (date) => isDateAvailable(date),
+          available: (date) => {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            return date >= today && isDateAvailable(date);
+          },
         }}
         modifiersStyles={{
           available: { 
