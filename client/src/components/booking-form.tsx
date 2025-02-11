@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { format } from "date-fns";
 
 export default function BookingForm({ selectedDate }: { selectedDate?: Date }) {
   const { toast } = useToast();
@@ -62,6 +63,13 @@ export default function BookingForm({ selectedDate }: { selectedDate?: Date }) {
         onSubmit={form.handleSubmit((data) => bookingMutation.mutate(data))}
         className="space-y-4"
       >
+      {selectedDate && (
+        <div className="mb-4 p-3 bg-muted rounded-lg">
+          <p className="text-sm text-muted-foreground">
+            Selected Date: <span className="font-medium text-foreground">{format(selectedDate, 'MMMM d, yyyy')}</span>
+          </p>
+        </div>
+      )}
         <FormField
           control={form.control}
           name="name"
