@@ -60,6 +60,14 @@ export default function BookingForm({ selectedDate }: { selectedDate?: Date }) {
   });
 
   const onSubmit = (data: any) => {
+    if (!selectedDate) {
+      toast({
+        title: "Please select a date",
+        description: "You must select a date for your booking",
+        variant: "destructive",
+      });
+      return;
+    }
     console.log('Form data before submission:', data);
     bookingMutation.mutate(data);
   };

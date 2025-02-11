@@ -39,13 +39,24 @@ export const insertUserSchema = createInsertSchema(users).pick({
   password: true,
 });
 
-export const insertBookingRequestSchema = createInsertSchema(bookingRequests).pick({
-  name: true,
-  bodyPart: true,
-  size: true,
-  description: true,
-  requestedDate: true,
-});
+export const insertBookingRequestSchema = createInsertSchema(bookingRequests)
+  .pick({
+    name: true,
+    bodyPart: true,
+    size: true,
+    description: true,
+    requestedDate: true,
+  })
+  .extend({
+    name: z.string().min(1, "Name is required"),
+    bodyPart: z.string().min(1, "Body part is required"),
+    size: z.string().min(1, "Size is required"),
+    description: z.string().min(1, "Description is required"),
+    requestedDate: z.coerce.date({
+      required_error: "Please select a date",
+      invalid_type_error: "That's not a date!",
+    }),
+  });
 
 export const insertInquirySchema = createInsertSchema(inquiries).pick({
   name: true,
