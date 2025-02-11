@@ -46,8 +46,9 @@ export default function Navbar() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem className="text-muted-foreground">
+                  <DropdownMenuItem disabled className="text-muted-foreground">
                     Signed in as {user.username}
+                    {user.isAdmin && " (Admin)"}
                   </DropdownMenuItem>
                   {user.isAdmin && (
                     <DropdownMenuItem asChild>
