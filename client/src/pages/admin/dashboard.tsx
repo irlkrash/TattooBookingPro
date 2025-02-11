@@ -13,9 +13,9 @@ import { Loader2, Check, X } from "lucide-react";
 
 // Create a local TimeSlot enum that matches the schema
 const TimeSlot = {
-  Morning: 'morning',
-  Afternoon: 'afternoon',
-  Evening: 'evening',
+  Morning: 'morning' as const,
+  Afternoon: 'afternoon' as const,
+  Evening: 'evening' as const,
 } as const;
 
 export default function AdminDashboard() {
@@ -163,7 +163,27 @@ function AvailabilityManager() {
       queryClient.invalidateQueries({ queryKey: ["/api/availability"] });
       toast({ title: "Availability updated" });
     },
+    onError: (error: Error) => {
+      toast({
+        title: "Failed to update availability",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
   });
+
+  const toggleTimeSlot = (date: Date, timeSlot: TimeSlotType) => {
+    const dateStr = date.toISOString().split('T')[0];
+    const existingSlot = availability?.find(
+      a => a.date === dateStr && a.timeSlot === timeSlot
+    );
+
+    setAvailabilityMutation.mutate({
+      date,
+      timeSlot,
+      isAvailable: !existingSlot?.isAvailable
+    });
+  };
 
   const getDateAvailability = (date: string) => {
     return availability?.filter(a => a.date === date) || [];
@@ -181,47 +201,36 @@ function AvailabilityManager() {
         <CardTitle>Manage Availability</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="mb-4 flex gap-2">
-          {Object.values(TimeSlot).map(slot => (
-            <Badge key={slot} variant="outline" className={`${timeSlotColors[slot]} bg-opacity-20`}>
-              {slot.charAt(0).toUpperCase() + slot.slice(1)}
-            </Badge>
-          ))}
+        <div className="mb-4">
+          <p className="text-sm text-muted-foreground mb-2">Click a date to select it, then click the time slots below to toggle availability:</p>
+          <div className="flex gap-2">
+            {Object.entries(TimeSlot).map(([name, slot]) => (
+              <Badge
+                key={slot}
+                variant="outline"
+                className={`${timeSlotColors[slot]} bg-opacity-20 cursor-pointer transition-all hover:bg-opacity-30`}
+                onClick={() => {
+                  const selected = document.querySelector('[aria-selected="true"]');
+                  if (selected) {
+                    const date = new Date(selected.getAttribute('data-date') || '');
+                    if (!isNaN(date.getTime())) {
+                      toggleTimeSlot(date, slot);
+                    }
+                  }
+                }}
+              >
+                {name}
+              </Badge>
+            ))}
+          </div>
         </div>
+
         <Calendar
-          mode="multiple"
-          selected={[]}
-          onSelect={(dates) => {
-            if (!dates) return;
-
-            // Get the newly selected date by comparing with current selection
-            const selectedDate = dates[dates.length - 1];
-            if (!selectedDate) return;
-
-            const dateStr = selectedDate.toISOString().split('T')[0];
-            const currentSlots = new Set(getDateAvailability(dateStr).map(a => a.timeSlot));
-
-            // Show time slot selection for the date
-            const timeSlotOptions = Object.values(TimeSlot).filter(slot => !currentSlots.has(slot));
-
-            if (timeSlotOptions.length > 0) {
-              timeSlotOptions.forEach(slot => {
-                setAvailabilityMutation.mutate({
-                  date: selectedDate,
-                  timeSlot: slot as TimeSlotType,
-                  isAvailable: true
-                });
-              });
-            } else {
-              // If all slots were selected, remove them all
-              Object.values(TimeSlot).forEach(slot => {
-                setAvailabilityMutation.mutate({
-                  date: selectedDate,
-                  timeSlot: slot as TimeSlotType,
-                  isAvailable: false
-                });
-              });
-            }
+          mode="single"
+          selected={undefined}
+          onSelect={(date) => {
+            // Just select the date, don't do anything else
+            // Time slots are toggled by clicking the badges above
           }}
           className="rounded-md border"
           modifiers={{
