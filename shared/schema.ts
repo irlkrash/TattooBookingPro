@@ -58,11 +58,17 @@ export const insertBookingRequestSchema = createInsertSchema(bookingRequests)
     }),
   });
 
-export const insertInquirySchema = createInsertSchema(inquiries).pick({
-  name: true,
-  email: true,
-  message: true,
-});
+export const insertInquirySchema = createInsertSchema(inquiries)
+  .pick({
+    name: true,
+    email: true,
+    message: true,
+  })
+  .extend({
+    name: z.string().min(1, "Name is required"),
+    email: z.string().email("Invalid email address"),
+    message: z.string().min(1, "Message is required"),
+  });
 
 export const insertAvailabilitySchema = createInsertSchema(availability).pick({
   date: true,
