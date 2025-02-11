@@ -332,7 +332,7 @@ function AvailabilityManager() {
               const evening = isTimeSlotAvailable(dateStr, TimeSlot.Evening);
 
               return (
-                <div {...props} className={`calendar-day ${className || ''}`}>
+                <button {...props} className={`calendar-day relative ${className || ''}`}>
                   <span className="relative z-10">{date.getDate()}</span>
                   {morning && (
                     <div className={`time-slot morning-slot ${timeSlotColors[TimeSlot.Morning]}`} />
@@ -343,7 +343,7 @@ function AvailabilityManager() {
                   {evening && (
                     <div className={`time-slot evening-slot ${timeSlotColors[TimeSlot.Evening]}`} />
                   )}
-                </div>
+                </button>
               );
             }
           }}
