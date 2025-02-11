@@ -1,111 +1,125 @@
-import { User, InsertUser, BookingRequest, Inquiry, Availability } from "@shared/schema";
+import { users, bookingRequests, inquiries, availability } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
+import type {
+  User,
+  InsertUser,
+  BookingRequest,
+  Inquiry,
+  Availability,
+} from "@shared/schema";
 import session from "express-session";
-import createMemoryStore from "memorystore";
-const MemoryStore = createMemoryStore(session);
+import connectPg from "connect-pg-simple";
+import { pool } from "./db";
+
+const PostgresSessionStore = connectPg(session);
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
-  
+
   getBookingRequests(): Promise<BookingRequest[]>;
   createBookingRequest(request: Omit<BookingRequest, "id" | "status" | "createdAt">): Promise<BookingRequest>;
   updateBookingStatus(id: number, status: string): Promise<BookingRequest>;
-  
+
   getInquiries(): Promise<Inquiry[]>;
   createInquiry(inquiry: Omit<Inquiry, "id" | "createdAt">): Promise<Inquiry>;
-  
+
   getAvailability(): Promise<Availability[]>;
   setAvailability(date: Date, isAvailable: boolean): Promise<Availability>;
-  
+
   sessionStore: session.Store;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private bookingRequests: Map<number, BookingRequest>;
-  private inquiries: Map<number, Inquiry>;
-  private availability: Map<number, Availability>;
-  private currentId: { [key: string]: number };
+export class DatabaseStorage implements IStorage {
   sessionStore: session.Store;
 
   constructor() {
-    this.users = new Map();
-    this.bookingRequests = new Map();
-    this.inquiries = new Map();
-    this.availability = new Map();
-    this.currentId = { users: 1, bookings: 1, inquiries: 1, availability: 1 };
-    this.sessionStore = new MemoryStore({
-      checkPeriod: 86400000,
+    this.sessionStore = new PostgresSessionStore({
+      pool,
+      createTableIfMissing: true,
     });
   }
 
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentId.users++;
-    const user: User = { ...insertUser, id, isAdmin: false };
-    this.users.set(id, user);
+    const [user] = await db.insert(users).values(insertUser).returning();
     return user;
   }
 
   async getBookingRequests(): Promise<BookingRequest[]> {
-    return Array.from(this.bookingRequests.values());
+    return await db.select().from(bookingRequests);
   }
 
-  async createBookingRequest(request: Omit<BookingRequest, "id" | "status" | "createdAt">): Promise<BookingRequest> {
-    const id = this.currentId.bookings++;
-    const bookingRequest: BookingRequest = {
-      ...request,
-      id,
-      status: "pending",
-      createdAt: new Date(),
-    };
-    this.bookingRequests.set(id, bookingRequest);
-    return bookingRequest;
+  async createBookingRequest(
+    request: Omit<BookingRequest, "id" | "status" | "createdAt">,
+  ): Promise<BookingRequest> {
+    const [booking] = await db
+      .insert(bookingRequests)
+      .values({
+        ...request,
+        status: "pending",
+        createdAt: new Date(),
+      })
+      .returning();
+    return booking;
   }
 
   async updateBookingStatus(id: number, status: string): Promise<BookingRequest> {
-    const booking = this.bookingRequests.get(id);
-    if (!booking) throw new Error("Booking not found");
-    const updated = { ...booking, status };
-    this.bookingRequests.set(id, updated);
-    return updated;
+    const [booking] = await db
+      .update(bookingRequests)
+      .set({ status })
+      .where(eq(bookingRequests.id, id))
+      .returning();
+
+    if (!booking) {
+      throw new Error("Booking not found");
+    }
+
+    return booking;
   }
 
   async getInquiries(): Promise<Inquiry[]> {
-    return Array.from(this.inquiries.values());
+    return await db.select().from(inquiries);
   }
 
-  async createInquiry(inquiry: Omit<Inquiry, "id" | "createdAt">): Promise<Inquiry> {
-    const id = this.currentId.inquiries++;
-    const newInquiry: Inquiry = {
-      ...inquiry,
-      id,
-      createdAt: new Date(),
-    };
-    this.inquiries.set(id, newInquiry);
-    return newInquiry;
+  async createInquiry(
+    inquiry: Omit<Inquiry, "id" | "createdAt">,
+  ): Promise<Inquiry> {
+    const [created] = await db
+      .insert(inquiries)
+      .values({
+        ...inquiry,
+        createdAt: new Date(),
+      })
+      .returning();
+    return created;
   }
 
   async getAvailability(): Promise<Availability[]> {
-    return Array.from(this.availability.values());
+    return await db.select().from(availability);
   }
 
   async setAvailability(date: Date, isAvailable: boolean): Promise<Availability> {
-    const id = this.currentId.availability++;
-    const availability: Availability = { id, date, isAvailable };
-    this.availability.set(id, availability);
-    return availability;
+    const [created] = await db
+      .insert(availability)
+      .values({
+        date: date.toISOString().split('T')[0],
+        isAvailable,
+      })
+      .returning();
+    return created;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
