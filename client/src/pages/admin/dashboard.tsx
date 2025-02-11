@@ -355,7 +355,9 @@ function DesignManager() {
   });
 
   const { toast } = useToast();
-  const [selectedSection, setSelectedSection] = useState("home");
+  // Get all unique sections and set default
+  const sections = Array.from(new Set(designConfigs?.map(config => config.section) || ['home']));
+  const [selectedSection, setSelectedSection] = useState(sections[0] || 'home');
 
   const updateDesignMutation = useMutation({
     mutationFn: async ({ key, value, type, section }: { key: string; value: string; type: string; section: string }) => {
@@ -397,7 +399,6 @@ function DesignManager() {
 
   if (isLoading) return <Loader2 className="h-8 w-8 animate-spin" />;
 
-  const sections = Array.from(new Set(designConfigs?.map(config => config.section) || []));
   const filteredConfigs = designConfigs?.filter(config => config.section === selectedSection) || [];
 
   return (
@@ -423,11 +424,11 @@ function DesignManager() {
             </Select>
           </div>
 
-          <ScrollArea className="h-[500px]">
+          <ScrollArea className="h-[500px] pr-4">
             <div className="space-y-6">
               {filteredConfigs.map((config) => (
-                <div key={config.id} className="space-y-2">
-                  <Label>
+                <div key={config.id} className="space-y-2 border-b pb-4 last:border-0">
+                  <Label className="text-lg font-semibold">
                     {config.key
                       .split('_')
                       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
@@ -463,6 +464,7 @@ function DesignManager() {
                       <Input
                         type="color"
                         value={config.value}
+                        className="w-24 h-10"
                         onChange={(e) => 
                           updateDesignMutation.mutate({
                             key: config.key,
@@ -474,6 +476,29 @@ function DesignManager() {
                       />
                       <span className="text-sm text-muted-foreground">{config.value}</span>
                     </div>
+                  ) : config.type === 'font' ? (
+                    <Select
+                      value={config.value}
+                      onValueChange={(value) =>
+                        updateDesignMutation.mutate({
+                          key: config.key,
+                          value,
+                          type: config.type,
+                          section: config.section,
+                        })
+                      }
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select font" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {['Inter', 'Montserrat', 'Roboto', 'Open Sans', 'Lato'].map(font => (
+                          <SelectItem key={font} value={font}>
+                            {font}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   ) : (
                     <Input
                       value={config.value}
@@ -485,9 +510,13 @@ function DesignManager() {
                           section: config.section,
                         })
                       }
-                      type={config.type === 'text' ? 'text' : 'text'}
+                      type="text"
+                      className="w-full"
                     />
                   )}
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Type: {config.type.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                  </p>
                 </div>
               ))}
             </div>
