@@ -10,6 +10,7 @@ import { TimeSlot as TimeSlotType, type BookingRequest, type Inquiry, type Avail
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Check, X } from "lucide-react";
+import { useState } from "react";
 
 // Create a local TimeSlot enum that matches the schema
 const TimeSlot = {
@@ -154,7 +155,9 @@ function AvailabilityManager() {
     queryKey: ["/api/availability"],
   });
 
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const { toast } = useToast();
+
   const setAvailabilityMutation = useMutation({
     mutationFn: async ({ date, timeSlot, isAvailable }: { date: Date; timeSlot: TimeSlotType; isAvailable: boolean }) => {
       await apiRequest("POST", "/api/availability", { date, timeSlot, isAvailable });
@@ -195,6 +198,12 @@ function AvailabilityManager() {
     [TimeSlot.Evening]: 'bg-purple-500',
   };
 
+  const isTimeSlotAvailable = (date: string, timeSlot: TimeSlotType) => {
+    return getDateAvailability(date).some(a => 
+      a.timeSlot === timeSlot && a.isAvailable
+    );
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -202,49 +211,65 @@ function AvailabilityManager() {
       </CardHeader>
       <CardContent>
         <div className="mb-4">
-          <p className="text-sm text-muted-foreground mb-2">Click a date to select it, then click the time slots below to toggle availability:</p>
+          <p className="text-sm text-muted-foreground mb-2">
+            {selectedDate 
+              ? `Select time slots for ${format(selectedDate, 'MMMM d, yyyy')}:`
+              : "Click a date to manage its availability"}
+          </p>
           <div className="flex gap-2">
-            {Object.entries(TimeSlot).map(([name, slot]) => (
-              <Badge
-                key={slot}
-                variant="outline"
-                className={`${timeSlotColors[slot]} bg-opacity-20 cursor-pointer transition-all hover:bg-opacity-30`}
-                onClick={() => {
-                  const selected = document.querySelector('[aria-selected="true"]');
-                  if (selected) {
-                    const date = new Date(selected.getAttribute('data-date') || '');
-                    if (!isNaN(date.getTime())) {
-                      toggleTimeSlot(date, slot);
+            {Object.entries(TimeSlot).map(([name, slot]) => {
+              const isAvailable = selectedDate && 
+                isTimeSlotAvailable(
+                  selectedDate.toISOString().split('T')[0], 
+                  slot
+                );
+
+              return (
+                <Badge
+                  key={slot}
+                  variant={isAvailable ? "default" : "outline"}
+                  className={`
+                    ${timeSlotColors[slot]} 
+                    ${isAvailable ? 'bg-opacity-100' : 'bg-opacity-20'} 
+                    ${selectedDate ? 'cursor-pointer hover:bg-opacity-80' : 'opacity-50 cursor-not-allowed'}
+                    transition-all
+                  `}
+                  onClick={() => {
+                    if (selectedDate) {
+                      toggleTimeSlot(selectedDate, slot);
                     }
-                  }
-                }}
-              >
-                {name}
-              </Badge>
-            ))}
+                  }}
+                >
+                  {name}
+                </Badge>
+              );
+            })}
           </div>
         </div>
 
         <Calendar
           mode="single"
-          selected={undefined}
-          onSelect={(date) => {
-            // Just select the date, don't do anything else
-            // Time slots are toggled by clicking the badges above
-          }}
+          selected={selectedDate}
+          onSelect={setSelectedDate}
           className="rounded-md border"
           modifiers={{
             morning: (date) => {
               const dateStr = date.toISOString().split('T')[0];
-              return getDateAvailability(dateStr).some(a => a.timeSlot === TimeSlot.Morning && a.isAvailable);
+              return getDateAvailability(dateStr).some(a => 
+                a.timeSlot === TimeSlot.Morning && a.isAvailable
+              );
             },
             afternoon: (date) => {
               const dateStr = date.toISOString().split('T')[0];
-              return getDateAvailability(dateStr).some(a => a.timeSlot === TimeSlot.Afternoon && a.isAvailable);
+              return getDateAvailability(dateStr).some(a => 
+                a.timeSlot === TimeSlot.Afternoon && a.isAvailable
+              );
             },
             evening: (date) => {
               const dateStr = date.toISOString().split('T')[0];
-              return getDateAvailability(dateStr).some(a => a.timeSlot === TimeSlot.Evening && a.isAvailable);
+              return getDateAvailability(dateStr).some(a => 
+                a.timeSlot === TimeSlot.Evening && a.isAvailable
+              );
             },
           }}
           modifiersStyles={{
