@@ -190,12 +190,31 @@ function AvailabilityManager() {
   const handleDateSelect = async (date: Date | undefined) => {
     if (!date) return;
 
+    // If no time slots selected, clear all availability for this date
     if (selectedTimeSlots.size === 0) {
-      toast({
-        title: "No time slots selected",
-        description: "Please select at least one time slot (Morning/Afternoon/Evening) first",
-        variant: "destructive",
-      });
+      const dateStr = date.toISOString().split('T')[0];
+      const existingSlots = availability?.filter(a => 
+        a.date === dateStr && a.isAvailable
+      ) || [];
+
+      // Set all slots to unavailable
+      for (const slot of existingSlots) {
+        try {
+          await setAvailabilityMutation.mutateAsync({
+            date,
+            timeSlot: slot.timeSlot as TimeSlotType,
+            isAvailable: false
+          });
+        } catch (error) {
+          console.error('Error clearing availability:', error);
+          toast({
+            title: "Failed to clear availability",
+            description: error instanceof Error ? error.message : "Unknown error",
+            variant: "destructive",
+          });
+          break;
+        }
+      }
       return;
     }
 
@@ -210,6 +229,11 @@ function AvailabilityManager() {
         });
       } catch (error) {
         console.error('Error setting availability:', error);
+        toast({
+          title: "Failed to update availability",
+          description: error instanceof Error ? error.message : "Unknown error",
+          variant: "destructive",
+        });
         break;
       }
     }
