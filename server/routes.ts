@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { setupAuth } from "./auth";
 import { storage } from "./storage";
-import { insertBookingRequestSchema, insertInquirySchema } from "@shared/schema";
+import { insertBookingRequestSchema, insertInquirySchema, TimeSlot } from "@shared/schema";
 
 export function registerRoutes(app: Express): Server {
   setupAuth(app);
@@ -18,7 +18,11 @@ export function registerRoutes(app: Express): Server {
   app.post("/api/booking-requests", async (req, res) => {
     try {
       const data = insertBookingRequestSchema.parse(req.body);
-      const request = await storage.createBookingRequest(data);
+      // Convert the Date object to ISO string for storage
+      const request = await storage.createBookingRequest({
+        ...data,
+        requestedDate: data.requestedDate.toISOString().split('T')[0],
+      });
       res.status(201).json(request);
     } catch (error) {
       res.status(400).json(error);
@@ -67,8 +71,14 @@ export function registerRoutes(app: Express): Server {
       return res.sendStatus(403);
     }
     try {
-      const { date, isAvailable } = req.body;
-      const availability = await storage.setAvailability(new Date(date), isAvailable);
+      const { date, timeSlot, isAvailable } = req.body;
+
+      // Validate time slot
+      if (!Object.values(TimeSlot).includes(timeSlot)) {
+        return res.status(400).json({ message: "Invalid time slot" });
+      }
+
+      const availability = await storage.setAvailability(new Date(date), timeSlot, isAvailable);
       res.status(201).json(availability);
     } catch (error) {
       res.status(400).json(error);

@@ -7,6 +7,7 @@ import type {
   BookingRequest,
   Inquiry,
   Availability,
+  TimeSlot,
 } from "@shared/schema";
 import session from "express-session";
 import connectPg from "connect-pg-simple";
@@ -27,7 +28,7 @@ export interface IStorage {
   createInquiry(inquiry: Omit<Inquiry, "id" | "createdAt">): Promise<Inquiry>;
 
   getAvailability(): Promise<Availability[]>;
-  setAvailability(date: Date, isAvailable: boolean): Promise<Availability>;
+  setAvailability(date: Date, timeSlot: TimeSlot, isAvailable: boolean): Promise<Availability>;
 
   sessionStore: session.Store;
 }
@@ -110,12 +111,17 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(availability);
   }
 
-  async setAvailability(date: Date, isAvailable: boolean): Promise<Availability> {
+  async setAvailability(date: Date, timeSlot: TimeSlot, isAvailable: boolean): Promise<Availability> {
     const [created] = await db
       .insert(availability)
       .values({
         date: date.toISOString().split('T')[0],
+        timeSlot,
         isAvailable,
+      })
+      .onConflictDoUpdate({
+        target: [availability.date, availability.timeSlot],
+        set: { isAvailable },
       })
       .returning();
     return created;

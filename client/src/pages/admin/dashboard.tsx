@@ -6,16 +6,23 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import type { BookingRequest, Inquiry, Availability } from "@shared/schema";
+import { TimeSlot as TimeSlotType, type BookingRequest, type Inquiry, type Availability } from "@shared/schema";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Check, X } from "lucide-react";
+
+// Create a local TimeSlot enum that matches the schema
+const TimeSlot = {
+  Morning: 'morning',
+  Afternoon: 'afternoon',
+  Evening: 'evening',
+} as const;
 
 export default function AdminDashboard() {
   return (
     <div className="container mx-auto py-6">
       <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
-      
+
       <Tabs defaultValue="bookings">
         <TabsList>
           <TabsTrigger value="bookings">Booking Requests</TabsTrigger>
@@ -78,7 +85,7 @@ function BookingRequests() {
                   <p className="mt-2">{request.description}</p>
                 </div>
                 <div className="space-x-2">
-                  <Badge variant={request.status === "pending" ? "secondary" : request.status === "approved" ? "success" : "destructive"}>
+                  <Badge variant={request.status === "pending" ? "secondary" : request.status === "approved" ? "default" : "destructive"}>
                     {request.status}
                   </Badge>
                   {request.status === "pending" && (
@@ -149,8 +156,8 @@ function AvailabilityManager() {
 
   const { toast } = useToast();
   const setAvailabilityMutation = useMutation({
-    mutationFn: async ({ date, isAvailable }: { date: Date; isAvailable: boolean }) => {
-      await apiRequest("POST", "/api/availability", { date, isAvailable });
+    mutationFn: async ({ date, timeSlot, isAvailable }: { date: Date; timeSlot: TimeSlotType; isAvailable: boolean }) => {
+      await apiRequest("POST", "/api/availability", { date, timeSlot, isAvailable });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/availability"] });
@@ -158,9 +165,15 @@ function AvailabilityManager() {
     },
   });
 
-  const availableDates = new Set(
-    availability?.filter(a => a.isAvailable).map(a => a.date.toString())
-  );
+  const getDateAvailability = (date: string) => {
+    return availability?.filter(a => a.date === date) || [];
+  };
+
+  const timeSlotColors = {
+    [TimeSlot.Morning]: 'bg-yellow-500',
+    [TimeSlot.Afternoon]: 'bg-orange-500',
+    [TimeSlot.Evening]: 'bg-purple-500',
+  };
 
   return (
     <Card>
@@ -168,27 +181,74 @@ function AvailabilityManager() {
         <CardTitle>Manage Availability</CardTitle>
       </CardHeader>
       <CardContent>
+        <div className="mb-4 flex gap-2">
+          {Object.values(TimeSlot).map(slot => (
+            <Badge key={slot} variant="outline" className={`${timeSlotColors[slot]} bg-opacity-20`}>
+              {slot.charAt(0).toUpperCase() + slot.slice(1)}
+            </Badge>
+          ))}
+        </div>
         <Calendar
           mode="multiple"
-          selected={Array.from(availableDates).map(d => new Date(d))}
+          selected={[]}
           onSelect={(dates) => {
-            const selectedDates = new Set(dates?.map(d => d.toISOString().split('T')[0]));
-            const currentDates = new Set(Array.from(availableDates).map(d => new Date(d).toISOString().split('T')[0]));
-            
-            // Find dates to add and remove
-            const datesToAdd = Array.from(selectedDates).filter(d => !currentDates.has(d));
-            const datesToRemove = Array.from(currentDates).filter(d => !selectedDates.has(d));
-            
-            // Update availability for changed dates
-            [...datesToAdd, ...datesToRemove].forEach(dateStr => {
-              const date = new Date(dateStr);
-              setAvailabilityMutation.mutate({
-                date,
-                isAvailable: datesToAdd.includes(dateStr)
+            if (!dates) return;
+
+            // Get the newly selected date by comparing with current selection
+            const selectedDate = dates[dates.length - 1];
+            if (!selectedDate) return;
+
+            const dateStr = selectedDate.toISOString().split('T')[0];
+            const currentSlots = new Set(getDateAvailability(dateStr).map(a => a.timeSlot));
+
+            // Show time slot selection for the date
+            const timeSlotOptions = Object.values(TimeSlot).filter(slot => !currentSlots.has(slot));
+
+            if (timeSlotOptions.length > 0) {
+              timeSlotOptions.forEach(slot => {
+                setAvailabilityMutation.mutate({
+                  date: selectedDate,
+                  timeSlot: slot as TimeSlotType,
+                  isAvailable: true
+                });
               });
-            });
+            } else {
+              // If all slots were selected, remove them all
+              Object.values(TimeSlot).forEach(slot => {
+                setAvailabilityMutation.mutate({
+                  date: selectedDate,
+                  timeSlot: slot as TimeSlotType,
+                  isAvailable: false
+                });
+              });
+            }
           }}
           className="rounded-md border"
+          modifiers={{
+            morning: (date) => {
+              const dateStr = date.toISOString().split('T')[0];
+              return getDateAvailability(dateStr).some(a => a.timeSlot === TimeSlot.Morning && a.isAvailable);
+            },
+            afternoon: (date) => {
+              const dateStr = date.toISOString().split('T')[0];
+              return getDateAvailability(dateStr).some(a => a.timeSlot === TimeSlot.Afternoon && a.isAvailable);
+            },
+            evening: (date) => {
+              const dateStr = date.toISOString().split('T')[0];
+              return getDateAvailability(dateStr).some(a => a.timeSlot === TimeSlot.Evening && a.isAvailable);
+            },
+          }}
+          modifiersStyles={{
+            morning: { 
+              backgroundColor: "rgba(234, 179, 8, 0.2)"
+            },
+            afternoon: {
+              backgroundColor: "rgba(249, 115, 22, 0.2)"
+            },
+            evening: {
+              backgroundColor: "rgba(147, 51, 234, 0.2)"
+            }
+          }}
         />
       </CardContent>
     </Card>

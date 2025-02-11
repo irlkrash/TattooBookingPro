@@ -32,8 +32,18 @@ export const inquiries = pgTable("inquiries", {
 export const availability = pgTable("availability", {
   id: serial("id").primaryKey(),
   date: date("date").notNull(),
+  timeSlot: text("time_slot", { enum: ['morning', 'afternoon', 'evening'] }).notNull(),
   isAvailable: boolean("is_available").notNull().default(true),
 });
+
+// Add new type to represent the time slots
+export const TimeSlot = {
+  Morning: 'morning' as const,
+  Afternoon: 'afternoon' as const,
+  Evening: 'evening' as const,
+} as const;
+
+export type TimeSlot = typeof TimeSlot[keyof typeof TimeSlot];
 
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
@@ -75,6 +85,7 @@ export const insertInquirySchema = createInsertSchema(inquiries)
 
 export const insertAvailabilitySchema = createInsertSchema(availability).pick({
   date: true,
+  timeSlot: true,
   isAvailable: true,
 });
 
