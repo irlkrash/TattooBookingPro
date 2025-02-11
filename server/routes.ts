@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { setupAuth } from "./auth";
 import { storage } from "./storage";
-import { insertBookingRequestSchema, insertInquirySchema, TimeSlot } from "@shared/schema";
+import { insertBookingRequestSchema, insertInquirySchema, TimeSlot, insertDesignConfigSchema } from "@shared/schema";
 
 export function registerRoutes(app: Express): Server {
   setupAuth(app);
@@ -91,6 +91,37 @@ export function registerRoutes(app: Express): Server {
       res.status(400).json({ 
         message: "Failed to update availability",
         error: error.message 
+      });
+    }
+  });
+
+  // New routes for design configuration
+  app.get("/api/design-config", async (req, res) => {
+    try {
+      const configs = await storage.getDesignConfigs();
+      res.json(configs);
+    } catch (error: any) {
+      console.error('Error fetching design configs:', error);
+      res.status(500).json({
+        message: "Failed to fetch design configurations",
+        error: error.message
+      });
+    }
+  });
+
+  app.post("/api/design-config", async (req, res) => {
+    if (!req.isAuthenticated() || !req.user.isAdmin) {
+      return res.sendStatus(403);
+    }
+    try {
+      const data = insertDesignConfigSchema.parse(req.body);
+      const config = await storage.upsertDesignConfig(data);
+      res.json(config);
+    } catch (error: any) {
+      console.error('Error updating design config:', error);
+      res.status(400).json({
+        message: "Failed to update design configuration",
+        error: error.message
       });
     }
   });
