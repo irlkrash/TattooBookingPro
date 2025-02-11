@@ -194,7 +194,7 @@ function AvailabilityManager() {
     const dateStr = date.toISOString().split('T')[0];
 
     // Get existing available slots for this date
-    const existingSlots = availability?.filter(a => 
+    const existingSlots = availability?.filter(a =>
       a.date === dateStr && a.isAvailable
     ) || [];
 
@@ -316,14 +316,19 @@ function AvailabilityManager() {
                     <time dateTime={dateStr} className="relative z-10">
                       {date.getDate()}
                     </time>
-                    {morning && (
-                      <div className={`absolute top-0 left-0 right-0 h-1/3 opacity-20 pointer-events-none ${timeSlotColors[TimeSlot.Morning]}`} />
-                    )}
-                    {afternoon && (
-                      <div className={`absolute top-1/3 left-0 right-0 h-1/3 opacity-20 pointer-events-none ${timeSlotColors[TimeSlot.Afternoon]}`} />
-                    )}
-                    {evening && (
-                      <div className={`absolute top-2/3 left-0 right-0 h-1/3 opacity-20 pointer-events-none ${timeSlotColors[TimeSlot.Evening]}`} />
+                    {/* Only show time slot colors for present and future dates */}
+                    {!isDisabled && (
+                      <>
+                        {morning && (
+                          <div className={`absolute top-0 left-0 right-0 h-1/3 opacity-20 pointer-events-none ${timeSlotColors[TimeSlot.Morning]}`} />
+                        )}
+                        {afternoon && (
+                          <div className={`absolute top-1/3 left-0 right-0 h-1/3 opacity-20 pointer-events-none ${timeSlotColors[TimeSlot.Afternoon]}`} />
+                        )}
+                        {evening && (
+                          <div className={`absolute top-2/3 left-0 right-0 h-1/3 opacity-20 pointer-events-none ${timeSlotColors[TimeSlot.Evening]}`} />
+                        )}
+                      </>
                     )}
                   </button>
                 </div>
