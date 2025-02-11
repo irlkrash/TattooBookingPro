@@ -286,6 +286,7 @@ function AvailabilityManager() {
             .calendar-day {
               position: relative;
               height: 100%;
+              width: 100%;
             }
             .time-slot {
               position: absolute;
@@ -334,7 +335,7 @@ function AvailabilityManager() {
 
               return (
                 <button type="button" {...props}>
-                  <div className="relative h-full">
+                  <div className="relative h-full w-full">
                     <span className="relative z-10">{date.getDate()}</span>
                     {morning && (
                       <div className={`time-slot morning-slot ${timeSlotColors[TimeSlot.Morning]}`} />
