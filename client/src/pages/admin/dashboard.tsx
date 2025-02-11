@@ -288,13 +288,16 @@ function AvailabilityManager() {
               const isDisabled = date < today;
 
               return (
-                <td {...props} className="relative p-0">
+                <div
+                  {...props}
+                  className="relative p-0"
+                  onClick={() => handleDateSelect(date)}
+                >
                   <button
-                    type="button"
                     disabled={isDisabled}
-                    className={`w-full h-full p-2 relative
-                      ${isDisabled ? "text-muted-foreground opacity-50" : "hover:bg-muted"}
-                    `}
+                    className={`w-full h-9 relative ${
+                      isDisabled ? "text-muted-foreground opacity-50" : "hover:bg-muted"
+                    }`}
                   >
                     <time dateTime={dateStr} className="relative z-10">
                       {date.getDate()}
@@ -309,7 +312,7 @@ function AvailabilityManager() {
                       <div className={`absolute top-2/3 left-0 right-0 h-1/3 opacity-20 pointer-events-none ${timeSlotColors[TimeSlot.Evening]}`} />
                     )}
                   </button>
-                </td>
+                </div>
               );
             }
           }}
