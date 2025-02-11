@@ -78,10 +78,20 @@ export function registerRoutes(app: Express): Server {
         return res.status(400).json({ message: "Invalid time slot" });
       }
 
-      const availability = await storage.setAvailability(new Date(date), timeSlot, isAvailable);
+      // Convert date string to Date object and format it properly
+      const formattedDate = new Date(date);
+      if (isNaN(formattedDate.getTime())) {
+        return res.status(400).json({ message: "Invalid date format" });
+      }
+
+      const availability = await storage.setAvailability(formattedDate, timeSlot, isAvailable);
       res.status(201).json(availability);
-    } catch (error) {
-      res.status(400).json(error);
+    } catch (error: any) {
+      console.error('Error setting availability:', error);
+      res.status(400).json({ 
+        message: "Failed to update availability",
+        error: error.message 
+      });
     }
   });
 

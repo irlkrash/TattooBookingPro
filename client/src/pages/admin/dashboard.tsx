@@ -197,8 +197,10 @@ function AvailabilityManager() {
       return;
     }
 
-    // Apply all selected time slots to the date
-    for (const timeSlot of selectedTimeSlots) {
+    // Convert Set to Array for iteration
+    const timeSlots = Array.from(selectedTimeSlots);
+
+    for (const timeSlot of timeSlots) {
       try {
         await setAvailabilityMutation.mutateAsync({
           date,

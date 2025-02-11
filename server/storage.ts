@@ -1,6 +1,6 @@
 import { users, bookingRequests, inquiries, availability } from "@shared/schema";
 import { db } from "./db";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import type {
   User,
   InsertUser,
@@ -112,19 +112,45 @@ export class DatabaseStorage implements IStorage {
   }
 
   async setAvailability(date: Date, timeSlot: TimeSlot, isAvailable: boolean): Promise<Availability> {
-    const [created] = await db
-      .insert(availability)
-      .values({
-        date: date.toISOString().split('T')[0],
-        timeSlot,
-        isAvailable,
-      })
-      .onConflictDoUpdate({
-        target: [availability.date, availability.timeSlot],
-        set: { isAvailable },
-      })
-      .returning();
-    return created;
+    // Format date to YYYY-MM-DD
+    const formattedDate = date.toISOString().split('T')[0];
+
+    // First try to find existing availability
+    const [existing] = await db
+      .select()
+      .from(availability)
+      .where(
+        and(
+          eq(availability.date, formattedDate),
+          eq(availability.timeSlot, timeSlot)
+        )
+      );
+
+    if (existing) {
+      // Update existing record
+      const [updated] = await db
+        .update(availability)
+        .set({ isAvailable })
+        .where(
+          and(
+            eq(availability.date, formattedDate),
+            eq(availability.timeSlot, timeSlot)
+          )
+        )
+        .returning();
+      return updated;
+    } else {
+      // Create new record
+      const [created] = await db
+        .insert(availability)
+        .values({
+          date: formattedDate,
+          timeSlot,
+          isAvailable,
+        })
+        .returning();
+      return created;
+    }
   }
 }
 
