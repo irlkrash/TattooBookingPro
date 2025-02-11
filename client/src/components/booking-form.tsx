@@ -12,14 +12,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 
 export default function BookingForm({ selectedDate }: { selectedDate?: Date }) {
   const { toast } = useToast();
-  const queryClient = useQueryClient();
 
   const form = useForm({
     resolver: zodResolver(insertBookingRequestSchema),
@@ -44,7 +43,6 @@ export default function BookingForm({ selectedDate }: { selectedDate?: Date }) {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/booking-requests'] });
       toast({ 
         title: "Booking request submitted successfully",
         description: "We'll review your request and get back to you soon."
