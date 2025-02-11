@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 
 export default function HomePage() {
   return (
@@ -49,6 +50,8 @@ function Hero() {
 }
 
 function BookingSection() {
+  const [selectedDate, setSelectedDate] = useState<Date>();
+
   return (
     <div id="booking" className="py-16 bg-gray-50">
       <div className="container mx-auto px-4">
@@ -57,13 +60,13 @@ function BookingSection() {
           <Card>
             <CardContent className="p-6">
               <h3 className="text-xl font-semibold mb-4">Available Dates</h3>
-              <AvailabilityCalendar />
+              <AvailabilityCalendar onDateSelect={setSelectedDate} />
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-6">
               <h3 className="text-xl font-semibold mb-4">Request Booking</h3>
-              <BookingForm />
+              <BookingForm selectedDate={selectedDate} />
             </CardContent>
           </Card>
         </div>

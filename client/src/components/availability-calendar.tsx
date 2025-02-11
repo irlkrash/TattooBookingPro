@@ -2,11 +2,12 @@ import { Calendar } from "@/components/ui/calendar";
 import { useQuery } from "@tanstack/react-query";
 import type { Availability } from "@shared/schema";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
-import BookingForm from "./booking-form";
 
-export default function AvailabilityCalendar() {
-  const [selectedDate, setSelectedDate] = useState<Date>();
+interface Props {
+  onDateSelect?: (date: Date | undefined) => void;
+}
+
+export default function AvailabilityCalendar({ onDateSelect }: Props) {
   const { data: availability, isLoading } = useQuery<Availability[]>({
     queryKey: ["/api/availability"],
   });
@@ -31,38 +32,28 @@ export default function AvailabilityCalendar() {
   };
 
   return (
-    <div className="space-y-6">
-      <Calendar
-        mode="single"
-        selected={selectedDate}
-        onSelect={setSelectedDate}
-        disabled={(date) => {
+    <Calendar
+      mode="single"
+      onSelect={onDateSelect}
+      disabled={(date) => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return date < today || !isDateAvailable(date);
+      }}
+      className="rounded-md border"
+      modifiers={{
+        available: (date) => {
           const today = new Date();
           today.setHours(0, 0, 0, 0);
-          return date < today || !isDateAvailable(date);
-        }}
-        className="rounded-md border"
-        modifiers={{
-          available: (date) => {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            return date >= today && isDateAvailable(date);
-          },
-        }}
-        modifiersStyles={{
-          available: { 
-            backgroundColor: "hsl(var(--primary))",
-            color: "hsl(var(--primary-foreground))" 
-          }
-        }}
-      />
-
-      {selectedDate && (
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold mb-4">Request Booking for {selectedDate.toLocaleDateString()}</h3>
-          <BookingForm selectedDate={selectedDate} />
-        </div>
-      )}
-    </div>
+          return date >= today && isDateAvailable(date);
+        },
+      }}
+      modifiersStyles={{
+        available: { 
+          backgroundColor: "hsl(var(--primary))",
+          color: "hsl(var(--primary-foreground))" 
+        }
+      }}
+    />
   );
 }
