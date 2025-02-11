@@ -199,26 +199,7 @@ function AvailabilityManager() {
       return;
     }
 
-    // First, clear existing availability for this date
-    const dateStr = date.toISOString().split('T')[0];
-    const existingSlots = availability?.filter(a => a.date === dateStr) || [];
-
-    // Set all existing slots to unavailable first
-    for (const slot of existingSlots) {
-      if (slot.isAvailable) {
-        try {
-          await setAvailabilityMutation.mutateAsync({
-            date,
-            timeSlot: slot.timeSlot as TimeSlotType,
-            isAvailable: false
-          });
-        } catch (error) {
-          break;
-        }
-      }
-    }
-
-    // Then set the new selected slots
+    // Set all selected slots to available
     const timeSlots = Array.from(selectedTimeSlots);
     for (const timeSlot of timeSlots) {
       try {
@@ -228,6 +209,7 @@ function AvailabilityManager() {
           isAvailable: true
         });
       } catch (error) {
+        console.error('Error setting availability:', error);
         break;
       }
     }
@@ -262,7 +244,6 @@ function AvailabilityManager() {
           <div className="flex gap-2">
             {Object.entries(TimeSlot).map(([name, slot]) => {
               const isSelected = selectedTimeSlots.has(slot);
-
               return (
                 <Badge
                   key={slot}
@@ -287,35 +268,37 @@ function AvailabilityManager() {
           selected={undefined}
           onSelect={handleDateSelect}
           className="rounded-md border"
-          modifiers={{
-            hasAvailability: (date) => {
-              const dateStr = date.toISOString().split('T')[0];
-              return [TimeSlot.Morning, TimeSlot.Afternoon, TimeSlot.Evening].some(
-                slot => isTimeSlotAvailable(dateStr, slot)
-              );
-            }
-          }}
-          modifiersClassNames={{
-            hasAvailability: "relative overflow-hidden"
+          disabled={(date) => {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            return date < today;
           }}
           components={{
-            Day: ({ date, displayMonth, inMonth, selected, disabled, ...props }) => {
+            Day: ({ date, ...props }) => {
               const dateStr = date.toISOString().split('T')[0];
               const morning = isTimeSlotAvailable(dateStr, TimeSlot.Morning);
               const afternoon = isTimeSlotAvailable(dateStr, TimeSlot.Afternoon);
               const evening = isTimeSlotAvailable(dateStr, TimeSlot.Evening);
 
+              // Get the current date to compare
+              const today = new Date();
+              today.setHours(0, 0, 0, 0);
+
+              // Only disable dates before today
+              const isDisabled = date < today;
+
               return (
                 <td {...props} className="relative p-0">
                   <button
                     type="button"
-                    disabled={disabled}
-                    className={`w-full h-full p-2 ${
-                      !inMonth ? "opacity-50" : ""
-                    } ${selected ? "bg-primary text-primary-foreground" : ""}`}
-                    style={{ position: "relative" }}
+                    disabled={isDisabled}
+                    className={`w-full h-full p-2 relative
+                      ${isDisabled ? "text-muted-foreground opacity-50" : "hover:bg-muted"}
+                    `}
                   >
-                    <span className="relative z-10">{date.getDate()}</span>
+                    <time dateTime={dateStr} className="relative z-10">
+                      {date.getDate()}
+                    </time>
                     {morning && (
                       <div className={`absolute top-0 left-0 right-0 h-1/3 opacity-20 pointer-events-none ${timeSlotColors[TimeSlot.Morning]}`} />
                     )}
