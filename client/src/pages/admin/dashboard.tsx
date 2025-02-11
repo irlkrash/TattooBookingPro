@@ -294,6 +294,7 @@ function AvailabilityManager() {
               height: 33.33%;
               opacity: 0.2;
               transition: opacity 0.2s;
+              pointer-events: none;
             }
             .time-slot:hover {
               opacity: 0.3;
@@ -325,24 +326,26 @@ function AvailabilityManager() {
             hasAvailability: "relative overflow-hidden"
           }}
           components={{
-            Day: ({ date, className, ...props }) => {
+            Day: ({ date, ...props }) => {
               const dateStr = date.toISOString().split('T')[0];
               const morning = isTimeSlotAvailable(dateStr, TimeSlot.Morning);
               const afternoon = isTimeSlotAvailable(dateStr, TimeSlot.Afternoon);
               const evening = isTimeSlotAvailable(dateStr, TimeSlot.Evening);
 
               return (
-                <button {...props} className={`calendar-day relative ${className || ''}`}>
-                  <span className="relative z-10">{date.getDate()}</span>
-                  {morning && (
-                    <div className={`time-slot morning-slot ${timeSlotColors[TimeSlot.Morning]}`} />
-                  )}
-                  {afternoon && (
-                    <div className={`time-slot afternoon-slot ${timeSlotColors[TimeSlot.Afternoon]}`} />
-                  )}
-                  {evening && (
-                    <div className={`time-slot evening-slot ${timeSlotColors[TimeSlot.Evening]}`} />
-                  )}
+                <button type="button" {...props}>
+                  <div className="relative h-full">
+                    <span className="relative z-10">{date.getDate()}</span>
+                    {morning && (
+                      <div className={`time-slot morning-slot ${timeSlotColors[TimeSlot.Morning]}`} />
+                    )}
+                    {afternoon && (
+                      <div className={`time-slot afternoon-slot ${timeSlotColors[TimeSlot.Afternoon]}`} />
+                    )}
+                    {evening && (
+                      <div className={`time-slot evening-slot ${timeSlotColors[TimeSlot.Evening]}`} />
+                    )}
+                  </div>
                 </button>
               );
             }
