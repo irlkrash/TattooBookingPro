@@ -1,4 +1,4 @@
-import { users, bookingRequests, inquiries, availability } from "@shared/schema";
+import { users, bookingRequests, inquiries, availability, designConfig } from "@shared/schema";
 import { db } from "./db";
 import { eq, and } from "drizzle-orm";
 import type {
@@ -8,6 +8,8 @@ import type {
   Inquiry,
   Availability,
   TimeSlot,
+  DesignConfig,
+  InsertDesignConfig,
 } from "@shared/schema";
 import session from "express-session";
 import connectPg from "connect-pg-simple";
@@ -29,6 +31,10 @@ export interface IStorage {
 
   getAvailability(): Promise<Availability[]>;
   setAvailability(date: Date, timeSlot: TimeSlot, isAvailable: boolean): Promise<Availability>;
+
+  getDesignConfigs(): Promise<DesignConfig[]>;
+  getDesignConfigByKey(key: string): Promise<DesignConfig | undefined>;
+  upsertDesignConfig(config: InsertDesignConfig): Promise<DesignConfig>;
 
   sessionStore: session.Store;
 }
@@ -147,6 +153,46 @@ export class DatabaseStorage implements IStorage {
           date: formattedDate,
           timeSlot,
           isAvailable,
+        })
+        .returning();
+      return created;
+    }
+  }
+
+  async getDesignConfigs(): Promise<DesignConfig[]> {
+    return await db.select().from(designConfig);
+  }
+
+  async getDesignConfigByKey(key: string): Promise<DesignConfig | undefined> {
+    const [config] = await db
+      .select()
+      .from(designConfig)
+      .where(eq(designConfig.key, key));
+    return config;
+  }
+
+  async upsertDesignConfig(config: InsertDesignConfig): Promise<DesignConfig> {
+    // Try to find existing config
+    const existing = await this.getDesignConfigByKey(config.key);
+
+    if (existing) {
+      // Update existing record
+      const [updated] = await db
+        .update(designConfig)
+        .set({
+          ...config,
+          updatedAt: new Date(),
+        })
+        .where(eq(designConfig.key, config.key))
+        .returning();
+      return updated;
+    } else {
+      // Create new record
+      const [created] = await db
+        .insert(designConfig)
+        .values({
+          ...config,
+          updatedAt: new Date(),
         })
         .returning();
       return created;
