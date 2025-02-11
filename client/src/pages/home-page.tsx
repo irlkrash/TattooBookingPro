@@ -59,13 +59,13 @@ function BookingSection() {
         <div className="grid md:grid-cols-2 gap-8">
           <Card>
             <CardContent className="p-6">
-              <h3 className="text-xl font-semibold mb-4">Available Dates</h3>
+              <h3 className="text-xl font-semibold text-center mb-4">Available Dates</h3>
               <AvailabilityCalendar onDateSelect={setSelectedDate} />
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-6">
-              <h3 className="text-xl font-semibold mb-4">Request Booking</h3>
+              <h3 className="text-xl font-semibold text-center mb-4">Request Booking</h3>
               <BookingForm selectedDate={selectedDate} />
             </CardContent>
           </Card>

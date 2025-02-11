@@ -51,7 +51,7 @@ export default function AvailabilityCalendar({ onDateSelect }: Props) {
           today.setHours(0, 0, 0, 0);
           return date < today;
         }}
-        className="rounded-md border"
+        className="rounded-md border w-full"
         components={{
           Day: ({ date, ...props }) => {
             const dateStr = date.toISOString().split('T')[0];
