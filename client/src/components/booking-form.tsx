@@ -24,6 +24,7 @@ export default function BookingForm({ selectedDate }: { selectedDate?: Date }) {
     resolver: zodResolver(insertBookingRequestSchema),
     defaultValues: {
       name: "",
+      email: "",
       bodyPart: "",
       size: "",
       description: "",
@@ -94,6 +95,20 @@ export default function BookingForm({ selectedDate }: { selectedDate?: Date }) {
               <FormLabel>Name</FormLabel>
               <FormControl>
                 <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input type="email" {...field} placeholder="your@email.com" />
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -12,6 +12,7 @@ export const users = pgTable("users", {
 export const bookingRequests = pgTable("booking_requests", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
+  email: text("email"), // Make nullable initially
   bodyPart: text("body_part").notNull(),
   size: text("size").notNull(),
   description: text("description").notNull(),
@@ -42,6 +43,7 @@ export const insertUserSchema = createInsertSchema(users).pick({
 export const insertBookingRequestSchema = createInsertSchema(bookingRequests)
   .pick({
     name: true,
+    email: true,
     bodyPart: true,
     size: true,
     description: true,
@@ -49,6 +51,7 @@ export const insertBookingRequestSchema = createInsertSchema(bookingRequests)
   })
   .extend({
     name: z.string().min(1, "Name is required"),
+    email: z.string().email("Invalid email address"),
     bodyPart: z.string().min(1, "Body part is required"),
     size: z.string().min(1, "Size is required"),
     description: z.string().min(1, "Description is required"),
