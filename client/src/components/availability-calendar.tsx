@@ -43,16 +43,17 @@ export default function AvailabilityCalendar({ onDateSelect }: Props) {
 
   return (
     <div className="space-y-6">
-      <div className="w-full [&_.rdp]:w-full [&_.rdp-months]:w-full [&_.rdp-month]:w-full [&_.rdp-table]:w-full [&_.rdp-cell]:w-[14.28%] [&_.rdp-head_th]:w-[14.28%]">
+      <div className="flex w-full [&>div]:flex-grow [&>div]:w-full">
         <Calendar
           mode="single"
+          selected={undefined}
           onSelect={onDateSelect}
+          className="rounded-md border"
           disabled={(date) => {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             return date < today;
           }}
-          className="rounded-md border w-full"
           components={{
             Day: ({ date, ...props }) => {
               const dateStr = date.toISOString().split('T')[0];
@@ -67,7 +68,8 @@ export default function AvailabilityCalendar({ onDateSelect }: Props) {
               return (
                 <div
                   {...props}
-                  className="relative p-0 w-full"
+                  className="relative p-0"
+                  onClick={() => onDateSelect?.(date)}
                 >
                   <button
                     disabled={isDisabled}
