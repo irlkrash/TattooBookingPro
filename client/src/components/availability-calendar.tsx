@@ -43,94 +43,100 @@ export default function AvailabilityCalendar({ onDateSelect }: Props) {
 
   return (
     <div className="space-y-6">
-      <style jsx global>{`
-        .rdp {
-          --rdp-cell-size: min(4vw, 40px);
-          margin: 0;
-          width: 100%;
-        }
-        .rdp-months {
-          width: 100%;
-          justify-content: center;
-        }
-        .rdp-month {
-          width: 100%;
-        }
-        .rdp-table {
-          width: 100%;
-          max-width: none;
-        }
-        .rdp-cell {
-          padding: 0;
-          width: calc(100% / 7);
-        }
-        .rdp-head_cell {
-          width: calc(100% / 7);
-          font-size: 1em;
-          font-weight: 600;
-          padding: 0.5em;
-        }
-        .rdp-button {
-          width: 100%;
-          height: 100%;
-          padding: 1em 0;
-        }
-      `}</style>
-      <Calendar
-        mode="single"
-        selected={undefined}
-        onSelect={onDateSelect}
-        className="rounded-md border"
-        disabled={(date) => {
-          const today = new Date();
-          today.setHours(0, 0, 0, 0);
-          return date < today;
-        }}
-        components={{
-          Day: ({ date, ...props }) => {
-            const dateStr = date.toISOString().split('T')[0];
-            const morning = isTimeSlotAvailable(dateStr, TimeSlot.Morning);
-            const afternoon = isTimeSlotAvailable(dateStr, TimeSlot.Afternoon);
-            const evening = isTimeSlotAvailable(dateStr, TimeSlot.Evening);
-
+      <div className="w-full">
+        <style jsx global>{`
+          .rdp {
+            margin: 0;
+            width: 100%;
+          }
+          .rdp-months {
+            display: grid;
+            width: 100%;
+          }
+          .rdp-month {
+            width: 100%;
+          }
+          .rdp-table {
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+          }
+          .rdp-row {
+            display: contents;
+          }
+          .rdp-cell {
+            aspect-ratio: 1;
+            width: 100%;
+          }
+          .rdp-head_cell {
+            text-align: center;
+            padding: 0.5rem;
+            font-weight: 500;
+          }
+          .rdp-day {
+            width: 100%;
+            height: 100%;
+          }
+          .rdp-nav {
+            align-items: center;
+          }
+        `}</style>
+        <Calendar
+          mode="single"
+          selected={undefined}
+          onSelect={onDateSelect}
+          className="rounded-md border"
+          disabled={(date) => {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            const isDisabled = date < today;
+            return date < today;
+          }}
+          components={{
+            Day: ({ date, ...props }) => {
+              const dateStr = date.toISOString().split('T')[0];
+              const morning = isTimeSlotAvailable(dateStr, TimeSlot.Morning);
+              const afternoon = isTimeSlotAvailable(dateStr, TimeSlot.Afternoon);
+              const evening = isTimeSlotAvailable(dateStr, TimeSlot.Evening);
 
-            return (
-              <div
-                {...props}
-                className="relative p-0"
-                onClick={() => onDateSelect?.(date)}
-              >
-                <button
-                  disabled={isDisabled}
-                  className={`w-full h-full relative ${
-                    isDisabled ? "text-muted-foreground opacity-50" : "hover:bg-muted"
-                  }`}
+              const today = new Date();
+              today.setHours(0, 0, 0, 0);
+              const isDisabled = date < today;
+
+              return (
+                <div
+                  {...props}
+                  className="relative p-0 w-full h-full"
+                  onClick={() => onDateSelect?.(date)}
                 >
-                  <time dateTime={dateStr} className="relative z-10">
-                    {date.getDate()}
-                  </time>
-                  {!isDisabled && (
-                    <>
-                      {morning && (
-                        <div className={`absolute top-0 left-0 right-0 h-1/3 opacity-20 pointer-events-none ${timeSlotColors[TimeSlot.Morning]}`} />
-                      )}
-                      {afternoon && (
-                        <div className={`absolute top-1/3 left-0 right-0 h-1/3 opacity-20 pointer-events-none ${timeSlotColors[TimeSlot.Afternoon]}`} />
-                      )}
-                      {evening && (
-                        <div className={`absolute top-2/3 left-0 right-0 h-1/3 opacity-20 pointer-events-none ${timeSlotColors[TimeSlot.Evening]}`} />
-                      )}
-                    </>
-                  )}
-                </button>
-              </div>
-            );
-          }
-        }}
-      />
+                  <button
+                    disabled={isDisabled}
+                    className={`w-full h-full relative p-2 ${
+                      isDisabled ? "text-muted-foreground opacity-50" : "hover:bg-muted"
+                    }`}
+                  >
+                    <time dateTime={dateStr} className="relative z-10">
+                      {date.getDate()}
+                    </time>
+                    {!isDisabled && (
+                      <>
+                        {morning && (
+                          <div className={`absolute top-0 left-0 right-0 h-1/3 opacity-20 pointer-events-none ${timeSlotColors[TimeSlot.Morning]}`} />
+                        )}
+                        {afternoon && (
+                          <div className={`absolute top-1/3 left-0 right-0 h-1/3 opacity-20 pointer-events-none ${timeSlotColors[TimeSlot.Afternoon]}`} />
+                        )}
+                        {evening && (
+                          <div className={`absolute top-2/3 left-0 right-0 h-1/3 opacity-20 pointer-events-none ${timeSlotColors[TimeSlot.Evening]}`} />
+                        )}
+                      </>
+                    )}
+                  </button>
+                </div>
+              );
+            }
+          }}
+        />
+      </div>
 
       <Card className="p-4">
         <p className="text-sm text-muted-foreground mb-3">
