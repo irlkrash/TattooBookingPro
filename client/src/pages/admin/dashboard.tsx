@@ -19,7 +19,7 @@ const TimeSlot = {
   Evening: 'evening' as const,
 } as const;
 
-export default function AdminDashboard() {
+function AdminDashboard() {
   return (
     <div className="container mx-auto py-6">
       <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
@@ -197,9 +197,27 @@ function AvailabilityManager() {
       return;
     }
 
-    // Convert Set to Array for iteration
-    const timeSlots = Array.from(selectedTimeSlots);
+    // First, clear existing availability for this date
+    const dateStr = date.toISOString().split('T')[0];
+    const existingSlots = availability?.filter(a => a.date === dateStr) || [];
 
+    // Set all existing slots to unavailable first
+    for (const slot of existingSlots) {
+      if (slot.isAvailable) {
+        try {
+          await setAvailabilityMutation.mutateAsync({
+            date,
+            timeSlot: slot.timeSlot as TimeSlotType,
+            isAvailable: false
+          });
+        } catch (error) {
+          break;
+        }
+      }
+    }
+
+    // Then set the new selected slots
+    const timeSlots = Array.from(selectedTimeSlots);
     for (const timeSlot of timeSlots) {
       try {
         await setAvailabilityMutation.mutateAsync({
@@ -208,7 +226,6 @@ function AvailabilityManager() {
           isAvailable: true
         });
       } catch (error) {
-        // Error is already handled by the mutation
         break;
       }
     }
@@ -263,6 +280,29 @@ function AvailabilityManager() {
           </div>
         </div>
 
+        <style>
+          {`
+            .calendar-day {
+              position: relative;
+              height: 100%;
+            }
+            .time-slot {
+              position: absolute;
+              left: 0;
+              right: 0;
+              height: 33.33%;
+              opacity: 0.2;
+              transition: opacity 0.2s;
+            }
+            .time-slot:hover {
+              opacity: 0.3;
+            }
+            .morning-slot { top: 0; }
+            .afternoon-slot { top: 33.33%; }
+            .evening-slot { top: 66.66%; }
+          `}
+        </style>
+
         <Calendar
           mode="single"
           selected={undefined}
@@ -273,28 +313,37 @@ function AvailabilityManager() {
           }}
           className="rounded-md border"
           modifiers={{
-            morning: (date) => {
+            hasAvailability: (date) => {
               const dateStr = date.toISOString().split('T')[0];
-              return isTimeSlotAvailable(dateStr, TimeSlot.Morning);
-            },
-            afternoon: (date) => {
-              const dateStr = date.toISOString().split('T')[0];
-              return isTimeSlotAvailable(dateStr, TimeSlot.Afternoon);
-            },
-            evening: (date) => {
-              const dateStr = date.toISOString().split('T')[0];
-              return isTimeSlotAvailable(dateStr, TimeSlot.Evening);
-            },
+              return [TimeSlot.Morning, TimeSlot.Afternoon, TimeSlot.Evening].some(
+                slot => isTimeSlotAvailable(dateStr, slot)
+              );
+            }
           }}
-          modifiersStyles={{
-            morning: { 
-              backgroundColor: "rgba(234, 179, 8, 0.2)"
-            },
-            afternoon: {
-              backgroundColor: "rgba(249, 115, 22, 0.2)"
-            },
-            evening: {
-              backgroundColor: "rgba(147, 51, 234, 0.2)"
+          modifiersClassNames={{
+            hasAvailability: "relative overflow-hidden"
+          }}
+          components={{
+            Day: ({ date, className }) => {
+              const dateStr = date.toISOString().split('T')[0];
+              const morning = isTimeSlotAvailable(dateStr, TimeSlot.Morning);
+              const afternoon = isTimeSlotAvailable(dateStr, TimeSlot.Afternoon);
+              const evening = isTimeSlotAvailable(dateStr, TimeSlot.Evening);
+
+              return (
+                <div className={`calendar-day ${className || ''}`}>
+                  <span className="relative z-10">{date.getDate()}</span>
+                  {morning && (
+                    <div className={`time-slot morning-slot ${timeSlotColors[TimeSlot.Morning]}`} />
+                  )}
+                  {afternoon && (
+                    <div className={`time-slot afternoon-slot ${timeSlotColors[TimeSlot.Afternoon]}`} />
+                  )}
+                  {evening && (
+                    <div className={`time-slot evening-slot ${timeSlotColors[TimeSlot.Evening]}`} />
+                  )}
+                </div>
+              );
             }
           }}
         />
@@ -302,3 +351,5 @@ function AvailabilityManager() {
     </Card>
   );
 }
+
+export default AdminDashboard;
