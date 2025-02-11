@@ -43,77 +43,81 @@ export default function AvailabilityCalendar({ onDateSelect }: Props) {
 
   return (
     <div className="space-y-6">
-      <div className="w-full">
-        <style jsx global>{`
-          .rdp {
-            margin: 0;
-            width: 100%;
-          }
-          .rdp-months {
-            display: grid;
-            width: 100%;
-          }
-          .rdp-month {
-            width: 100%;
-          }
-          .rdp-table {
-            width: 100%;
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-          }
-          .rdp-row {
-            display: contents;
-          }
-          .rdp-cell {
-            aspect-ratio: 1;
-            width: 100%;
-          }
-          .rdp-head_cell {
-            text-align: center;
-            padding: 0.5rem;
-            font-weight: 500;
-          }
-          .rdp-day {
-            width: 100%;
-            height: 100%;
-          }
-          .rdp-nav {
-            align-items: center;
-          }
-        `}</style>
-        <Calendar
-          mode="single"
-          selected={undefined}
-          onSelect={onDateSelect}
-          className="rounded-md border"
-          disabled={(date) => {
+      <style jsx global>{`
+        .rdp {
+          width: 100%;
+        }
+        .rdp-months {
+          width: 100%;
+        }
+        .rdp-month {
+          width: 100%;
+        }
+        .rdp-table {
+          width: 100%;
+        }
+        .rdp-cell {
+          width: calc(100% / 7);
+          padding: 0;
+          position: relative;
+        }
+        .rdp-head_cell {
+          width: calc(100% / 7);
+          padding: 0.75rem;
+          text-align: center;
+        }
+        .rdp-day {
+          width: 100%;
+          height: 0;
+          padding-bottom: 100%;
+          position: relative;
+        }
+        .rdp-day_button {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      `}</style>
+
+      <Calendar
+        mode="single"
+        selected={undefined}
+        onSelect={onDateSelect}
+        className="rounded-md border"
+        disabled={(date) => {
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          return date < today;
+        }}
+        components={{
+          Day: ({ date, ...props }) => {
+            const dateStr = date.toISOString().split('T')[0];
+            const morning = isTimeSlotAvailable(dateStr, TimeSlot.Morning);
+            const afternoon = isTimeSlotAvailable(dateStr, TimeSlot.Afternoon);
+            const evening = isTimeSlotAvailable(dateStr, TimeSlot.Evening);
+
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            return date < today;
-          }}
-          components={{
-            Day: ({ date, ...props }) => {
-              const dateStr = date.toISOString().split('T')[0];
-              const morning = isTimeSlotAvailable(dateStr, TimeSlot.Morning);
-              const afternoon = isTimeSlotAvailable(dateStr, TimeSlot.Afternoon);
-              const evening = isTimeSlotAvailable(dateStr, TimeSlot.Evening);
+            const isDisabled = date < today;
 
-              const today = new Date();
-              today.setHours(0, 0, 0, 0);
-              const isDisabled = date < today;
-
-              return (
-                <div
-                  {...props}
-                  className="relative p-0 w-full h-full"
-                  onClick={() => onDateSelect?.(date)}
+            return (
+              <div
+                {...props}
+                className="relative w-full"
+                onClick={() => onDateSelect?.(date)}
+              >
+                <button
+                  disabled={isDisabled}
+                  className={`w-full pb-[100%] relative ${
+                    isDisabled ? "text-muted-foreground opacity-50" : "hover:bg-muted"
+                  }`}
                 >
-                  <button
-                    disabled={isDisabled}
-                    className={`w-full h-full relative p-2 ${
-                      isDisabled ? "text-muted-foreground opacity-50" : "hover:bg-muted"
-                    }`}
-                  >
+                  <div className="absolute inset-0 flex items-center justify-center">
                     <time dateTime={dateStr} className="relative z-10">
                       {date.getDate()}
                     </time>
@@ -130,13 +134,13 @@ export default function AvailabilityCalendar({ onDateSelect }: Props) {
                         )}
                       </>
                     )}
-                  </button>
-                </div>
-              );
-            }
-          }}
-        />
-      </div>
+                  </div>
+                </button>
+              </div>
+            );
+          }
+        }}
+      />
 
       <Card className="p-4">
         <p className="text-sm text-muted-foreground mb-3">
