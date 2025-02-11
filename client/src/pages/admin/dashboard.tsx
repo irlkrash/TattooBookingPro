@@ -190,52 +190,42 @@ function AvailabilityManager() {
   const handleDateSelect = async (date: Date | undefined) => {
     if (!date) return;
 
-    // If no time slots selected, clear all availability for this date
-    if (selectedTimeSlots.size === 0) {
-      const dateStr = date.toISOString().split('T')[0];
-      const existingSlots = availability?.filter(a => 
-        a.date === dateStr && a.isAvailable
-      ) || [];
+    // Format the date string once for comparison
+    const dateStr = date.toISOString().split('T')[0];
 
-      // Set all slots to unavailable
+    // Get existing available slots for this date
+    const existingSlots = availability?.filter(a => 
+      a.date === dateStr && a.isAvailable
+    ) || [];
+
+    try {
+      // First, set all existing slots to unavailable
       for (const slot of existingSlots) {
-        try {
-          await setAvailabilityMutation.mutateAsync({
-            date,
-            timeSlot: slot.timeSlot as TimeSlotType,
-            isAvailable: false
-          });
-        } catch (error) {
-          console.error('Error clearing availability:', error);
-          toast({
-            title: "Failed to clear availability",
-            description: error instanceof Error ? error.message : "Unknown error",
-            variant: "destructive",
-          });
-          break;
-        }
-      }
-      return;
-    }
-
-    // Set all selected slots to available
-    const timeSlots = Array.from(selectedTimeSlots);
-    for (const timeSlot of timeSlots) {
-      try {
         await setAvailabilityMutation.mutateAsync({
           date,
-          timeSlot,
-          isAvailable: true
+          timeSlot: slot.timeSlot as TimeSlotType,
+          isAvailable: false
         });
-      } catch (error) {
-        console.error('Error setting availability:', error);
-        toast({
-          title: "Failed to update availability",
-          description: error instanceof Error ? error.message : "Unknown error",
-          variant: "destructive",
-        });
-        break;
       }
+
+      // Then, if we have selected time slots, set them as available
+      if (selectedTimeSlots.size > 0) {
+        const timeSlots = Array.from(selectedTimeSlots);
+        for (const timeSlot of timeSlots) {
+          await setAvailabilityMutation.mutateAsync({
+            date,
+            timeSlot,
+            isAvailable: true
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error updating availability:', error);
+      toast({
+        title: "Failed to update availability",
+        description: error instanceof Error ? error.message : "Unknown error",
+        variant: "destructive",
+      });
     }
   };
 
