@@ -5,11 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { TimeSlot as TimeSlotType, type BookingRequest, type Inquiry, type Availability } from "@shared/schema";
+import { TimeSlot as TimeSlotType, type BookingRequest, type Inquiry, type Availability, type DesignConfig } from "@shared/schema";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Check, X } from "lucide-react";
+import { Loader2, Check, X, Upload } from "lucide-react";
 import { useState } from "react";
 
 // Create a local TimeSlot enum that matches the schema
@@ -29,6 +32,7 @@ function AdminDashboard() {
           <TabsTrigger value="bookings">Booking Requests</TabsTrigger>
           <TabsTrigger value="inquiries">Inquiries</TabsTrigger>
           <TabsTrigger value="availability">Availability</TabsTrigger>
+          <TabsTrigger value="design">Design</TabsTrigger>
         </TabsList>
 
         <TabsContent value="bookings">
@@ -41,6 +45,10 @@ function AdminDashboard() {
 
         <TabsContent value="availability">
           <AvailabilityManager />
+        </TabsContent>
+
+        <TabsContent value="design">
+          <DesignManager />
         </TabsContent>
       </Tabs>
     </div>
@@ -336,6 +344,155 @@ function AvailabilityManager() {
             }
           }}
         />
+      </CardContent>
+    </Card>
+  );
+}
+
+function DesignManager() {
+  const { data: designConfigs, isLoading } = useQuery<DesignConfig[]>({
+    queryKey: ["/api/design-config"],
+  });
+
+  const { toast } = useToast();
+  const [selectedSection, setSelectedSection] = useState("home");
+
+  const updateDesignMutation = useMutation({
+    mutationFn: async ({ key, value, type, section }: { key: string; value: string; type: string; section: string }) => {
+      await apiRequest("POST", "/api/design-config", { key, value, type, section });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/design-config"] });
+      toast({ title: "Design configuration updated" });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Failed to update design",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>, configKey: string) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('key', configKey);
+
+    try {
+      await apiRequest("POST", "/api/upload-image", formData);
+      toast({ title: "Image uploaded successfully" });
+      queryClient.invalidateQueries({ queryKey: ["/api/design-config"] });
+    } catch (error) {
+      toast({
+        title: "Failed to upload image",
+        description: error instanceof Error ? error.message : "Unknown error",
+        variant: "destructive",
+      });
+    }
+  };
+
+  if (isLoading) return <Loader2 className="h-8 w-8 animate-spin" />;
+
+  const sections = Array.from(new Set(designConfigs?.map(config => config.section) || []));
+  const filteredConfigs = designConfigs?.filter(config => config.section === selectedSection) || [];
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Design Configuration</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-6">
+          <div className="flex items-center gap-4">
+            <Label>Section:</Label>
+            <Select value={selectedSection} onValueChange={setSelectedSection}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select section" />
+              </SelectTrigger>
+              <SelectContent>
+                {sections.map(section => (
+                  <SelectItem key={section} value={section}>
+                    {section.charAt(0).toUpperCase() + section.slice(1)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <ScrollArea className="h-[500px]">
+            <div className="space-y-6">
+              {filteredConfigs.map((config) => (
+                <div key={config.id} className="space-y-2">
+                  <Label>
+                    {config.key
+                      .split('_')
+                      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                      .join(' ')}:
+                  </Label>
+
+                  {config.type === 'background_image' ? (
+                    <div className="flex items-center gap-4">
+                      {config.value && (
+                        <img
+                          src={config.value}
+                          alt={config.key}
+                          className="h-20 w-20 object-cover rounded"
+                        />
+                      )}
+                      <Label
+                        htmlFor={`file-${config.id}`}
+                        className="cursor-pointer flex items-center gap-2 px-4 py-2 border rounded hover:bg-muted"
+                      >
+                        <Upload className="h-4 w-4" />
+                        Choose Image
+                      </Label>
+                      <Input
+                        id={`file-${config.id}`}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => handleFileUpload(e, config.key)}
+                      />
+                    </div>
+                  ) : config.type === 'color' ? (
+                    <div className="flex items-center gap-4">
+                      <Input
+                        type="color"
+                        value={config.value}
+                        onChange={(e) => 
+                          updateDesignMutation.mutate({
+                            key: config.key,
+                            value: e.target.value,
+                            type: config.type,
+                            section: config.section,
+                          })
+                        }
+                      />
+                      <span className="text-sm text-muted-foreground">{config.value}</span>
+                    </div>
+                  ) : (
+                    <Input
+                      value={config.value}
+                      onChange={(e) =>
+                        updateDesignMutation.mutate({
+                          key: config.key,
+                          value: e.target.value,
+                          type: config.type,
+                          section: config.section,
+                        })
+                      }
+                      type={config.type === 'text' ? 'text' : 'text'}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
+        </div>
       </CardContent>
     </Card>
   );

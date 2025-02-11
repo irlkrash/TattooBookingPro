@@ -12,7 +12,7 @@ export const users = pgTable("users", {
 export const bookingRequests = pgTable("booking_requests", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
-  email: text("email"), // Make nullable initially
+  email: text("email"),
   bodyPart: text("body_part").notNull(),
   size: text("size").notNull(),
   description: text("description").notNull(),
@@ -36,7 +36,18 @@ export const availability = pgTable("availability", {
   isAvailable: boolean("is_available").notNull().default(true),
 });
 
-// Add new type to represent the time slots
+// New table for UI design configurations
+export const designConfig = pgTable("design_config", {
+  id: serial("id").primaryKey(),
+  key: text("key").notNull().unique(), 
+  value: text("value").notNull(),
+  type: text("type", { 
+    enum: ['text', 'font', 'color', 'background_image'] 
+  }).notNull(),
+  section: text("section").notNull(), 
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
 export const TimeSlot = {
   Morning: 'morning' as const,
   Afternoon: 'afternoon' as const,
@@ -89,8 +100,24 @@ export const insertAvailabilitySchema = createInsertSchema(availability).pick({
   isAvailable: true,
 });
 
+export const insertDesignConfigSchema = createInsertSchema(designConfig)
+  .pick({
+    key: true,
+    value: true,
+    type: true,
+    section: true,
+  })
+  .extend({
+    key: z.string().min(1, "Key is required"),
+    value: z.string().min(1, "Value is required"),
+    type: z.enum(['text', 'font', 'color', 'background_image']),
+    section: z.string().min(1, "Section is required"),
+  });
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type BookingRequest = typeof bookingRequests.$inferSelect;
 export type Inquiry = typeof inquiries.$inferSelect;
 export type Availability = typeof availability.$inferSelect;
+export type DesignConfig = typeof designConfig.$inferSelect;
+export type InsertDesignConfig = z.infer<typeof insertDesignConfigSchema>;
