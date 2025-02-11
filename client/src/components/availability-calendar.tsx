@@ -43,59 +43,61 @@ export default function AvailabilityCalendar({ onDateSelect }: Props) {
 
   return (
     <div className="space-y-6">
-      <Calendar
-        mode="single"
-        onSelect={onDateSelect}
-        disabled={(date) => {
-          const today = new Date();
-          today.setHours(0, 0, 0, 0);
-          return date < today;
-        }}
-        className="rounded-md border w-full"
-        components={{
-          Day: ({ date, ...props }) => {
-            const dateStr = date.toISOString().split('T')[0];
-            const morning = isTimeSlotAvailable(dateStr, TimeSlot.Morning);
-            const afternoon = isTimeSlotAvailable(dateStr, TimeSlot.Afternoon);
-            const evening = isTimeSlotAvailable(dateStr, TimeSlot.Evening);
-
+      <div className="w-full [&_.rdp]:w-full [&_.rdp-months]:w-full [&_.rdp-month]:w-full [&_.rdp-table]:w-full [&_.rdp-cell]:w-[14.28%] [&_.rdp-head_th]:w-[14.28%]">
+        <Calendar
+          mode="single"
+          onSelect={onDateSelect}
+          disabled={(date) => {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            const isDisabled = date < today;
+            return date < today;
+          }}
+          className="rounded-md border w-full"
+          components={{
+            Day: ({ date, ...props }) => {
+              const dateStr = date.toISOString().split('T')[0];
+              const morning = isTimeSlotAvailable(dateStr, TimeSlot.Morning);
+              const afternoon = isTimeSlotAvailable(dateStr, TimeSlot.Afternoon);
+              const evening = isTimeSlotAvailable(dateStr, TimeSlot.Evening);
 
-            return (
-              <div
-                {...props}
-                className="relative p-0"
-              >
-                <button
-                  disabled={isDisabled}
-                  className={`w-full h-9 relative ${
-                    isDisabled ? "text-muted-foreground opacity-50" : "hover:bg-muted"
-                  }`}
+              const today = new Date();
+              today.setHours(0, 0, 0, 0);
+              const isDisabled = date < today;
+
+              return (
+                <div
+                  {...props}
+                  className="relative p-0 w-full"
                 >
-                  <time dateTime={dateStr} className="relative z-10">
-                    {date.getDate()}
-                  </time>
-                  {!isDisabled && (
-                    <>
-                      {morning && (
-                        <div className={`absolute top-0 left-0 right-0 h-1/3 opacity-20 pointer-events-none ${timeSlotColors[TimeSlot.Morning]}`} />
-                      )}
-                      {afternoon && (
-                        <div className={`absolute top-1/3 left-0 right-0 h-1/3 opacity-20 pointer-events-none ${timeSlotColors[TimeSlot.Afternoon]}`} />
-                      )}
-                      {evening && (
-                        <div className={`absolute top-2/3 left-0 right-0 h-1/3 opacity-20 pointer-events-none ${timeSlotColors[TimeSlot.Evening]}`} />
-                      )}
-                    </>
-                  )}
-                </button>
-              </div>
-            );
-          }
-        }}
-      />
+                  <button
+                    disabled={isDisabled}
+                    className={`w-full h-9 relative ${
+                      isDisabled ? "text-muted-foreground opacity-50" : "hover:bg-muted"
+                    }`}
+                  >
+                    <time dateTime={dateStr} className="relative z-10">
+                      {date.getDate()}
+                    </time>
+                    {!isDisabled && (
+                      <>
+                        {morning && (
+                          <div className={`absolute top-0 left-0 right-0 h-1/3 opacity-20 pointer-events-none ${timeSlotColors[TimeSlot.Morning]}`} />
+                        )}
+                        {afternoon && (
+                          <div className={`absolute top-1/3 left-0 right-0 h-1/3 opacity-20 pointer-events-none ${timeSlotColors[TimeSlot.Afternoon]}`} />
+                        )}
+                        {evening && (
+                          <div className={`absolute top-2/3 left-0 right-0 h-1/3 opacity-20 pointer-events-none ${timeSlotColors[TimeSlot.Evening]}`} />
+                        )}
+                      </>
+                    )}
+                  </button>
+                </div>
+              );
+            }
+          }}
+        />
+      </div>
 
       <Card className="p-4">
         <p className="text-sm text-muted-foreground mb-3">
