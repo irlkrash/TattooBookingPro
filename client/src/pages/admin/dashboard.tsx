@@ -187,7 +187,9 @@ function AvailabilityManager() {
     });
   };
 
-  const handleDateSelect = async (date: Date) => {
+  const handleDateSelect = async (date: Date | undefined) => {
+    if (!date) return;
+
     if (selectedTimeSlots.size === 0) {
       toast({
         title: "No time slots selected",
@@ -309,11 +311,7 @@ function AvailabilityManager() {
         <Calendar
           mode="single"
           selected={undefined}
-          onSelect={(date) => {
-            if (date) {
-              handleDateSelect(date);
-            }
-          }}
+          onSelect={handleDateSelect}
           className="rounded-md border"
           modifiers={{
             hasAvailability: (date) => {
