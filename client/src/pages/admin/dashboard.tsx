@@ -245,8 +245,7 @@ function AvailabilityManager() {
 
   const isTimeSlotAvailable = (date: string, timeSlot: TimeSlotType) => {
     return getDateAvailability(date).some(
-      a =>
-        a.timeSlot === timeSlot && a.isAvailable
+      a => a.timeSlot === timeSlot && a.isAvailable
     );
   };
 
@@ -283,31 +282,6 @@ function AvailabilityManager() {
           </div>
         </div>
 
-        <style>
-          {`
-            .calendar-day {
-              position: relative;
-              height: 100%;
-              width: 100%;
-            }
-            .time-slot {
-              position: absolute;
-              left: 0;
-              right: 0;
-              height: 33.33%;
-              opacity: 0.2;
-              transition: opacity 0.2s;
-              pointer-events: none;
-            }
-            .time-slot:hover {
-              opacity: 0.3;
-            }
-            .morning-slot { top: 0; }
-            .afternoon-slot { top: 33.33%; }
-            .evening-slot { top: 66.66%; }
-          `}
-        </style>
-
         <Calendar
           mode="single"
           selected={undefined}
@@ -325,27 +299,34 @@ function AvailabilityManager() {
             hasAvailability: "relative overflow-hidden"
           }}
           components={{
-            Day: ({ date, ...props }) => {
+            Day: ({ date, displayMonth, inMonth, selected, disabled, ...props }) => {
               const dateStr = date.toISOString().split('T')[0];
               const morning = isTimeSlotAvailable(dateStr, TimeSlot.Morning);
               const afternoon = isTimeSlotAvailable(dateStr, TimeSlot.Afternoon);
               const evening = isTimeSlotAvailable(dateStr, TimeSlot.Evening);
 
               return (
-                <button type="button" {...props}>
-                  <div className="relative h-full w-full">
+                <td {...props} className="relative p-0">
+                  <button
+                    type="button"
+                    disabled={disabled}
+                    className={`w-full h-full p-2 ${
+                      !inMonth ? "opacity-50" : ""
+                    } ${selected ? "bg-primary text-primary-foreground" : ""}`}
+                    style={{ position: "relative" }}
+                  >
                     <span className="relative z-10">{date.getDate()}</span>
                     {morning && (
-                      <div className={`time-slot morning-slot ${timeSlotColors[TimeSlot.Morning]}`} />
+                      <div className={`absolute top-0 left-0 right-0 h-1/3 opacity-20 pointer-events-none ${timeSlotColors[TimeSlot.Morning]}`} />
                     )}
                     {afternoon && (
-                      <div className={`time-slot afternoon-slot ${timeSlotColors[TimeSlot.Afternoon]}`} />
+                      <div className={`absolute top-1/3 left-0 right-0 h-1/3 opacity-20 pointer-events-none ${timeSlotColors[TimeSlot.Afternoon]}`} />
                     )}
                     {evening && (
-                      <div className={`time-slot evening-slot ${timeSlotColors[TimeSlot.Evening]}`} />
+                      <div className={`absolute top-2/3 left-0 right-0 h-1/3 opacity-20 pointer-events-none ${timeSlotColors[TimeSlot.Evening]}`} />
                     )}
-                  </div>
-                </button>
+                  </button>
+                </td>
               );
             }
           }}
