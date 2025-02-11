@@ -33,12 +33,15 @@ export default function BookingForm({ selectedDate }: { selectedDate?: Date }) {
   });
 
   const bookingMutation = useMutation({
-    mutationFn: async (data: unknown) => {
-      const res = await apiRequest("POST", "/api/booking-requests", {
-        ...data,
+    mutationFn: async (formData: any) => {
+      const bookingData = {
+        ...formData,
         requestedDate: selectedDate?.toISOString().split('T')[0] || new Date().toISOString().split('T')[0],
-      });
-      return res.json();
+      };
+      console.log('Submitting booking data:', bookingData);
+      const response = await apiRequest("POST", "/api/booking-requests", bookingData);
+      const data = await response.json();
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/booking-requests'] });
@@ -49,27 +52,34 @@ export default function BookingForm({ selectedDate }: { selectedDate?: Date }) {
       form.reset();
     },
     onError: (error: Error) => {
+      console.error('Booking submission error:', error);
       toast({
         title: "Failed to submit booking request",
-        description: error.message,
+        description: error.message || "Please try again later",
         variant: "destructive",
       });
     },
   });
 
+  const onSubmit = (data: any) => {
+    console.log('Form data before submission:', data);
+    bookingMutation.mutate(data);
+  };
+
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit((data) => bookingMutation.mutate(data))}
+        onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-4"
       >
-      {selectedDate && (
-        <div className="mb-4 p-3 bg-muted rounded-lg">
-          <p className="text-sm text-muted-foreground">
-            Selected Date: <span className="font-medium text-foreground">{format(selectedDate, 'MMMM d, yyyy')}</span>
-          </p>
-        </div>
-      )}
+        {selectedDate && (
+          <div className="mb-4 p-3 bg-muted rounded-lg">
+            <p className="text-sm text-muted-foreground">
+              Selected Date: <span className="font-medium text-foreground">{format(selectedDate, 'MMMM d, yyyy')}</span>
+            </p>
+          </div>
+        )}
+
         <FormField
           control={form.control}
           name="name"
