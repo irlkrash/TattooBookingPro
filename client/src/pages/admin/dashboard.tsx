@@ -242,8 +242,9 @@ function AvailabilityManager() {
   };
 
   const isTimeSlotAvailable = (date: string, timeSlot: TimeSlotType) => {
-    return getDateAvailability(date).some(a => 
-      a.timeSlot === timeSlot && a.isAvailable
+    return getDateAvailability(date).some(
+      a =>
+        a.timeSlot === timeSlot && a.isAvailable
     );
   };
 
@@ -324,14 +325,14 @@ function AvailabilityManager() {
             hasAvailability: "relative overflow-hidden"
           }}
           components={{
-            Day: ({ date, className }) => {
+            Day: ({ date, className, ...props }) => {
               const dateStr = date.toISOString().split('T')[0];
               const morning = isTimeSlotAvailable(dateStr, TimeSlot.Morning);
               const afternoon = isTimeSlotAvailable(dateStr, TimeSlot.Afternoon);
               const evening = isTimeSlotAvailable(dateStr, TimeSlot.Evening);
 
               return (
-                <div className={`calendar-day ${className || ''}`}>
+                <div {...props} className={`calendar-day ${className || ''}`}>
                   <span className="relative z-10">{date.getDate()}</span>
                   {morning && (
                     <div className={`time-slot morning-slot ${timeSlotColors[TimeSlot.Morning]}`} />
