@@ -19,7 +19,11 @@ function Router() {
         <Route path="/" component={HomePage} />
         <Route path="/gallery" component={GalleryPage} />
         <Route path="/auth" component={AuthPage} />
-        <ProtectedRoute path="/admin" component={AdminDashboard} />
+        <ProtectedRoute 
+          path="/admin" 
+          component={AdminDashboard} 
+          requireAdmin={true} 
+        />
         <Route component={NotFound} />
       </Switch>
     </>
