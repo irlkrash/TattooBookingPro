@@ -12,12 +12,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
-export default function BookingForm() {
+export default function BookingForm({ selectedDate }: { selectedDate?: Date }) {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+
   const form = useForm({
     resolver: zodResolver(insertBookingRequestSchema),
     defaultValues: {
@@ -25,21 +27,30 @@ export default function BookingForm() {
       bodyPart: "",
       size: "",
       description: "",
-      requestedDate: new Date(),
+      requestedDate: selectedDate || new Date(),
     },
   });
 
   const bookingMutation = useMutation({
-    mutationFn: async (data: any) => {
-      await apiRequest("POST", "/api/booking-requests", data);
+    mutationFn: async (data: unknown) => {
+      const res = await apiRequest("POST", "/api/booking-requests", {
+        ...data,
+        requestedDate: selectedDate?.toISOString().split('T')[0] || new Date().toISOString().split('T')[0],
+      });
+      return res.json();
     },
     onSuccess: () => {
-      toast({ title: "Booking request submitted successfully" });
+      queryClient.invalidateQueries({ queryKey: ['/api/booking-requests'] });
+      toast({ 
+        title: "Booking request submitted successfully",
+        description: "We'll review your request and get back to you soon."
+      });
       form.reset();
     },
-    onError: () => {
+    onError: (error: Error) => {
       toast({
         title: "Failed to submit booking request",
+        description: error.message,
         variant: "destructive",
       });
     },
@@ -116,7 +127,7 @@ export default function BookingForm() {
           className="w-full"
           disabled={bookingMutation.isPending}
         >
-          Submit Booking Request
+          {bookingMutation.isPending ? "Submitting..." : "Submit Booking Request"}
         </Button>
       </form>
     </Form>
