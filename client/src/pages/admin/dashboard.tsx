@@ -13,7 +13,7 @@ import { TimeSlot as TimeSlotType, type BookingRequest, type Inquiry, type Avail
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Check, X, Upload } from "lucide-react";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import debounce from "lodash/debounce";
 
 // Create a local TimeSlot enum that matches the schema
@@ -356,9 +356,10 @@ function DesignManager() {
   });
 
   const { toast } = useToast();
-  // Get all unique sections and set default
   const sections = Array.from(new Set(designConfigs?.map(config => config.section) || ['home']));
   const [selectedSection, setSelectedSection] = useState(sections[0] || 'home');
+  const [pendingChanges, setPendingChanges] = useState<Record<number, string>>({});
+  const hasUnsavedChanges = Object.keys(pendingChanges).length > 0;
 
   const updateDesignMutation = useMutation({
     mutationFn: async ({ key, value, type, section }: { key: string; value: string; type: string; section: string }) => {
@@ -379,18 +380,48 @@ function DesignManager() {
     },
   });
 
-  // Debounced update function
-  const debouncedUpdate = useCallback(
-    debounce(
-      (key: string, value: string, type: string, section: string) => {
-        if (value.trim()) {
-          updateDesignMutation.mutate({ key, value, type, section });
+  const handleInputChange = (configId: number, value: string) => {
+    setPendingChanges(prev => ({
+      ...prev,
+      [configId]: value
+    }));
+  };
+
+  const handleSaveChanges = async () => {
+    try {
+      // Apply all pending changes
+      for (const [configId, value] of Object.entries(pendingChanges)) {
+        const config = designConfigs?.find(c => c.id === Number(configId));
+        if (config) {
+          await updateDesignMutation.mutateAsync({
+            key: config.key,
+            value,
+            type: config.type,
+            section: config.section,
+          });
         }
-      },
-      500
-    ),
-    []
-  );
+      }
+
+      // Clear pending changes
+      setPendingChanges({});
+
+      toast({
+        title: "Design changes saved successfully",
+        description: "Refreshing page to apply changes...",
+      });
+
+      // Refresh the page after a short delay to show the success message
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+    } catch (error) {
+      toast({
+        title: "Failed to save changes",
+        description: error instanceof Error ? error.message : "Unknown error",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>, configKey: string) => {
     const file = event.target.files?.[0];
@@ -483,29 +514,18 @@ function DesignManager() {
                       <Input
                         type="color"
                         defaultValue={config.value}
+                        value={pendingChanges[config.id] ?? config.value}
                         className="w-24 h-10"
-                        onChange={(e) =>
-                          debouncedUpdate(
-                            config.key,
-                            e.target.value,
-                            config.type,
-                            config.section
-                          )
-                        }
+                        onChange={(e) => handleInputChange(config.id, e.target.value)}
                       />
-                      <span className="text-sm text-muted-foreground">{config.value}</span>
+                      <span className="text-sm text-muted-foreground">
+                        {pendingChanges[config.id] ?? config.value}
+                      </span>
                     </div>
                   ) : config.type === 'font' ? (
                     <Select
-                      defaultValue={config.value}
-                      onValueChange={(value) =>
-                        debouncedUpdate(
-                          config.key,
-                          value,
-                          config.type,
-                          config.section
-                        )
-                      }
+                      value={pendingChanges[config.id] ?? config.value}
+                      onValueChange={(value) => handleInputChange(config.id, value)}
                     >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select font" />
@@ -520,15 +540,8 @@ function DesignManager() {
                     </Select>
                   ) : (
                     <Input
-                      defaultValue={config.value}
-                      onChange={(e) =>
-                        debouncedUpdate(
-                          config.key,
-                          e.target.value,
-                          config.type,
-                          config.section
-                        )
-                      }
+                      value={pendingChanges[config.id] ?? config.value}
+                      onChange={(e) => handleInputChange(config.id, e.target.value)}
                       type="text"
                       className="w-full"
                     />
@@ -540,6 +553,19 @@ function DesignManager() {
               ))}
             </div>
           </ScrollArea>
+
+          {hasUnsavedChanges && (
+            <div className="flex justify-end mt-6 pt-4 border-t">
+              <Button
+                onClick={handleSaveChanges}
+                disabled={updateDesignMutation.isPending}
+                className="gap-2"
+              >
+                {updateDesignMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
+                Save Changes
+              </Button>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
