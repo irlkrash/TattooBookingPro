@@ -20,19 +20,6 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
         styleConfigs.forEach(cfg => {
           const cssVar = `--${cfg.key.replace(/_/g, '-')}`;
           root.style.setProperty(cssVar, cfg.value);
-
-          // Also apply specific styles based on the config key
-          switch (cfg.key) {
-            case 'available_dates_background':
-              root.style.setProperty('--available-date-bg', cfg.value);
-              break;
-            case 'booking_form_background':
-              root.style.setProperty('--booking-form-bg', cfg.value);
-              break;
-            case 'contact_form_background':
-              root.style.setProperty('--contact-form-bg', cfg.value);
-              break;
-          }
         });
 
         // Create a style element for the dynamic styles if it doesn't exist
@@ -45,21 +32,28 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
 
         // Update all dynamic styles in one go
         styleElement.textContent = `
-          :root {
-            ${styleConfigs.map(cfg => `--${cfg.key.replace(/_/g, '-')}: ${cfg.value};`).join('\n')}
+          .booking-section {
+            background-color: var(--booking-section-background);
           }
 
-          /* Apply specific styles */
+          .contact-section {
+            background-color: var(--contact-section-background);
+          }
+
           .available-date {
-            background-color: var(--available-dates-background, #4ade80);
+            background-color: var(--available-dates-background) !important;
           }
 
           .booking-form {
-            background-color: var(--booking-form-background, #f8fafc);
+            background-color: var(--booking-form-background) !important;
           }
 
           .contact-form {
-            background-color: var(--contact-form-background, #f8fafc);
+            background-color: var(--contact-form-background) !important;
+          }
+
+          .gallery-description {
+            color: var(--gallery-description-color);
           }
         `;
 
