@@ -371,7 +371,7 @@ function DesignManager() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/design-config"] });
     },
-    onError: (error: Error) => {
+    onError: (error: any) => {
       toast({
         title: "Failed to update design",
         description: error.message,
@@ -456,7 +456,7 @@ function DesignManager() {
       <CardHeader>
         <CardTitle>Design Configuration</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="relative">
         <div className="space-y-6">
           <div className="flex items-center gap-4">
             <Label>Section:</Label>
@@ -474,7 +474,8 @@ function DesignManager() {
             </Select>
           </div>
 
-          <ScrollArea className="h-[500px] pr-4">
+          {/* Wrap only the config fields in ScrollArea */}
+          <ScrollArea className="h-[400px] pr-4">
             <div className="space-y-6">
               {filteredConfigs.map((config) => (
                 <div key={config.id} className="space-y-2 border-b pb-4 last:border-0">
@@ -485,35 +486,10 @@ function DesignManager() {
                       .join(' ')}:
                   </Label>
 
-                  {config.type === 'background_image' ? (
-                    <div className="flex items-center gap-4">
-                      {config.value && (
-                        <img
-                          src={config.value}
-                          alt={config.key}
-                          className="h-20 w-20 object-cover rounded"
-                        />
-                      )}
-                      <Label
-                        htmlFor={`file-${config.id}`}
-                        className="cursor-pointer flex items-center gap-2 px-4 py-2 border rounded hover:bg-muted"
-                      >
-                        <Upload className="h-4 w-4" />
-                        Choose Image
-                      </Label>
-                      <Input
-                        id={`file-${config.id}`}
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={(e) => handleFileUpload(e, config.key)}
-                      />
-                    </div>
-                  ) : config.type === 'color' ? (
+                  {config.type === 'color' ? (
                     <div className="flex items-center gap-4">
                       <Input
                         type="color"
-                        defaultValue={config.value}
                         value={pendingChanges[config.id] ?? config.value}
                         className="w-24 h-10"
                         onChange={(e) => handleInputChange(config.id, e.target.value)}
@@ -554,12 +530,13 @@ function DesignManager() {
             </div>
           </ScrollArea>
 
+          {/* Save Changes button outside ScrollArea */}
           {hasUnsavedChanges && (
-            <div className="flex justify-end mt-6 pt-4 border-t">
+            <div className="sticky bottom-0 pt-4 bg-background border-t">
               <Button
                 onClick={handleSaveChanges}
                 disabled={updateDesignMutation.isPending}
-                className="gap-2"
+                className="w-full gap-2"
               >
                 {updateDesignMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
                 Save Changes
