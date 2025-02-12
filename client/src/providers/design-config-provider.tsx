@@ -25,44 +25,44 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
       // Apply fonts using CSS custom properties
       if (config.bodyFont) {
         root.style.setProperty("--font-body", config.bodyFont);
-        root.style.fontFamily = `var(--font-body), system-ui, sans-serif`;
-
-        // Apply body font to all elements except headings
-        const bodyElements = document.querySelectorAll("body, p, div, span, a, button, input, textarea");
-        bodyElements.forEach(element => {
-          if (!element.closest("h1, h2, h3, h4, h5, h6")) {
-            (element as HTMLElement).style.fontFamily = `var(--font-body), system-ui, sans-serif`;
-          }
-        });
       }
 
       if (config.headingFont) {
         root.style.setProperty("--font-heading", config.headingFont);
-        const headings = document.querySelectorAll("h1, h2, h3, h4, h5, h6, .heading");
-        headings.forEach(heading => {
-          (heading as HTMLElement).style.fontFamily = `var(--font-heading), system-ui, sans-serif`;
-        });
       }
 
-      // Create a style element for the font families if it doesn't exist
-      let fontStyleElement = document.getElementById('dynamic-fonts');
-      if (!fontStyleElement) {
-        fontStyleElement = document.createElement('style');
-        fontStyleElement.id = 'dynamic-fonts';
-        document.head.appendChild(fontStyleElement);
+      // Create a style element for the dynamic styles if it doesn't exist
+      let styleElement = document.getElementById('dynamic-styles');
+      if (!styleElement) {
+        styleElement = document.createElement('style');
+        styleElement.id = 'dynamic-styles';
+        document.head.appendChild(styleElement);
       }
 
-      // Update font CSS rules
-      fontStyleElement.textContent = `
+      // Update all dynamic styles in one go
+      styleElement.textContent = `
         :root {
           --font-body: ${config.bodyFont}, system-ui, sans-serif;
           --font-heading: ${config.headingFont}, system-ui, sans-serif;
         }
+
         body {
           font-family: var(--font-body);
+          background-color: ${config.backgroundColor};
+          color: ${config.textColor};
         }
+
         h1, h2, h3, h4, h5, h6, .heading {
           font-family: var(--font-heading);
+        }
+
+        a {
+          color: ${config.linkColor};
+        }
+
+        /* Apply body font to specific elements */
+        p, div, span, button, input, textarea {
+          font-family: var(--font-body);
         }
       `;
 
