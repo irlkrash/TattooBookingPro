@@ -448,18 +448,27 @@ function DesignManager() {
     ]
   };
 
-  // Add any missing configs
+  // Update the useEffect to be more defensive
   useEffect(() => {
     if (!designConfigs || isLoading) return;
 
     const addMissingConfigs = async () => {
-      for (const [section, configs] of Object.entries(defaultConfigs)) {
-        for (const config of configs) {
-          const exists = designConfigs.some(c => c.key === config.key);
-          if (!exists) {
-            await updateDesignMutation.mutateAsync(config);
+      try {
+        for (const [section, configs] of Object.entries(defaultConfigs)) {
+          for (const config of configs) {
+            const exists = designConfigs.some(c => c.key === config.key);
+            if (!exists) {
+              await updateDesignMutation.mutateAsync(config);
+            }
           }
         }
+      } catch (error) {
+        console.error('Error adding default configs:', error);
+        toast({
+          title: "Failed to add default configurations",
+          description: error instanceof Error ? error.message : "Unknown error",
+          variant: "destructive",
+        });
       }
     };
 
