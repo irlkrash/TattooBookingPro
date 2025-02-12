@@ -363,15 +363,17 @@ function DesignManager() {
 
   const updateDesignMutation = useMutation({
     mutationFn: async ({ key, value, type, section }: { key: string; value: string; type: string; section: string }) => {
-      if (!value.trim()) {
-        throw new Error("Value cannot be empty");
-      }
-      await apiRequest("POST", "/api/design-config", { key, value, type, section });
+      console.log('Updating design config:', { key, value, type, section });
+      const response = await apiRequest("POST", "/api/design-config", { key, value, type, section });
+      console.log('Update response:', response);
+      return response;
     },
     onSuccess: () => {
+      // Force a cache invalidation
       queryClient.invalidateQueries({ queryKey: ["/api/design-config"] });
     },
     onError: (error: any) => {
+      console.error('Design update error:', error);
       toast({
         title: "Failed to update design",
         description: error.message,
@@ -389,10 +391,13 @@ function DesignManager() {
 
   const handleSaveChanges = async () => {
     try {
+      console.log('Saving changes:', pendingChanges);
+
       // Apply all pending changes
       for (const [configId, value] of Object.entries(pendingChanges)) {
         const config = designConfigs?.find(c => c.id === Number(configId));
         if (config) {
+          console.log('Updating config:', config.key, value);
           await updateDesignMutation.mutateAsync({
             key: config.key,
             value,
@@ -405,16 +410,20 @@ function DesignManager() {
       // Clear pending changes
       setPendingChanges({});
 
+      // Force a cache invalidation and refetch
+      await queryClient.invalidateQueries({ queryKey: ["/api/design-config"] });
+
       toast({
         title: "Design changes saved successfully",
-        description: "Refreshing page to apply changes...",
+        description: "Your changes have been applied.",
       });
 
-      // Refresh the page after a short delay to show the success message
+      // Refresh the page after a short delay
       setTimeout(() => {
         window.location.reload();
-      }, 1500);
+      }, 1000);
     } catch (error) {
+      console.error('Save changes error:', error);
       toast({
         title: "Failed to save changes",
         description: error instanceof Error ? error.message : "Unknown error",
