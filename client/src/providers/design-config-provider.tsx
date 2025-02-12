@@ -22,17 +22,29 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
       root.style.setProperty("--background-color", config.backgroundColor);
       root.style.setProperty("--link-color", config.linkColor);
 
-      // Apply fonts
+      // Apply fonts using CSS custom properties
       if (config.bodyFont) {
-        document.body.style.fontFamily = config.bodyFont;
+        root.style.setProperty("--font-body", config.bodyFont);
+        document.body.style.fontFamily = `var(--font-body), system-ui, sans-serif`;
       }
 
       if (config.headingFont) {
+        root.style.setProperty("--font-heading", config.headingFont);
         const headings = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
         headings.forEach(heading => {
-          (heading as HTMLElement).style.fontFamily = config.headingFont;
+          (heading as HTMLElement).style.fontFamily = `var(--font-heading), system-ui, sans-serif`;
         });
       }
+
+      // Apply text content updates
+      config.configs.forEach(configItem => {
+        if (configItem.type === 'text') {
+          const elements = document.querySelectorAll(`[data-config-key="${configItem.key}"]`);
+          elements.forEach(element => {
+            element.textContent = configItem.value;
+          });
+        }
+      });
 
       // Update theme classes
       document.body.style.backgroundColor = config.backgroundColor;
