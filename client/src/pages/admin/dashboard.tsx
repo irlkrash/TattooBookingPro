@@ -423,27 +423,6 @@ function DesignManager() {
     }
   };
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>, configKey: string) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('key', configKey);
-
-    try {
-      await apiRequest("POST", "/api/upload-image", formData);
-      toast({ title: "Image uploaded successfully" });
-      queryClient.invalidateQueries({ queryKey: ["/api/design-config"] });
-    } catch (error) {
-      toast({
-        title: "Failed to upload image",
-        description: error instanceof Error ? error.message : "Unknown error",
-        variant: "destructive",
-      });
-    }
-  };
-
   if (isLoading) return <Loader2 className="h-8 w-8 animate-spin" />;
 
   const filteredConfigs = designConfigs
@@ -451,7 +430,7 @@ function DesignManager() {
     .sort((a, b) => a.id - b.id) || [];
 
   return (
-    <div className="relative min-h-[600px]">
+    <div className="relative min-h-[600px] container mx-auto">
       <Card className="max-w-[50%]">
         <CardHeader>
           <CardTitle>Design Configuration</CardTitle>
