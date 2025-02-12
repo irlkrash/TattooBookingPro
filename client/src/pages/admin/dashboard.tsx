@@ -474,12 +474,33 @@ function DesignManager() {
 
   const defaultConfigs = {
     theme: [
+      // Section Backgrounds
       { key: 'booking_section_background', type: 'color', section: 'theme', value: '#f5f5f5' },
       { key: 'contact_section_background', type: 'color', section: 'theme', value: '#f5f5f5' },
-      { key: 'gallery_description_color', type: 'color', section: 'theme', value: '#6b7280' },
-      { key: 'available_dates_background', type: 'color', section: 'theme', value: '#4ade80' },
+
+      // Form Backgrounds
       { key: 'booking_form_background', type: 'color', section: 'theme', value: '#f8fafc' },
       { key: 'contact_form_background', type: 'color', section: 'theme', value: '#f8fafc' },
+
+      // Calendar
+      { key: 'available_dates_background', type: 'color', section: 'theme', value: '#4ade80' },
+
+      // Text Colors
+      { key: 'gallery_description_color', type: 'color', section: 'theme', value: '#6b7280' },
+      { key: 'primary_text_color', type: 'color', section: 'theme', value: '#000000' },
+      { key: 'secondary_text_color', type: 'color', section: 'theme', value: '#6b7280' },
+
+      // Link Colors
+      { key: 'link_color', type: 'color', section: 'theme', value: '#2563eb' },
+      { key: 'link_hover_color', type: 'color', section: 'theme', value: '#1d4ed8' },
+
+      // Background Colors
+      { key: 'background_color', type: 'color', section: 'theme', value: '#ffffff' },
+      { key: 'secondary_background', type: 'color', section: 'theme', value: '#f9fafb' },
+
+      // Button Colors
+      { key: 'primary_button_background', type: 'color', section: 'theme', value: '#2563eb' },
+      { key: 'primary_button_text', type: 'color', section: 'theme', value: '#ffffff' },
     ],
     about: [
       { key: 'about_image', type: 'background_image', section: 'about', value: 'https://images.unsplash.com/photo-1721305250037-c765d5435cb1' }

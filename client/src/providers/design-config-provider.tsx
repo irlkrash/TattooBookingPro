@@ -16,7 +16,7 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
         const root = document.documentElement;
         const styleConfigs = configs.filter(c => c.type === 'color');
 
-        // Apply all color configurations
+        // Apply all color configurations as CSS variables
         styleConfigs.forEach(cfg => {
           const cssVar = `--${cfg.key.replace(/_/g, '-')}`;
           root.style.setProperty(cssVar, cfg.value);
@@ -32,28 +32,57 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
 
         // Update all dynamic styles in one go
         styleElement.textContent = `
+          /* Theme Colors */
+          :root {
+            ${styleConfigs.map(cfg => `--${cfg.key.replace(/_/g, '-')}: ${cfg.value};`).join('\n            ')}
+          }
+
+          /* Section Backgrounds */
           .booking-section {
-            background-color: var(--booking-section-background);
+            background-color: var(--booking-section-background, #f5f5f5) !important;
           }
 
           .contact-section {
-            background-color: var(--contact-section-background);
+            background-color: var(--contact-section-background, #f5f5f5) !important;
           }
 
-          .available-date {
-            background-color: var(--available-dates-background) !important;
-          }
-
+          /* Form Backgrounds */
           .booking-form {
-            background-color: var(--booking-form-background) !important;
+            background-color: var(--booking-form-background, #f8fafc) !important;
           }
 
           .contact-form {
-            background-color: var(--contact-form-background) !important;
+            background-color: var(--contact-form-background, #f8fafc) !important;
           }
 
+          /* Calendar */
+          .available-date {
+            background-color: var(--available-dates-background, #4ade80) !important;
+          }
+
+          /* Text Colors */
           .gallery-description {
-            color: var(--gallery-description-color);
+            color: var(--gallery-description-color, #6b7280) !important;
+          }
+
+          /* Link Colors */
+          a:not(.no-theme) {
+            color: var(--link-color, inherit);
+          }
+
+          /* Background Colors */
+          .theme-background {
+            background-color: var(--background-color, #ffffff);
+          }
+
+          /* Primary Colors */
+          .theme-primary {
+            background-color: var(--primary-color, #000000);
+          }
+
+          /* Secondary Colors */
+          .theme-secondary {
+            background-color: var(--secondary-color, #6b7280);
           }
         `;
 
