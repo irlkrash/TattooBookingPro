@@ -422,8 +422,14 @@ function DesignManager() {
       // Clear pending changes
       setPendingChanges({});
 
-      // Force a cache invalidation
-      await queryClient.invalidateQueries({ queryKey: ["/api/design-config"] });
+      // Force a cache invalidation for both design config and the client routes
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["/api/design-config"] }),
+        queryClient.invalidateQueries({ queryKey: ["/"] }), // Invalidate home page
+        queryClient.invalidateQueries({ queryKey: ["/gallery"] }), // Invalidate gallery page
+        queryClient.invalidateQueries({ queryKey: ["/contact"] }), // Invalidate contact page
+      ]);
+
     } catch (error) {
       console.error('Save changes error:', error);
       toast({
@@ -434,21 +440,6 @@ function DesignManager() {
     }
   };
 
-  const defaultConfigs = {
-    theme: [
-      { key: 'booking_section_background', type: 'color', section: 'theme', value: '#f5f5f5' },
-      { key: 'contact_section_background', type: 'color', section: 'theme', value: '#f5f5f5' },
-      { key: 'gallery_description_color', type: 'color', section: 'theme', value: '#6b7280' },
-      { key: 'available_dates_background', type: 'color', section: 'theme', value: '#4ade80' },
-      { key: 'booking_form_background', type: 'color', section: 'theme', value: '#f8fafc' },
-      { key: 'contact_form_background', type: 'color', section: 'theme', value: '#f8fafc' },
-    ],
-    about: [
-      { key: 'about_image', type: 'background_image', section: 'about', value: 'https://images.unsplash.com/photo-1721305250037-c765d5435cb1' }
-    ]
-  };
-
-  // Update the useEffect to be more defensive
   useEffect(() => {
     if (!designConfigs || isLoading) return;
 
@@ -480,6 +471,20 @@ function DesignManager() {
   const filteredConfigs = designConfigs
     ?.filter(config => config.section === selectedSection)
     .sort((a, b) => a.id - b.id) || [];
+
+  const defaultConfigs = {
+    theme: [
+      { key: 'booking_section_background', type: 'color', section: 'theme', value: '#f5f5f5' },
+      { key: 'contact_section_background', type: 'color', section: 'theme', value: '#f5f5f5' },
+      { key: 'gallery_description_color', type: 'color', section: 'theme', value: '#6b7280' },
+      { key: 'available_dates_background', type: 'color', section: 'theme', value: '#4ade80' },
+      { key: 'booking_form_background', type: 'color', section: 'theme', value: '#f8fafc' },
+      { key: 'contact_form_background', type: 'color', section: 'theme', value: '#f8fafc' },
+    ],
+    about: [
+      { key: 'about_image', type: 'background_image', section: 'about', value: 'https://images.unsplash.com/photo-1721305250037-c765d5435cb1' }
+    ]
+  };
 
   return (
     <div className="relative min-h-[600px] container mx-auto">
@@ -524,9 +529,21 @@ function DesignManager() {
                           className="w-24 h-10"
                           onChange={(e) => handleInputChange(config.id, e.target.value)}
                         />
-                        <span className="text-sm text-muted-foreground">
-                          {pendingChanges[config.id] ?? config.value}
-                        </span>
+                        <Input
+                          type="text"
+                          value={pendingChanges[config.id] ?? config.value}
+                          className="w-32"
+                          placeholder="#000000"
+                          pattern="^#[0-9A-Fa-f]{6}$"
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            if (value.match(/^#[0-9A-Fa-f]{6}$/)) {
+                              handleInputChange(config.id, value);
+                            } else if (value.match(/^[0-9A-Fa-f]{6}$/)) {
+                              handleInputChange(config.id, `#${value}`);
+                            }
+                          }}
+                        />
                       </div>
                     ) : config.type === 'font' ? (
                       <Select
