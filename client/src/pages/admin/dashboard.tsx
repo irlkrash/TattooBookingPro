@@ -427,7 +427,7 @@ function DesignManager() {
       { key: 'gallery_description_color', type: 'color', section: 'theme', value: '#6b7280' },
     ],
     about: [
-      { key: 'about_image', type: 'image', section: 'about', value: 'https://images.unsplash.com/photo-1721305250037-c765d5435cb1' }
+      { key: 'about_image', type: 'background_image', section: 'about', value: 'https://images.unsplash.com/photo-1721305250037-c765d5435cb1' }
     ]
   };
 
