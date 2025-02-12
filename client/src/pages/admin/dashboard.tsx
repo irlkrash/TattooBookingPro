@@ -446,106 +446,105 @@ function DesignManager() {
 
   if (isLoading) return <Loader2 className="h-8 w-8 animate-spin" />;
 
-  // Sort configs by ID to maintain stable order
   const filteredConfigs = designConfigs
     ?.filter(config => config.section === selectedSection)
     .sort((a, b) => a.id - b.id) || [];
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Design Configuration</CardTitle>
-      </CardHeader>
-      <CardContent className="relative">
-        <div className="space-y-6">
-          <div className="flex items-center gap-4">
-            <Label>Section:</Label>
-            <Select value={selectedSection} onValueChange={setSelectedSection}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select section" />
-              </SelectTrigger>
-              <SelectContent>
-                {sections.map(section => (
-                  <SelectItem key={section} value={section}>
-                    {section.charAt(0).toUpperCase() + section.slice(1)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+    <div className="relative min-h-[600px]">
+      <Card className="max-w-[50%]">
+        <CardHeader>
+          <CardTitle>Design Configuration</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-6">
+            <div className="flex items-center gap-4">
+              <Label>Section:</Label>
+              <Select value={selectedSection} onValueChange={setSelectedSection}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select section" />
+                </SelectTrigger>
+                <SelectContent>
+                  {sections.map(section => (
+                    <SelectItem key={section} value={section}>
+                      {section.charAt(0).toUpperCase() + section.slice(1)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-          {/* Wrap only the config fields in ScrollArea */}
-          <ScrollArea className="h-[400px] pr-4">
-            <div className="space-y-6">
-              {filteredConfigs.map((config) => (
-                <div key={config.id} className="space-y-2 border-b pb-4 last:border-0">
-                  <Label className="text-lg font-semibold">
-                    {config.key
-                      .split('_')
-                      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                      .join(' ')}:
-                  </Label>
+            <ScrollArea className="h-[400px] pr-4">
+              <div className="space-y-6">
+                {filteredConfigs.map((config) => (
+                  <div key={config.id} className="space-y-2 border-b pb-4 last:border-0">
+                    <Label className="text-lg font-semibold">
+                      {config.key
+                        .split('_')
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .join(' ')}:
+                    </Label>
 
-                  {config.type === 'color' ? (
-                    <div className="flex items-center gap-4">
-                      <Input
-                        type="color"
+                    {config.type === 'color' ? (
+                      <div className="flex items-center gap-4">
+                        <Input
+                          type="color"
+                          value={pendingChanges[config.id] ?? config.value}
+                          className="w-24 h-10"
+                          onChange={(e) => handleInputChange(config.id, e.target.value)}
+                        />
+                        <span className="text-sm text-muted-foreground">
+                          {pendingChanges[config.id] ?? config.value}
+                        </span>
+                      </div>
+                    ) : config.type === 'font' ? (
+                      <Select
                         value={pendingChanges[config.id] ?? config.value}
-                        className="w-24 h-10"
+                        onValueChange={(value) => handleInputChange(config.id, value)}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select font" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {['Inter', 'Montserrat', 'Roboto', 'Open Sans', 'Lato'].map(font => (
+                            <SelectItem key={font} value={font}>
+                              {font}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <Input
+                        value={pendingChanges[config.id] ?? config.value}
                         onChange={(e) => handleInputChange(config.id, e.target.value)}
+                        type="text"
+                        className="w-full"
                       />
-                      <span className="text-sm text-muted-foreground">
-                        {pendingChanges[config.id] ?? config.value}
-                      </span>
-                    </div>
-                  ) : config.type === 'font' ? (
-                    <Select
-                      value={pendingChanges[config.id] ?? config.value}
-                      onValueChange={(value) => handleInputChange(config.id, value)}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select font" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {['Inter', 'Montserrat', 'Roboto', 'Open Sans', 'Lato'].map(font => (
-                          <SelectItem key={font} value={font}>
-                            {font}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <Input
-                      value={pendingChanges[config.id] ?? config.value}
-                      onChange={(e) => handleInputChange(config.id, e.target.value)}
-                      type="text"
-                      className="w-full"
-                    />
-                  )}
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Type: {config.type.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </ScrollArea>
+                    )}
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Type: {config.type.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+          </div>
+        </CardContent>
+      </Card>
 
-          {/* Save Changes button outside ScrollArea */}
-          {hasUnsavedChanges && (
-            <div className="sticky bottom-0 pt-4 bg-background border-t">
-              <Button
-                onClick={handleSaveChanges}
-                disabled={updateDesignMutation.isPending}
-                className="w-full gap-2"
-              >
-                {updateDesignMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-                Save Changes
-              </Button>
-            </div>
-          )}
+      {hasUnsavedChanges && (
+        <div className="fixed bottom-8 right-8">
+          <Button
+            onClick={handleSaveChanges}
+            disabled={updateDesignMutation.isPending}
+            className="gap-2 bg-red-500 hover:bg-red-600 text-black font-medium"
+          >
+            {updateDesignMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
+            Save Changes
+          </Button>
         </div>
-      </CardContent>
-    </Card>
+      )}
+    </div>
   );
 }
 
