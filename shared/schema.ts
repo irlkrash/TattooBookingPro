@@ -50,8 +50,8 @@ export const designConfig = pgTable("design_config", {
 export const galleryImages = pgTable("gallery_images", {
   id: serial("id").primaryKey(),
   url: text("url").notNull(),
-  alt: text("alt").notNull(),
-  credit: text("credit").notNull(),
+  alt: text("alt"),
+  credit: text("credit"),
   order: integer("order").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
@@ -131,8 +131,8 @@ export const insertGalleryImageSchema = createInsertSchema(galleryImages)
   })
   .extend({
     url: z.string().url("Must be a valid URL"),
-    alt: z.string().min(1, "Alt text is required"),
-    credit: z.string().min(1, "Credit is required"),
+    alt: z.string().optional(),
+    credit: z.string().optional(),
     order: z.number().int().min(0),
   });
 

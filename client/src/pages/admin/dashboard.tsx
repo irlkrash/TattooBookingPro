@@ -701,7 +701,7 @@ function GalleryManager() {
       </div>
 
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-        <DialogContent>
+        <DialogContent className="text-foreground">
           <DialogHeader>
             <DialogTitle>Add New Image</DialogTitle>
           </DialogHeader>
@@ -711,8 +711,8 @@ function GalleryManager() {
               const formData = new FormData(e.currentTarget);
               createMutation.mutate({
                 url: formData.get("url") as string,
-                alt: formData.get("alt") as string,
-                credit: formData.get("credit") as string,
+                alt: formData.get("alt") as string || undefined,
+                credit: formData.get("credit") as string || undefined,
                 order: images?.length || 0,
               });
             }}
@@ -729,21 +729,19 @@ function GalleryManager() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="alt">Alt Text</Label>
+              <Label htmlFor="alt">Alt Text (Optional)</Label>
               <Input
                 id="alt"
                 name="alt"
                 placeholder="Description of the image"
-                required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="credit">Photo Credit</Label>
+              <Label htmlFor="credit">Photo Credit (Optional)</Label>
               <Input
                 id="credit"
                 name="credit"
                 placeholder="Photographer or source"
-                required
               />
             </div>
             <DialogFooter>
