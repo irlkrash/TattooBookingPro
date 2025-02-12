@@ -75,22 +75,47 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
 
           /* Link Colors */
           a:not(.no-theme) {
-            color: var(--link-color, inherit);
+            color: var(--link-color, inherit) !important;
+          }
+
+          a:not(.no-theme):hover {
+            color: var(--link-hover-color, inherit) !important;
           }
 
           /* Background Colors */
+          body {
+            background-color: var(--background-color, #ffffff) !important;
+          }
+
           .theme-background {
-            background-color: var(--background-color, #ffffff);
+            background-color: var(--background-color, #ffffff) !important;
           }
 
           /* Primary Colors */
           .theme-primary {
-            background-color: var(--primary-color, #000000);
+            background-color: var(--primary-color, #000000) !important;
+            color: var(--primary-text-color, #ffffff) !important;
           }
 
           /* Secondary Colors */
           .theme-secondary {
-            background-color: var(--secondary-color, #6b7280);
+            background-color: var(--secondary-color, #6b7280) !important;
+            color: var(--secondary-text-color, #ffffff) !important;
+          }
+
+          /* Text Colors */
+          .text-primary {
+            color: var(--primary-text-color, #000000) !important;
+          }
+
+          .text-secondary {
+            color: var(--secondary-text-color, #6b7280) !important;
+          }
+
+          /* Button Colors */
+          .button-primary {
+            background-color: var(--primary-button-background, #2563eb) !important;
+            color: var(--primary-button-text, #ffffff) !important;
           }
         `;
 
