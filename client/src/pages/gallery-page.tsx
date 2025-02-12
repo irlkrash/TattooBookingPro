@@ -1,4 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
+import { useDesignContext } from "@/providers/design-config-provider";
 
 const galleryImages = [
   {
@@ -44,12 +45,16 @@ const galleryImages = [
 ];
 
 export default function GalleryPage() {
+  const { getConfigValue } = useDesignContext();
+  const galleryTitle = getConfigValue("gallery_title", "Our Gallery");
+  const galleryDescription = getConfigValue("gallery_description", "Browse through our collection of unique tattoo designs and custom artwork");
+
   return (
     <div className="container mx-auto py-12 px-4">
       <div className="max-w-2xl mx-auto text-center mb-12">
-        <h1 className="text-4xl font-bold mb-4">Our Gallery</h1>
+        <h1 className="text-4xl font-bold mb-4">{galleryTitle}</h1>
         <p className="text-lg text-muted-foreground">
-          Browse through our collection of unique tattoo designs and custom artwork
+          {galleryDescription}
         </p>
       </div>
 
