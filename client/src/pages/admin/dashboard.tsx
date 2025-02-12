@@ -439,6 +439,9 @@ function DesignManager() {
       { key: 'booking_section_background', type: 'color', section: 'theme', value: '#f5f5f5' },
       { key: 'contact_section_background', type: 'color', section: 'theme', value: '#f5f5f5' },
       { key: 'gallery_description_color', type: 'color', section: 'theme', value: '#6b7280' },
+      { key: 'available_dates_background', type: 'color', section: 'theme', value: '#4ade80' },
+      { key: 'booking_form_background', type: 'color', section: 'theme', value: '#f8fafc' },
+      { key: 'contact_form_background', type: 'color', section: 'theme', value: '#f8fafc' },
     ],
     about: [
       { key: 'about_image', type: 'background_image', section: 'about', value: 'https://images.unsplash.com/photo-1721305250037-c765d5435cb1' }
