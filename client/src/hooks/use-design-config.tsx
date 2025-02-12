@@ -5,7 +5,6 @@ export function useDesignConfig() {
   const { data: configs, isLoading } = useQuery<DesignConfig[]>({
     queryKey: ["/api/design-config"],
     staleTime: 0, // Always fetch fresh data
-    cacheTime: 0, // Don't cache the results
   });
 
   const getConfigValue = (key: string, defaultValue: string = "") => {

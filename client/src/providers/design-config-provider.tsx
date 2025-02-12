@@ -8,31 +8,45 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
 
   // Apply global styles based on configuration
   useEffect(() => {
-    if (!config.configs) return;
+    if (!config.configs || config.isLoading) return;
 
-    console.log('Applying design config:', config);
+    try {
+      console.log('Applying design config:', config);
 
-    const root = document.documentElement;
+      const root = document.documentElement;
 
-    // Apply colors
-    root.style.setProperty("--primary", config.primaryColor);
-    root.style.setProperty("--secondary", config.secondaryColor);
-    root.style.setProperty("--text-color", config.textColor);
-    root.style.setProperty("--background-color", config.backgroundColor);
-    root.style.setProperty("--link-color", config.linkColor);
+      // Apply colors
+      root.style.setProperty("--primary", config.primaryColor);
+      root.style.setProperty("--secondary", config.secondaryColor);
+      root.style.setProperty("--text-color", config.textColor);
+      root.style.setProperty("--background-color", config.backgroundColor);
+      root.style.setProperty("--link-color", config.linkColor);
 
-    // Apply fonts
-    if (config.bodyFont) {
-      document.body.style.fontFamily = config.bodyFont;
+      // Apply fonts
+      if (config.bodyFont) {
+        document.body.style.fontFamily = config.bodyFont;
+      }
+
+      if (config.headingFont) {
+        const headings = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+        headings.forEach(heading => {
+          (heading as HTMLElement).style.fontFamily = config.headingFont;
+        });
+      }
+    } catch (error) {
+      console.error('Error applying design config:', error);
     }
-
-    if (config.headingFont) {
-      const headings = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
-      headings.forEach(heading => {
-        (heading as HTMLElement).style.fontFamily = config.headingFont;
-      });
-    }
-  }, [config]);
+  }, [
+    config.configs,
+    config.primaryColor,
+    config.secondaryColor,
+    config.textColor,
+    config.backgroundColor,
+    config.linkColor,
+    config.bodyFont,
+    config.headingFont,
+    config.isLoading
+  ]);
 
   return (
     <DesignConfigContext.Provider value={config}>
