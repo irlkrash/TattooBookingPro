@@ -9,12 +9,21 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { TimeSlot as TimeSlotType, type BookingRequest, type Inquiry, type Availability, type DesignConfig } from "@shared/schema";
+import { TimeSlot as TimeSlotType, type BookingRequest, type Inquiry, type Availability, type DesignConfig, type GalleryImage } from "@shared/schema";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Check, X, Upload } from "lucide-react";
 import { useState, useCallback, useRef, useEffect } from "react";
 import debounce from "lodash/debounce";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+
 
 // Create a local TimeSlot enum that matches the schema
 const TimeSlot = {
@@ -34,6 +43,7 @@ function AdminDashboard() {
           <TabsTrigger value="inquiries">Inquiries</TabsTrigger>
           <TabsTrigger value="availability">Availability</TabsTrigger>
           <TabsTrigger value="design">Design</TabsTrigger>
+          <TabsTrigger value="gallery">Gallery</TabsTrigger>
         </TabsList>
 
         <TabsContent value="bookings">
@@ -50,6 +60,10 @@ function AdminDashboard() {
 
         <TabsContent value="design">
           <DesignManager />
+        </TabsContent>
+
+        <TabsContent value="gallery">
+          <GalleryManager />
         </TabsContent>
       </Tabs>
     </div>
@@ -549,6 +563,268 @@ function DesignManager() {
           </Button>
         </div>
       )}
+    </div>
+  );
+}
+
+function GalleryManager() {
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
+  const { toast } = useToast();
+
+  const { data: images, isLoading } = useQuery<GalleryImage[]>({
+    queryKey: ["/api/gallery-images"],
+  });
+
+  const createMutation = useMutation({
+    mutationFn: async (data: Omit<GalleryImage, "id" | "createdAt">) => {
+      await apiRequest("POST", "/api/gallery-images", data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/gallery-images"] });
+      toast({ title: "Image added successfully" });
+      setIsAddDialogOpen(false);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Failed to add image",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: Partial<GalleryImage> }) => {
+      await apiRequest("PATCH", `/api/gallery-images/${id}`, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/gallery-images"] });
+      toast({ title: "Image updated successfully" });
+      setSelectedImage(null);
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      await apiRequest("DELETE", `/api/gallery-images/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/gallery-images"] });
+      toast({ title: "Image deleted successfully" });
+    },
+  });
+
+  const reorderMutation = useMutation({
+    mutationFn: async (orders: { id: number; order: number }[]) => {
+      await apiRequest("POST", "/api/gallery-images/reorder", { orders });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/gallery-images"] });
+    },
+  });
+
+  const handleDrop = async (draggedId: number, targetId: number) => {
+    if (!images) return;
+
+    const draggedIndex = images.findIndex(img => img.id === draggedId);
+    const targetIndex = images.findIndex(img => img.id === targetId);
+    if (draggedIndex === -1 || targetIndex === -1) return;
+
+    const newImages = [...images];
+    const [draggedImage] = newImages.splice(draggedIndex, 1);
+    newImages.splice(targetIndex, 0, draggedImage);
+
+    const orders = newImages.map((img, index) => ({
+      id: img.id,
+      order: index,
+    }));
+
+    await reorderMutation.mutateAsync(orders);
+  };
+
+  if (isLoading) return <Loader2 className="h-8 w-8 animate-spin" />;
+
+  return (
+    <div className="space-y-4">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold">Gallery Management</h2>
+        <Button onClick={() => setIsAddDialogOpen(true)}>Add Image</Button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {images?.map((image) => (
+          <Card
+            key={image.id}
+            className="overflow-hidden group"
+            draggable
+            onDragStart={(e) => {
+              e.dataTransfer.setData("text/plain", image.id.toString());
+            }}
+            onDragOver={(e) => {
+              e.preventDefault();
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+              const draggedId = parseInt(e.dataTransfer.getData("text/plain"));
+              handleDrop(draggedId, image.id);
+            }}
+          >
+            <CardContent className="p-0 relative">
+              <img
+                src={image.url}
+                alt={image.alt}
+                className="w-full h-80 object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4">
+                <div className="flex justify-end gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setSelectedImage(image)}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={() => deleteMutation.mutate(image.id)}
+                  >
+                    Delete
+                  </Button>
+                </div>
+                <p className="text-white text-sm">{image.credit}</p>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add New Image</DialogTitle>
+          </DialogHeader>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              const formData = new FormData(e.currentTarget);
+              createMutation.mutate({
+                url: formData.get("url") as string,
+                alt: formData.get("alt") as string,
+                credit: formData.get("credit") as string,
+                order: images?.length || 0,
+              });
+            }}
+            className="space-y-4"
+          >
+            <div className="space-y-2">
+              <Label htmlFor="url">Image URL</Label>
+              <Input
+                id="url"
+                name="url"
+                type="url"
+                placeholder="https://example.com/image.jpg"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="alt">Alt Text</Label>
+              <Input
+                id="alt"
+                name="alt"
+                placeholder="Description of the image"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="credit">Photo Credit</Label>
+              <Input
+                id="credit"
+                name="credit"
+                placeholder="Photographer or source"
+                required
+              />
+            </div>
+            <DialogFooter>
+              <Button
+                type="submit"
+                disabled={createMutation.isPending}
+              >
+                {createMutation.isPending && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                Add Image
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Image</DialogTitle>
+          </DialogHeader>
+          {selectedImage && (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const formData = new FormData(e.currentTarget);
+                updateMutation.mutate({
+                  id: selectedImage.id,
+                  data: {
+                    url: formData.get("url") as string,
+                    alt: formData.get("alt") as string,
+                    credit: formData.get("credit") as string,
+                  },
+                });
+              }}
+              className="space-y-4"
+            >
+              <div className="space-y-2">
+                <Label htmlFor="edit-url">Image URL</Label>
+                <Input
+                  id="edit-url"
+                  name="url"
+                  type="url"
+                  defaultValue={selectedImage.url}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-alt">Alt Text</Label>
+                <Input
+                  id="edit-alt"
+                  name="alt"
+                  defaultValue={selectedImage.alt}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-credit">Photo Credit</Label>
+                <Input
+                  id="edit-credit"
+                  name="credit"
+                  defaultValue={selectedImage.credit}
+                  required
+                />
+              </div>
+              <DialogFooter>
+                <Button
+                  type="submit"
+                  disabled={updateMutation.isPending}
+                >
+                  {updateMutation.isPending && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  Save Changes
+                </Button>
+              </DialogFooter>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

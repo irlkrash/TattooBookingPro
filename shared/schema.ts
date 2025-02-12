@@ -36,7 +36,6 @@ export const availability = pgTable("availability", {
   isAvailable: boolean("is_available").notNull().default(true),
 });
 
-// New table for UI design configurations
 export const designConfig = pgTable("design_config", {
   id: serial("id").primaryKey(),
   key: text("key").notNull().unique(), 
@@ -46,6 +45,15 @@ export const designConfig = pgTable("design_config", {
   }).notNull(),
   section: text("section").notNull(), 
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const galleryImages = pgTable("gallery_images", {
+  id: serial("id").primaryKey(),
+  url: text("url").notNull(),
+  alt: text("alt").notNull(),
+  credit: text("credit").notNull(),
+  order: integer("order").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
 export const TimeSlot = {
@@ -114,6 +122,20 @@ export const insertDesignConfigSchema = createInsertSchema(designConfig)
     section: z.string().min(1, "Section is required"),
   });
 
+export const insertGalleryImageSchema = createInsertSchema(galleryImages)
+  .pick({
+    url: true,
+    alt: true,
+    credit: true,
+    order: true,
+  })
+  .extend({
+    url: z.string().url("Must be a valid URL"),
+    alt: z.string().min(1, "Alt text is required"),
+    credit: z.string().min(1, "Credit is required"),
+    order: z.number().int().min(0),
+  });
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type BookingRequest = typeof bookingRequests.$inferSelect;
@@ -121,3 +143,5 @@ export type Inquiry = typeof inquiries.$inferSelect;
 export type Availability = typeof availability.$inferSelect;
 export type DesignConfig = typeof designConfig.$inferSelect;
 export type InsertDesignConfig = z.infer<typeof insertDesignConfigSchema>;
+export type GalleryImage = typeof galleryImages.$inferSelect;
+export type InsertGalleryImage = z.infer<typeof insertGalleryImageSchema>;

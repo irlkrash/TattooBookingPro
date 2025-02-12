@@ -1,4 +1,4 @@
-import { users, bookingRequests, inquiries, availability, designConfig } from "@shared/schema";
+import { users, bookingRequests, inquiries, availability, designConfig, galleryImages } from "@shared/schema";
 import { db } from "./db";
 import { eq, and } from "drizzle-orm";
 import type {
@@ -10,6 +10,8 @@ import type {
   TimeSlot,
   DesignConfig,
   InsertDesignConfig,
+  GalleryImage,
+  InsertGalleryImage,
 } from "@shared/schema";
 import session from "express-session";
 import connectPg from "connect-pg-simple";
@@ -35,6 +37,13 @@ export interface IStorage {
   getDesignConfigs(): Promise<DesignConfig[]>;
   getDesignConfigByKey(key: string): Promise<DesignConfig | undefined>;
   upsertDesignConfig(config: InsertDesignConfig): Promise<DesignConfig>;
+
+  // New gallery image methods
+  getGalleryImages(): Promise<GalleryImage[]>;
+  createGalleryImage(image: InsertGalleryImage): Promise<GalleryImage>;
+  updateGalleryImage(id: number, image: Partial<InsertGalleryImage>): Promise<GalleryImage>;
+  deleteGalleryImage(id: number): Promise<void>;
+  reorderGalleryImages(imageOrders: { id: number; order: number }[]): Promise<GalleryImage[]>;
 
   sessionStore: session.Store;
 }
@@ -118,10 +127,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async setAvailability(date: Date, timeSlot: TimeSlot, isAvailable: boolean): Promise<Availability> {
-    // Format date to YYYY-MM-DD
     const formattedDate = date.toISOString().split('T')[0];
 
-    // First try to find existing availability
     const [existing] = await db
       .select()
       .from(availability)
@@ -133,7 +140,6 @@ export class DatabaseStorage implements IStorage {
       );
 
     if (existing) {
-      // Update existing record
       const [updated] = await db
         .update(availability)
         .set({ isAvailable })
@@ -146,7 +152,6 @@ export class DatabaseStorage implements IStorage {
         .returning();
       return updated;
     } else {
-      // Create new record
       const [created] = await db
         .insert(availability)
         .values({
@@ -172,11 +177,9 @@ export class DatabaseStorage implements IStorage {
   }
 
   async upsertDesignConfig(config: InsertDesignConfig): Promise<DesignConfig> {
-    // Try to find existing config
     const existing = await this.getDesignConfigByKey(config.key);
 
     if (existing) {
-      // Update existing record
       const [updated] = await db
         .update(designConfig)
         .set({
@@ -187,7 +190,6 @@ export class DatabaseStorage implements IStorage {
         .returning();
       return updated;
     } else {
-      // Create new record
       const [created] = await db
         .insert(designConfig)
         .values({
@@ -197,6 +199,57 @@ export class DatabaseStorage implements IStorage {
         .returning();
       return created;
     }
+  }
+
+  async getGalleryImages(): Promise<GalleryImage[]> {
+    return await db
+      .select()
+      .from(galleryImages)
+      .orderBy(galleryImages.order);
+  }
+
+  async createGalleryImage(image: InsertGalleryImage): Promise<GalleryImage> {
+    const [created] = await db
+      .insert(galleryImages)
+      .values({
+        ...image,
+        createdAt: new Date(),
+      })
+      .returning();
+    return created;
+  }
+
+  async updateGalleryImage(id: number, image: Partial<InsertGalleryImage>): Promise<GalleryImage> {
+    const [updated] = await db
+      .update(galleryImages)
+      .set(image)
+      .where(eq(galleryImages.id, id))
+      .returning();
+
+    if (!updated) {
+      throw new Error("Gallery image not found");
+    }
+
+    return updated;
+  }
+
+  async deleteGalleryImage(id: number): Promise<void> {
+    await db
+      .delete(galleryImages)
+      .where(eq(galleryImages.id, id));
+  }
+
+  async reorderGalleryImages(imageOrders: { id: number; order: number }[]): Promise<GalleryImage[]> {
+    const updates = imageOrders.map(({ id, order }) =>
+      db
+        .update(galleryImages)
+        .set({ order })
+        .where(eq(galleryImages.id, id))
+        .returning()
+    );
+
+    const results = await Promise.all(updates);
+    return results.map(result => result[0]);
   }
 }
 

@@ -1,54 +1,26 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { useDesignContext } from "@/providers/design-config-provider";
-
-const galleryImages = [
-  {
-    url: "https://images.unsplash.com/photo-1479767574301-a01c78234a0c",
-    alt: "Arm tattoo design",
-    credit: "Photo by Matheus Ferrero"
-  },
-  {
-    url: "https://images.unsplash.com/photo-1567071208639-716c1009517d",
-    alt: "Detailed tattoo work",
-    credit: "Photo by Maixent Viau"
-  },
-  {
-    url: "https://images.unsplash.com/photo-1603162610423-af7febeca563",
-    alt: "Custom tattoo design",
-    credit: "Photo by Loren Cutler"
-  },
-  {
-    url: "https://images.unsplash.com/photo-1605925575028-eb8b33197733",
-    alt: "Artistic tattoo piece",
-    credit: "Photo by Abstral Official"
-  },
-  {
-    url: "https://images.unsplash.com/photo-1604374168824-4eab4b9d50fd",
-    alt: "Traditional tattoo style",
-    credit: "Photo by Seyi Ariyo"
-  },
-  {
-    url: "https://images.unsplash.com/photo-1543244128-30d70d41e2a9",
-    alt: "Modern tattoo design",
-    credit: "Photo by Luis Villasmil"
-  },
-  {
-    url: "https://images.unsplash.com/photo-1734552452939-7d9630889748",
-    alt: "Vintage tattoo art",
-    credit: "Photo by The New York Public Library"
-  },
-  {
-    url: "https://images.unsplash.com/photo-1734623044339-e8d370c1a0e1",
-    alt: "Classic tattoo design",
-    credit: "Photo by The New York Public Library"
-  }
-];
+import { useQuery } from "@tanstack/react-query";
+import type { GalleryImage } from "@shared/schema";
+import { Loader2 } from "lucide-react";
 
 export default function GalleryPage() {
   const { getConfigValue } = useDesignContext();
   const galleryTitle = getConfigValue("gallery_title", "Our Gallery");
   const galleryDescription = getConfigValue("gallery_description", "Browse through our collection of unique tattoo designs and custom artwork");
   const galleryDescriptionColor = getConfigValue("gallery_description_color", "#6b7280");
+
+  const { data: images, isLoading } = useQuery<GalleryImage[]>({
+    queryKey: ["/api/gallery-images"],
+  });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-12 px-4">
@@ -60,8 +32,8 @@ export default function GalleryPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {galleryImages.map((image, index) => (
-          <Card key={index} className="overflow-hidden group">
+        {images?.map((image) => (
+          <Card key={image.id} className="overflow-hidden group">
             <CardContent className="p-0 relative">
               <img
                 src={image.url}
