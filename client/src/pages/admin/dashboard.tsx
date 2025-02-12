@@ -719,29 +719,32 @@ function GalleryManager() {
             className="space-y-4"
           >
             <div className="space-y-2">
-              <Label htmlFor="url">Image URL</Label>
+              <Label htmlFor="url" className="text-foreground">Image URL</Label>
               <Input
                 id="url"
                 name="url"
                 type="url"
                 placeholder="https://example.com/image.jpg"
                 required
+                className="text-foreground"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="alt">Alt Text (Optional)</Label>
+              <Label htmlFor="alt" className="text-foreground">Alt Text (Optional)</Label>
               <Input
                 id="alt"
                 name="alt"
                 placeholder="Description of the image"
+                className="text-foreground"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="credit">Photo Credit (Optional)</Label>
+              <Label htmlFor="credit" className="text-foreground">Photo Credit (Optional)</Label>
               <Input
                 id="credit"
                 name="credit"
                 placeholder="Photographer or source"
+                className="text-foreground"
               />
             </div>
             <DialogFooter>
@@ -761,7 +764,7 @@ function GalleryManager() {
       </Dialog>
 
       <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
-        <DialogContent>
+        <DialogContent className="text-foreground">
           <DialogHeader>
             <DialogTitle>Edit Image</DialogTitle>
           </DialogHeader>
@@ -782,37 +785,39 @@ function GalleryManager() {
               className="space-y-4"
             >
               <div className="space-y-2">
-                <Label htmlFor="edit-url">Image URL</Label>
+                <Label htmlFor="edit-url" className="text-foreground">Image URL</Label>
                 <Input
                   id="edit-url"
                   name="url"
                   type="url"
                   defaultValue={selectedImage.url}
                   required
+                  className="text-foreground"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-alt">Alt Text</Label>
+                <Label htmlFor="edit-alt" className="text-foreground">Alt Text</Label>
                 <Input
                   id="edit-alt"
                   name="alt"
                   defaultValue={selectedImage.alt}
-                  required
+                  className="text-foreground"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-credit">Photo Credit</Label>
+                <Label htmlFor="edit-credit" className="text-foreground">Photo Credit</Label>
                 <Input
                   id="edit-credit"
                   name="credit"
                   defaultValue={selectedImage.credit}
-                  required
+                  className="text-foreground"
                 />
               </div>
               <DialogFooter>
                 <Button
                   type="submit"
                   disabled={updateMutation.isPending}
+                  className="text-foreground"
                 >
                   {updateMutation.isPending && (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
