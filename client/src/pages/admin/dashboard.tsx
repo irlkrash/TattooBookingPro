@@ -417,11 +417,6 @@ function DesignManager() {
         title: "Design changes saved successfully",
         description: "Your changes have been applied.",
       });
-
-      // Refresh the page after a short delay
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
     } catch (error) {
       console.error('Save changes error:', error);
       toast({
