@@ -59,9 +59,10 @@ function BookingSection() {
   const bookingTitle = getConfigValue("booking_title", "Book Your Appointment");
   const availabilityTitle = getConfigValue("availability_title", "Available Dates");
   const bookingFormTitle = getConfigValue("booking_form_title", "Request Booking");
+  const bookingSectionBg = getConfigValue("booking_section_background", "#f5f5f5");
 
   return (
-    <div id="booking" className="py-16 bg-gray-50">
+    <div id="booking" className="py-16" style={{ backgroundColor: bookingSectionBg }}>
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-12">{bookingTitle}</h2>
         <div className="grid md:grid-cols-2 gap-8">
@@ -88,6 +89,7 @@ function AboutSection() {
   const aboutTitle = getConfigValue("about_title", "About Our Studio");
   const aboutText = getConfigValue("about_text", "With years of experience and a passion for artistic expression, we pride ourselves on creating unique, meaningful tattoos that tell your story.");
   const aboutDescription = getConfigValue("about_description", "Our studio maintains the highest standards of cleanliness and safety, ensuring you can focus entirely on your tattoo journey.");
+  const aboutImage = getConfigValue("about_image", "https://images.unsplash.com/photo-1721305250037-c765d5435cb1");
 
   return (
     <div className="py-16">
@@ -103,7 +105,7 @@ function AboutSection() {
           </div>
           <div 
             className="h-[400px] bg-cover bg-center rounded-lg"
-            style={{ backgroundImage: `url('${getConfigValue("about_image", "https://images.unsplash.com/photo-1721305250037-c765d5435cb1")}')`}}
+            style={{ backgroundImage: `url('${aboutImage}')`}}
           />
         </div>
       </div>
@@ -116,6 +118,7 @@ function ContactSection() {
   const { getConfigValue } = useDesignContext();
   const contactTitle = getConfigValue("contact_title", "Get in Touch");
   const contactInfo = getConfigValue("contact_info", "");
+  const contactSectionBg = getConfigValue("contact_section_background", "#f5f5f5");
 
   const form = useForm({
     resolver: zodResolver(insertInquirySchema),
@@ -143,7 +146,7 @@ function ContactSection() {
   });
 
   return (
-    <div className="py-16 bg-gray-50">
+    <div className="py-16" style={{ backgroundColor: contactSectionBg }}>
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-12">{contactTitle}</h2>
         {contactInfo && (

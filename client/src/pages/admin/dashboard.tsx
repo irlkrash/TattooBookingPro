@@ -13,7 +13,7 @@ import { TimeSlot as TimeSlotType, type BookingRequest, type Inquiry, type Avail
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Check, X, Upload } from "lucide-react";
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import debounce from "lodash/debounce";
 
 // Create a local TimeSlot enum that matches the schema
@@ -356,21 +356,22 @@ function DesignManager() {
   });
 
   const { toast } = useToast();
-  const sections = Array.from(new Set(designConfigs?.map(config => config.section) || ['home']));
+  const sections = Array.from(new Set(designConfigs?.map(config => config.section) || ['home', 'theme', 'about', 'gallery', 'contact']));
   const [selectedSection, setSelectedSection] = useState(sections[0] || 'home');
   const [pendingChanges, setPendingChanges] = useState<Record<number, string>>({});
   const hasUnsavedChanges = Object.keys(pendingChanges).length > 0;
 
   const updateDesignMutation = useMutation({
     mutationFn: async ({ key, value, type, section }: { key: string; value: string; type: string; section: string }) => {
-      console.log('Updating design config:', { key, value, type, section });
       const response = await apiRequest("POST", "/api/design-config", { key, value, type, section });
-      console.log('Update response:', response);
       return response;
     },
     onSuccess: () => {
-      // Force a cache invalidation
       queryClient.invalidateQueries({ queryKey: ["/api/design-config"] });
+      toast({
+        title: "Design changes saved successfully",
+        description: "Your changes have been applied.",
+      });
     },
     onError: (error: any) => {
       console.error('Design update error:', error);
@@ -391,13 +392,10 @@ function DesignManager() {
 
   const handleSaveChanges = async () => {
     try {
-      console.log('Saving changes:', pendingChanges);
-
       // Apply all pending changes
       for (const [configId, value] of Object.entries(pendingChanges)) {
         const config = designConfigs?.find(c => c.id === Number(configId));
         if (config) {
-          console.log('Updating config:', config.key, value);
           await updateDesignMutation.mutateAsync({
             key: config.key,
             value,
@@ -410,13 +408,8 @@ function DesignManager() {
       // Clear pending changes
       setPendingChanges({});
 
-      // Force a cache invalidation and refetch
+      // Force a cache invalidation
       await queryClient.invalidateQueries({ queryKey: ["/api/design-config"] });
-
-      toast({
-        title: "Design changes saved successfully",
-        description: "Your changes have been applied.",
-      });
     } catch (error) {
       console.error('Save changes error:', error);
       toast({
@@ -426,6 +419,35 @@ function DesignManager() {
       });
     }
   };
+
+  const defaultConfigs = {
+    theme: [
+      { key: 'booking_section_background', type: 'color', section: 'theme', value: '#f5f5f5' },
+      { key: 'contact_section_background', type: 'color', section: 'theme', value: '#f5f5f5' },
+      { key: 'gallery_description_color', type: 'color', section: 'theme', value: '#6b7280' },
+    ],
+    about: [
+      { key: 'about_image', type: 'image', section: 'about', value: 'https://images.unsplash.com/photo-1721305250037-c765d5435cb1' }
+    ]
+  };
+
+  // Add any missing configs
+  useEffect(() => {
+    if (!designConfigs || isLoading) return;
+
+    const addMissingConfigs = async () => {
+      for (const [section, configs] of Object.entries(defaultConfigs)) {
+        for (const config of configs) {
+          const exists = designConfigs.some(c => c.key === config.key);
+          if (!exists) {
+            await updateDesignMutation.mutateAsync(config);
+          }
+        }
+      }
+    };
+
+    addMissingConfigs();
+  }, [designConfigs, isLoading]);
 
   if (isLoading) return <Loader2 className="h-8 w-8 animate-spin" />;
 
