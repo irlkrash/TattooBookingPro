@@ -474,6 +474,10 @@ function DesignManager() {
 
   const defaultConfigs = {
     theme: [
+      // Header and About Backgrounds
+      { key: 'header_background', type: 'color', section: 'theme', value: '#ffffff' },
+      { key: 'about_background', type: 'color', section: 'theme', value: '#f5f5f5' },
+
       // Section Backgrounds
       { key: 'booking_section_background', type: 'color', section: 'theme', value: '#f5f5f5' },
       { key: 'contact_section_background', type: 'color', section: 'theme', value: '#f5f5f5' },

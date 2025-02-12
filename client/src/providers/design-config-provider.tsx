@@ -46,6 +46,14 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
             background-color: var(--contact-section-background, #f5f5f5) !important;
           }
 
+          .header-section {
+            background-color: var(--header-background, #ffffff) !important;
+          }
+
+          .about-section {
+            background-color: var(--about-background, #f5f5f5) !important;
+          }
+
           /* Form Backgrounds */
           .booking-form {
             background-color: var(--booking-form-background, #f8fafc) !important;
