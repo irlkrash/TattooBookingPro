@@ -415,7 +415,10 @@ function DesignManager() {
 
   if (isLoading) return <Loader2 className="h-8 w-8 animate-spin" />;
 
-  const filteredConfigs = designConfigs?.filter(config => config.section === selectedSection) || [];
+  // Sort configs by ID to maintain stable order
+  const filteredConfigs = designConfigs
+    ?.filter(config => config.section === selectedSection)
+    .sort((a, b) => a.id - b.id) || [];
 
   return (
     <Card>
