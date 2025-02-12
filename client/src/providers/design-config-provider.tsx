@@ -33,6 +33,10 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
           (heading as HTMLElement).style.fontFamily = config.headingFont;
         });
       }
+
+      // Update theme classes
+      document.body.style.backgroundColor = config.backgroundColor;
+      document.body.style.color = config.textColor;
     } catch (error) {
       console.error('Error applying design config:', error);
     }
