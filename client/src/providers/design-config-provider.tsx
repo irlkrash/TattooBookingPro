@@ -88,6 +88,26 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
             color: var(--burger-menu-color, #FFFFFF);
           }
 
+          /* Link Styles */
+          a:not(.no-theme) {
+            color: var(--link-color, #000000);
+            text-decoration: none;
+            transition: color 0.2s ease;
+          }
+
+          a:not(.no-theme):hover {
+            color: var(--link-hover-color, #4a5568);
+          }
+
+          /* Navigation Links */
+          .nav-link {
+            color: var(--nav-link-color, #000000);
+          }
+
+          .nav-link:hover {
+            color: var(--nav-link-hover-color, #4a5568);
+          }
+
           /* Default Styles */
           body {
             background-color: var(--background-color, #ffffff);

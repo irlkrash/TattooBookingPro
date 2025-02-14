@@ -117,7 +117,7 @@ export const insertDesignConfigSchema = createInsertSchema(designConfig)
   })
   .extend({
     key: z.string().min(1, "Key is required"),
-    value: z.string().nullable(),  // Allow null values
+    value: z.string().nullable(),  
     type: z.enum(['text', 'font', 'color', 'background_image', 'image']),
     section: z.string().min(1, "Section is required"),
   });
