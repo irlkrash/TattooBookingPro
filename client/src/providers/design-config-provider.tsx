@@ -14,13 +14,14 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
       const applyConfig = (configs: DesignConfig[]) => {
         const root = document.documentElement;
         const styleConfigs = configs.filter(c => c.type === 'color');
-        const backgroundConfigs = configs.filter(c => c.type === 'background_image');
+        const backgroundImageConfigs = configs.filter(c => c.type === 'background_image');
+        const backgroundColorConfigs = configs.filter(c => c.type === 'background_color');
         const textConfigs = configs.filter(c => c.type === 'text');
 
         // Apply color configurations
         styleConfigs.forEach(cfg => {
           const cssVar = `--${cfg.key.replace(/_/g, '-')}`;
-          root.style.setProperty(cssVar, cfg.value || '');
+          root.style.setProperty(cssVar, cfg.value);
         });
 
         // Create a style element for the dynamic styles if it doesn't exist
@@ -31,48 +32,52 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
           document.head.appendChild(styleElement);
         }
 
-        // Generate CSS for background images
-        const backgroundStyles = backgroundConfigs.map(cfg => {
-          const selector = `.${cfg.section}-section`;
-          return `
-            ${selector} {
-              background-color: var(--${cfg.section}-background, #f5f5f5);
-              background-image: ${cfg.value ? `url(${cfg.value})` : 'none'};
-              background-size: cover;
-              background-position: center;
-              background-repeat: no-repeat;
-              position: relative;
-            }
+        // Generate CSS for sections
+        const sectionStyles = Array.from(new Set([...backgroundImageConfigs, ...backgroundColorConfigs].map(cfg => cfg.section)))
+          .map(section => {
+            const bgImage = backgroundImageConfigs.find(cfg => cfg.section === section);
+            const bgColor = backgroundColorConfigs.find(cfg => cfg.section === section);
+            const selector = `.${section}-section`;
 
-            /* Add overlay for better text visibility if background image exists */
-            ${cfg.value ? `
-              ${selector}::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(0, 0, 0, 0.3);
-                z-index: 1;
-              }
-              ${selector} > * {
+            return `
+              ${selector} {
+                background-color: ${bgColor?.value || '#f5f5f5'};
+                background-image: ${bgImage?.value ? `url(${bgImage.value})` : 'none'};
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
                 position: relative;
-                z-index: 2;
               }
-            ` : ''}
-          `;
-        }).join('\n');
+
+              /* Add overlay for better text visibility if background image exists */
+              ${bgImage?.value ? `
+                ${selector}::before {
+                  content: '';
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  right: 0;
+                  bottom: 0;
+                  background: rgba(0, 0, 0, 0.3);
+                  z-index: 1;
+                }
+                ${selector} > * {
+                  position: relative;
+                  z-index: 2;
+                }
+              ` : ''}
+            `;
+          }).join('\n');
 
         // Update all dynamic styles in one go
         styleElement.textContent = `
           /* Theme Colors */
           :root {
-            ${styleConfigs.map(cfg => `--${cfg.key.replace(/_/g, '-')}: ${cfg.value || ''};`).join('\n            ')}
+            ${styleConfigs.map(cfg => `--${cfg.key.replace(/_/g, '-')}: ${cfg.value};`).join('\n            ')}
           }
 
-          /* Section Backgrounds */
-          ${backgroundStyles}
+          /* Section Styles */
+          ${sectionStyles}
 
           /* Additional Styles */
           .form-container {
@@ -132,7 +137,7 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
         textConfigs.forEach(configItem => {
           const elements = document.querySelectorAll(`[data-config-key="${configItem.key}"]`);
           elements.forEach(element => {
-            element.textContent = configItem.value || '';
+            element.textContent = configItem.value;
           });
         });
       };
