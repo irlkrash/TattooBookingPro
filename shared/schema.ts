@@ -39,7 +39,7 @@ export const availability = pgTable("availability", {
 export const designConfig = pgTable("design_config", {
   id: serial("id").primaryKey(),
   key: text("key").notNull().unique(), 
-  value: text("value").notNull(),
+  value: text("value"),  
   type: text("type", { 
     enum: ['text', 'font', 'color', 'background_image', 'image'] 
   }).notNull(),
@@ -117,7 +117,7 @@ export const insertDesignConfigSchema = createInsertSchema(designConfig)
   })
   .extend({
     key: z.string().min(1, "Key is required"),
-    value: z.string().min(1, "Value is required"),
+    value: z.string().optional(),  
     type: z.enum(['text', 'font', 'color', 'background_image', 'image']),
     section: z.string().min(1, "Section is required"),
   });

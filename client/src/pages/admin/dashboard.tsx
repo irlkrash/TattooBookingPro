@@ -476,15 +476,15 @@ function DesignManager() {
     theme: [
       // Header and About Backgrounds
       { key: 'header_background', type: 'color', section: 'theme', value: '#ffffff' },
-      { key: 'header_background_image', type: 'background_image', section: 'theme', value: '' },
+      { key: 'header_background_image', type: 'background_image', section: 'theme', value: null },
       { key: 'about_background', type: 'color', section: 'theme', value: '#f5f5f5' },
-      { key: 'about_background_image', type: 'background_image', section: 'theme', value: '' },
+      { key: 'about_background_image', type: 'background_image', section: 'theme', value: null },
 
       // Section Backgrounds
       { key: 'booking_section_background', type: 'color', section: 'theme', value: '#f5f5f5' },
-      { key: 'booking_background_image', type: 'background_image', section: 'theme', value: '' },
+      { key: 'booking_background_image', type: 'background_image', section: 'theme', value: null },
       { key: 'contact_section_background', type: 'color', section: 'theme', value: '#f5f5f5' },
-      { key: 'contact_background_image', type: 'background_image', section: 'theme', value: '' },
+      { key: 'contact_background_image', type: 'background_image', section: 'theme', value: null },
 
       // Form Backgrounds
       { key: 'booking_form_background', type: 'color', section: 'theme', value: '#f8fafc' },
@@ -511,7 +511,7 @@ function DesignManager() {
       { key: 'primary_button_text', type: 'color', section: 'theme', value: '#ffffff' },
     ],
     about: [
-      { key: 'about_image', type: 'background_image', section: 'about', value: '' }
+      { key: 'about_image', type: 'background_image', section: 'about', value: null }
     ]
   };
 
@@ -884,7 +884,7 @@ function GalleryManager() {
                   className="text-foreground"
                 />
               </div>
-              <div className="space-y-2">
+<div className="space-y-2">
                 <Label htmlFor="edit-credit" className="text-foreground">Photo Credit</Label>
                 <Input
                   id="edit-credit"
