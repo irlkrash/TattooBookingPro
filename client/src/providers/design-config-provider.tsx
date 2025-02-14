@@ -47,6 +47,7 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
                 background-position: center;
                 background-repeat: no-repeat;
                 position: relative;
+                transition: background-color 0.3s ease, background-image 0.3s ease;
               }
 
               /* Add overlay for better text visibility if background image exists */
