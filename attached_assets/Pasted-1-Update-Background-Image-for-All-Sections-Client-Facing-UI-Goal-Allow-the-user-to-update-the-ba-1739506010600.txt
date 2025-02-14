@@ -1,0 +1,62 @@
+1. Update Background Image for All Sections (Client-Facing UI)
+Goal:
+Allow the user to update the background image for all sections of the client-facing UI via the design settings in the admin dashboard. The process should mirror the functionality of the current method used for updating the hero section background image.
+
+Changes:
+Backend:
+Integrate functionality into the admin dashboard for uploading background images for all sections.
+Extend the existing logic used to update the hero section background to be reusable for other sections. Each section should have a designated background image field.
+Frontend:
+Each section in the client-facing UI should be able to receive and display the background image dynamically.
+Ensure each section (header, main content, footer, etc.) has a placeholder for the background image.
+Design Settings in Admin Dashboard:
+Add a UI component (file upload or URL input) in the admin panel for each section to select/upload a background image.
+Include options for resizing or cropping the image as needed.
+Functionality:
+The background image for each section should automatically apply once uploaded or updated in the admin dashboard.
+Provide a default fallback image in case a specific section's background image is not set.
+2. Scalable Design Across Devices
+Goal:
+Ensure the website scales properly across various display sizes, maintaining balance and usability on mobile, tablet, and desktop devices.
+
+Changes:
+CSS Media Queries:
+Implement responsive design using CSS media queries to ensure the layout adapts to different screen sizes.
+Key breakpoints to consider: 320px, 480px, 768px, 1024px, and 1280px (adjust based on your audience's devices).
+Flexible Layouts:
+Use flexible grid systems, percentages, or flexbox to create fluid layouts that scale across devices.
+Ensure content (images, text, buttons, etc.) remains proportionate and does not break or overflow on smaller screens.
+Testing:
+Test on various devices and browsers (using tools like Chrome DevTools) to ensure consistency.
+3. Mobile Burger Menu Customization
+Goal:
+Customize the burger menu on mobile to ensure it is visible on any background and allow for color customization from the admin dashboard.
+
+Changes:
+Burger Menu Color:
+
+Default color for the burger menu will be set to white (#FFFFFF) to ensure visibility on any background.
+Provide an option in the design settings of the admin dashboard to edit the burger menu color, which should be applied globally across the site’s mobile view.
+Admin Dashboard Settings:
+
+Add a color picker UI component in the admin dashboard for the burger menu, allowing the admin to select a custom color.
+Ensure the selected color is reflected in the CSS and can be updated without requiring code changes.
+CSS Adjustments:
+
+Modify the CSS of the burger menu to ensure that the menu icon color is dynamically updated based on the value set in the admin dashboard.
+Example:
+css
+Copy
+Edit
+.burger-menu {
+  color: var(--burger-menu-color, #FFFFFF); /* Default white if no color set */
+}
+Mobile Responsiveness:
+
+Ensure the burger menu remains in the top right corner on all mobile devices, scaling appropriately based on the viewport size.
+4. Additional Notes:
+Fallbacks and Accessibility:
+Ensure that fallback mechanisms are in place for images in case of slow loading or broken links.
+Accessibility: Ensure that the burger menu is accessible (e.g., keyboard navigation, screen readers).
+Testing:
+Thoroughly test on both desktop and mobile versions to ensure background images display correctly, the layout remains responsive, and the burger menu color is customizable and visible.

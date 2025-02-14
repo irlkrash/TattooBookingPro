@@ -476,11 +476,15 @@ function DesignManager() {
     theme: [
       // Header and About Backgrounds
       { key: 'header_background', type: 'color', section: 'theme', value: '#ffffff' },
+      { key: 'header_background_image', type: 'background_image', section: 'theme', value: '' },
       { key: 'about_background', type: 'color', section: 'theme', value: '#f5f5f5' },
+      { key: 'about_background_image', type: 'background_image', section: 'theme', value: '' },
 
       // Section Backgrounds
       { key: 'booking_section_background', type: 'color', section: 'theme', value: '#f5f5f5' },
+      { key: 'booking_background_image', type: 'background_image', section: 'theme', value: '' },
       { key: 'contact_section_background', type: 'color', section: 'theme', value: '#f5f5f5' },
+      { key: 'contact_background_image', type: 'background_image', section: 'theme', value: '' },
 
       // Form Backgrounds
       { key: 'booking_form_background', type: 'color', section: 'theme', value: '#f8fafc' },
@@ -507,7 +511,7 @@ function DesignManager() {
       { key: 'primary_button_text', type: 'color', section: 'theme', value: '#ffffff' },
     ],
     about: [
-      { key: 'about_image', type: 'background_image', section: 'about', value: 'https://images.unsplash.com/photo-1721305250037-c765d5435cb1' }
+      { key: 'about_image', type: 'background_image', section: 'about', value: '' }
     ]
   };
 
@@ -586,6 +590,28 @@ function DesignManager() {
                           ))}
                         </SelectContent>
                       </Select>
+                    ) : config.type === 'background_image' ? (
+                      <div className="space-y-2">
+                        <Input
+                          type="url"
+                          value={pendingChanges[config.id] ?? config.value}
+                          onChange={(e) => handleInputChange(config.id, e.target.value)}
+                          placeholder="Enter image URL"
+                          className="w-full"
+                        />
+                        {(pendingChanges[config.id] || config.value) && (
+                          <div className="mt-2 relative w-full h-32 rounded-md overflow-hidden">
+                            <img
+                              src={pendingChanges[config.id] ?? config.value}
+                              alt="Background preview"
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                e.currentTarget.src = '/placeholder-image.jpg';
+                              }}
+                            />
+                          </div>
+                        )}
+                      </div>
                     ) : (
                       <Input
                         value={pendingChanges[config.id] ?? config.value}
@@ -727,7 +753,7 @@ function GalleryManager() {
             <CardContent className="p-0 relative">
               <img
                 src={image.url}
-                alt={image.alt}
+                alt={image.alt || ''}
                 className="w-full h-80 object-cover transition-transform duration-300 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4">
@@ -747,7 +773,7 @@ function GalleryManager() {
                     Delete
                   </Button>
                 </div>
-                <p className="text-white text-sm">{image.credit}</p>
+                <p className="text-white text-sm">{image.credit || ''}</p>
               </div>
             </CardContent>
           </Card>
@@ -765,8 +791,8 @@ function GalleryManager() {
               const formData = new FormData(e.currentTarget);
               createMutation.mutate({
                 url: formData.get("url") as string,
-                alt: formData.get("alt") as string || undefined,
-                credit: formData.get("credit") as string || undefined,
+                alt: formData.get("alt") as string || '',
+                credit: formData.get("credit") as string || '',
                 order: images?.length || 0,
               });
             }}
@@ -831,8 +857,8 @@ function GalleryManager() {
                   id: selectedImage.id,
                   data: {
                     url: formData.get("url") as string,
-                    alt: formData.get("alt") as string,
-                    credit: formData.get("credit") as string,
+                    alt: formData.get("alt") as string || '',
+                    credit: formData.get("credit") as string || '',
                   },
                 });
               }}
@@ -854,7 +880,7 @@ function GalleryManager() {
                 <Input
                   id="edit-alt"
                   name="alt"
-                  defaultValue={selectedImage.alt}
+                  defaultValue={selectedImage.alt || ''}
                   className="text-foreground"
                 />
               </div>
@@ -863,7 +889,7 @@ function GalleryManager() {
                 <Input
                   id="edit-credit"
                   name="credit"
-                  defaultValue={selectedImage.credit}
+                  defaultValue={selectedImage.credit || ''}
                   className="text-foreground"
                 />
               </div>

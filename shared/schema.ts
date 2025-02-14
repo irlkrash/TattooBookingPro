@@ -41,7 +41,7 @@ export const designConfig = pgTable("design_config", {
   key: text("key").notNull().unique(), 
   value: text("value").notNull(),
   type: text("type", { 
-    enum: ['text', 'font', 'color', 'background_image'] 
+    enum: ['text', 'font', 'color', 'background_image', 'image'] 
   }).notNull(),
   section: text("section").notNull(), 
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
@@ -118,7 +118,7 @@ export const insertDesignConfigSchema = createInsertSchema(designConfig)
   .extend({
     key: z.string().min(1, "Key is required"),
     value: z.string().min(1, "Value is required"),
-    type: z.enum(['text', 'font', 'color', 'background_image']),
+    type: z.enum(['text', 'font', 'color', 'background_image', 'image']),
     section: z.string().min(1, "Section is required"),
   });
 

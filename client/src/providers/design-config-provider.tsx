@@ -40,18 +40,30 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
           /* Section Backgrounds */
           .booking-section {
             background-color: var(--booking-section-background, #f5f5f5) !important;
+            background-image: var(--booking-background-image, none) !important;
+            background-size: cover;
+            background-position: center;
           }
 
           .contact-section {
             background-color: var(--contact-section-background, #f5f5f5) !important;
+            background-image: var(--contact-background-image, none) !important;
+            background-size: cover;
+            background-position: center;
           }
 
           .header-section {
             background-color: var(--header-background, #ffffff) !important;
+            background-image: var(--header-background-image, none) !important;
+            background-size: cover;
+            background-position: center;
           }
 
           .about-section {
             background-color: var(--about-background, #f5f5f5) !important;
+            background-image: var(--about-background-image, none) !important;
+            background-size: cover;
+            background-position: center;
           }
 
           /* Form Backgrounds */
