@@ -8,9 +8,21 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { User } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Navbar() {
   const { user, logoutMutation } = useAuth();
+
+  // Fetch design configurations
+  const { data: designConfigs } = useQuery({
+    queryKey: ['/api/design-config'],
+  });
+
+  // Helper function to get config value
+  const getConfigValue = (key: string, defaultValue: string) => {
+    const config = designConfigs?.find(c => c.key === key);
+    return config?.value || defaultValue;
+  };
 
   return (
     <nav className="border-b">
@@ -18,21 +30,21 @@ export default function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex">
             <Link href="/" className="flex items-center px-2 text-xl font-bold">
-              Tattoo Studio
+              {getConfigValue('nav_logo_text', 'Tattoo Studio')}
             </Link>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
               <Link
                 href="/gallery"
                 className="inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-primary transition-colors"
               >
-                Gallery
+                {getConfigValue('nav_gallery_text', 'Gallery')}
               </Link>
               {user?.isAdmin && (
                 <Link
                   href="/admin"
                   className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
                 >
-                  Admin Dashboard
+                  {getConfigValue('nav_admin_text', 'Admin Dashboard')}
                 </Link>
               )}
             </div>
@@ -52,7 +64,7 @@ export default function Navbar() {
                   </DropdownMenuItem>
                   {user.isAdmin && (
                     <DropdownMenuItem asChild>
-                      <Link href="/admin">Admin Dashboard</Link>
+                      <Link href="/admin">{getConfigValue('nav_admin_text', 'Admin Dashboard')}</Link>
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuItem
@@ -60,13 +72,13 @@ export default function Navbar() {
                     disabled={logoutMutation.isPending}
                     className="text-red-600 focus:text-red-600"
                   >
-                    Logout
+                    {getConfigValue('nav_logout_text', 'Logout')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
               <Link href="/auth">
-                <Button variant="default">Login</Button>
+                <Button variant="default">{getConfigValue('nav_login_text', 'Login')}</Button>
               </Link>
             )}
           </div>
