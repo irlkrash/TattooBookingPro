@@ -411,16 +411,18 @@ function DesignManager() {
       { key: 'hero_subtitle', type: 'text', section: 'home', value: 'Where Art Meets Skin' },
       { key: 'hero_text_color', type: 'color', section: 'home', value: '#1f2937' },
       { key: 'hero_background_color', type: 'color', section: 'home', value: '#ffffff' },
-      { key: 'book_now_button_text', type: 'text', section: 'home', value: 'Book Now' },
-      { key: 'view_gallery_button_text', type: 'text', section: 'home', value: 'View Gallery' },
+      { key: 'home_background_image', type: 'background_image', section: 'home', value: '' },
     ],
     booking: [
       // Booking section configurations
       { key: 'booking_title', type: 'text', section: 'booking', value: 'Book Your Appointment' },
+      { key: 'booking_subtitle', type: 'text', section: 'booking', value: 'Schedule Your Session' },
       { key: 'booking_form_title', type: 'text', section: 'booking', value: 'Request Booking' },
       { key: 'availability_title', type: 'text', section: 'booking', value: 'Available Dates' },
       { key: 'booking_text_color', type: 'color', section: 'booking', value: '#1f2937' },
       { key: 'booking_background_color', type: 'color', section: 'booking', value: '#ffffff' },
+      { key: 'booking_background_image', type: 'background_image', section: 'booking', value: '' },
+      { key: 'booking_button_text', type: 'text', section: 'booking', value: 'Submit Request' },
     ],
     nav: [
       // Navigation configuration
@@ -784,7 +786,7 @@ function GalleryManager() {
             onDragStart={(e) => {
               e.dataTransfer.setData("text/plain", image.id.toString());
             }}
-            onDragOver={(e) => {
+            onDragOver={(e)=> {
               e.preventDefault();
             }}
             onDrop={(e) => {
