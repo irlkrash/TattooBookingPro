@@ -32,7 +32,7 @@ const TimeSlot = {
   Evening: 'evening' as const,
 } as const;
 
-function AdminDashboard() {
+export default function AdminDashboard() {
   return (
     <div className="container mx-auto py-6">
       <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
@@ -370,8 +370,8 @@ function DesignManager() {
   });
 
   const { toast } = useToast();
-  const sections = ['theme', 'home', 'about', 'gallery', 'contact']; // Make sections static
-  const [selectedSection, setSelectedSection] = useState('theme'); // Default to theme section
+  const sections = ['theme', 'header', 'home', 'about', 'gallery', 'contact'];
+  const [selectedSection, setSelectedSection] = useState('theme');
   const [pendingChanges, setPendingChanges] = useState<Record<number, string>>({});
   const hasUnsavedChanges = Object.keys(pendingChanges).length > 0;
 
@@ -494,6 +494,11 @@ function DesignManager() {
       { key: 'input_border_color', type: 'color', section: 'theme', value: '#e5e7eb' },
       { key: 'input_focus_color', type: 'color', section: 'theme', value: '#3b82f6' },
     ],
+    header: [
+      { key: 'header_background_image', type: 'background_image', section: 'header', value: '' },
+      { key: 'header_background_color', type: 'color', section: 'header', value: '#1f2937' },
+      { key: 'header_text_color', type: 'color', section: 'header', value: '#ffffff' },
+    ],
     home: [
       // Hero Section
       { key: 'hero_background_image', type: 'background_image', section: 'home', value: '' },
@@ -502,20 +507,10 @@ function DesignManager() {
       { key: 'hero_heading', type: 'text', section: 'home', value: 'Welcome to Our Tattoo Studio' },
       { key: 'hero_subtext', type: 'text', section: 'home', value: 'Expert artists, unique designs' },
 
-      // Header Section
-      { key: 'header_background_image', type: 'background_image', section: 'home', value: '' },
-      { key: 'header_background_color', type: 'color', section: 'home', value: '#1f2937' },
-      { key: 'header_text_color', type: 'color', section: 'home', value: '#ffffff' },
-
-      // Featured Section
-      { key: 'featured_background_color', type: 'color', section: 'home', value: '#ffffff' },
-      { key: 'featured_background_image', type: 'background_image', section: 'home', value: '' },
-      { key: 'featured_text_color', type: 'color', section: 'home', value: '#1f2937' },
-
-      // CTA Section
-      { key: 'cta_background_color', type: 'color', section: 'home', value: '#84cc16' },
-      { key: 'cta_text_color', type: 'color', section: 'home', value: '#ffffff' },
-      { key: 'cta_button_color', type: 'color', section: 'home', value: '#2563eb' },
+      // Booking Section
+      { key: 'booking_background_image', type: 'background_image', section: 'home', value: '' },
+      { key: 'booking_background_color', type: 'color', section: 'home', value: '#ffffff' },
+      { key: 'booking_text_color', type: 'color', section: 'home', value: '#1f2937' },
     ],
     about: [
       { key: 'about_image', type: 'background_image', section: 'about', value: '' },
@@ -839,7 +834,7 @@ function GalleryManager() {
             <div className="space-y-2">
               <Label htmlFor="credit" className="text-foreground">Photo Credit (Optional)</Label>
               <Input
-                                id="credit"
+                id="credit"
                 name="credit"
                 placeholder="Photographer or source"
                 className="text-foreground"
@@ -930,5 +925,3 @@ function GalleryManager() {
     </div>
   );
 }
-
-export default AdminDashboard;
