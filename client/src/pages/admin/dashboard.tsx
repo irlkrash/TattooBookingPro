@@ -494,8 +494,7 @@ function DesignManager() {
       { key: 'header_background_image', type: 'background_image', section: 'header', value: '' },
       { key: 'header_background_color', type: 'color', section: 'header', value: '#1f2937' },
       { key: 'header_text_color', type: 'color', section: 'header', value: '#ffffff' },
-      { key: 'logo_text', type: 'text', section: 'header', value: 'Tattoo Studio' },
-      // Moving hero-related fields to header since they're part of the header section
+      { key: 'logo_text', type: 'text', section: 'header', value: 'Luna\'s Mark Tattoos' },
       { key: 'hero_background_color', type: 'color', section: 'header', value: '#1f2937' },
       { key: 'hero_text_color', type: 'color', section: 'header', value: '#ffffff' },
     ],
@@ -824,7 +823,7 @@ function GalleryManager() {
               <Label htmlFor="alt" className="text-foreground">Alt Text (Optional)</Label>
               <Input
                 id="alt"
-                name="alt"
+                name="alt"                type="text"
                 placeholder="Description of the image"
                 className="text-foreground"
               />
