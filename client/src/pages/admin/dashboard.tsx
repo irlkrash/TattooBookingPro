@@ -430,7 +430,8 @@ function DesignManager() {
       { key: 'input_border_color', type: 'color', section: 'theme', value: '#e5e7eb' },
       { key: 'input_focus_color', type: 'color', section: 'theme', value: '#3b82f6' },
       // Added new button color configurations
-      { key: 'home_button_color', type: 'color', section: 'home', value: '#2563eb' },
+      { key: 'home_button_background', type: 'color', section: 'home', value: '#2563eb' },
+      { key: 'home_button_text', type: 'color', section: 'home', value: '#ffffff' },
       { key: 'about_button_text_color', type: 'color', section: 'about', value: '#ffffff' },
     ],
     layout: [
@@ -797,8 +798,8 @@ function GalleryManager() {
             }}
             onDrop={(e) => {
               e.preventDefault();
-              const draggedId = parseInt(e.dataTransfer.getData("text/plain"));
-                            handleDrop(draggedId, image.id);
+              const draggedId = parseInt(e.dataTransfer.getData("textplain"));
+              handleDrop(draggedId, image.id);
             }}
           >
             <CardContent className="p-0 relative">

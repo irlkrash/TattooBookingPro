@@ -28,7 +28,10 @@ export default function HomePage() {
             <p className="text-xl mb-8">{getConfigValue("hero_subtitle", "Where Art Meets Skin")}</p>
             <Button 
               asChild
-              style={{ backgroundColor: getConfigValue("home_button_color", "#2563eb") }}
+              style={{ 
+                backgroundColor: getConfigValue("home_button_background", "#2563eb"),
+                color: getConfigValue("home_button_text", "#ffffff")
+              }}
             >
               <a href="#booking">Book Now</a>
             </Button>
