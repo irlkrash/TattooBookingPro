@@ -10,24 +10,20 @@ import GalleryPage from "@/pages/gallery-page";
 import AuthPage from "@/pages/auth-page";
 import AdminDashboard from "@/pages/admin/dashboard";
 import { ProtectedRoute } from "./lib/protected-route";
-import Navbar from "./components/navbar";
 
 function Router() {
   return (
-    <>
-      <Navbar />
-      <Switch>
-        <Route path="/" component={HomePage} />
-        <Route path="/gallery" component={GalleryPage} />
-        <Route path="/auth" component={AuthPage} />
-        <ProtectedRoute 
-          path="/admin" 
-          component={AdminDashboard} 
-          requireAdmin={true} 
-        />
-        <Route component={NotFound} />
-      </Switch>
-    </>
+    <Switch>
+      <Route path="/" component={HomePage} />
+      <Route path="/gallery" component={GalleryPage} />
+      <Route path="/auth" component={AuthPage} />
+      <ProtectedRoute 
+        path="/admin" 
+        component={AdminDashboard} 
+        requireAdmin={true} 
+      />
+      <Route component={NotFound} />
+    </Switch>
   );
 }
 
