@@ -483,33 +483,25 @@ function DesignManager() {
       { key: 'muted_text_color', type: 'color', section: 'theme', value: '#6b7280' },
       { key: 'link_color', type: 'color', section: 'theme', value: '#2563eb' },
       { key: 'link_hover_color', type: 'color', section: 'theme', value: '#1d4ed8' },
-
-      // Fonts
-      { key: 'heading_font', type: 'font', section: 'theme', value: 'Montserrat' },
-      { key: 'body_font', type: 'font', section: 'theme', value: 'Inter' },
-
-      // Component Colors
       { key: 'button_primary_bg', type: 'color', section: 'theme', value: '#2563eb' },
       { key: 'button_primary_text', type: 'color', section: 'theme', value: '#ffffff' },
       { key: 'input_border_color', type: 'color', section: 'theme', value: '#e5e7eb' },
       { key: 'input_focus_color', type: 'color', section: 'theme', value: '#3b82f6' },
+      { key: 'heading_font', type: 'font', section: 'theme', value: 'Montserrat' },
+      { key: 'body_font', type: 'font', section: 'theme', value: 'Inter' },
     ],
     header: [
       { key: 'header_background_image', type: 'background_image', section: 'header', value: '' },
       { key: 'header_background_color', type: 'color', section: 'header', value: '#1f2937' },
       { key: 'header_text_color', type: 'color', section: 'header', value: '#ffffff' },
-      { key: 'logo_image', type: 'background_image', section: 'header', value: '' },
       { key: 'logo_text', type: 'text', section: 'header', value: 'Tattoo Studio' },
     ],
     home: [
-      // Booking Section
+      { key: 'hero_heading', type: 'text', section: 'home', value: 'Create Your Story in Ink' },
+      { key: 'hero_subtext', type: 'text', section: 'home', value: 'Professional tattoo artistry in a clean, welcoming environment. Book your consultation today and bring your vision to life.' },
       { key: 'booking_title', type: 'text', section: 'home', value: 'Book Your Appointment' },
       { key: 'booking_background_color', type: 'color', section: 'home', value: '#ffffff' },
       { key: 'booking_text_color', type: 'color', section: 'home', value: '#1f2937' },
-
-      // Hero Section
-      { key: 'hero_heading', type: 'text', section: 'home', value: 'Create Your Story in Ink' },
-      { key: 'hero_subtext', type: 'text', section: 'home', value: 'Professional tattoo artistry in a clean, welcoming environment. Book your consultation today and bring your vision to life.' },
     ],
     about: [
       { key: 'about_title', type: 'text', section: 'about', value: 'About Our Studio' },
