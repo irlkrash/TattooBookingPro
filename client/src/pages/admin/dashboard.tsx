@@ -412,17 +412,21 @@ function DesignManager() {
       { key: 'hero_text_color', type: 'color', section: 'home', value: '#1f2937' },
       { key: 'hero_background_color', type: 'color', section: 'home', value: '#ffffff' },
       { key: 'home_background_image', type: 'background_image', section: 'home', value: '' },
+      { key: 'cta_button_text', type: 'text', section: 'home', value: 'Book Now' },
+      { key: 'cta_gallery_text', type: 'text', section: 'home', value: 'View Gallery' },
     ],
     booking: [
       // Booking section configurations
       { key: 'booking_title', type: 'text', section: 'booking', value: 'Book Your Appointment' },
       { key: 'booking_subtitle', type: 'text', section: 'booking', value: 'Schedule Your Session' },
+      { key: 'booking_description', type: 'text', section: 'booking', value: 'Choose your preferred date and time for your tattoo session' },
       { key: 'booking_form_title', type: 'text', section: 'booking', value: 'Request Booking' },
       { key: 'availability_title', type: 'text', section: 'booking', value: 'Available Dates' },
       { key: 'booking_text_color', type: 'color', section: 'booking', value: '#1f2937' },
       { key: 'booking_background_color', type: 'color', section: 'booking', value: '#ffffff' },
       { key: 'booking_background_image', type: 'background_image', section: 'booking', value: '' },
       { key: 'booking_button_text', type: 'text', section: 'booking', value: 'Submit Request' },
+      { key: 'booking_success_message', type: 'text', section: 'booking', value: 'Your booking request has been submitted successfully' },
     ],
     nav: [
       // Navigation configuration
