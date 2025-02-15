@@ -406,7 +406,7 @@ function DesignManager() {
       { key: 'body_font', type: 'font', section: 'theme', value: 'Inter' },
     ],
     home: [
-      // Hero section only
+      // Hero section configurations
       { key: 'hero_title', type: 'text', section: 'home', value: 'Welcome to Our Studio' },
       { key: 'hero_subtitle', type: 'text', section: 'home', value: 'Where Art Meets Skin' },
       { key: 'hero_text_color', type: 'color', section: 'home', value: '#1f2937' },
@@ -427,6 +427,8 @@ function DesignManager() {
       { key: 'booking_background_image', type: 'background_image', section: 'booking', value: '' },
       { key: 'booking_button_text', type: 'text', section: 'booking', value: 'Submit Request' },
       { key: 'booking_success_message', type: 'text', section: 'booking', value: 'Your booking request has been submitted successfully' },
+      { key: 'booking_form_subtitle', type: 'text', section: 'booking', value: 'Fill in your details below' },
+      { key: 'booking_availability_description', type: 'text', section: 'booking', value: 'Select from our available time slots' },
     ],
     nav: [
       // Navigation configuration
