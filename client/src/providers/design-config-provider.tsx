@@ -14,7 +14,7 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
       const applyConfig = (configs: DesignConfig[]) => {
         const root = document.documentElement;
 
-        // Group configurations by type and create a map for easy section access
+        // Group configurations by type
         const styleConfigs = configs.filter(c => c.type === 'color');
         const backgroundImageConfigs = new Map(
           configs
@@ -55,10 +55,16 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
           const bgColor = backgroundColorConfigs.get(section);
           const selector = `.${section}-section`;
 
+          // If we have a background image, it should take precedence
+          const backgroundStyles = bgImage 
+            ? `background-image: url('${bgImage.value}'); background-color: transparent;` 
+            : bgColor 
+              ? `background-color: ${bgColor.value};` 
+              : 'background-color: transparent;';
+
           let styles = `
             ${selector} {
-              background-color: ${bgColor?.value || 'transparent'};
-              ${bgImage ? `background-image: url('${bgImage.value}');` : ''}
+              ${backgroundStyles}
               background-size: cover;
               background-position: center;
               background-repeat: no-repeat;
