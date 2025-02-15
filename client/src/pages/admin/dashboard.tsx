@@ -504,6 +504,9 @@ function DesignManager() {
       { key: 'nav_gallery_text', type: 'text', section: 'nav', value: 'Gallery' },
       { key: 'nav_booking_text', type: 'text', section: 'nav', value: 'Book Now' },
       { key: 'nav_contact_text', type: 'text', section: 'nav', value: 'Contact' },
+      { key: 'nav_admin_text', type: 'text', section: 'nav', value: 'Admin Dashboard' },
+      { key: 'nav_login_text', type: 'text', section: 'nav', value: 'Login' },
+      { key: 'nav_logout_text', type: 'text', section: 'nav', value: 'Logout' },
     ],
     home: [
       // Only booking-related configurations

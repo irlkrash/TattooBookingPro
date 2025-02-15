@@ -34,10 +34,34 @@ export default function Navbar() {
             </Link>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
               <Link
-                href="/gallery"
+                href="/#home"
+                className="inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-primary transition-colors"
+              >
+                {getConfigValue('nav_home_text', 'Home')}
+              </Link>
+              <Link
+                href="/#about"
+                className="inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-primary transition-colors"
+              >
+                {getConfigValue('nav_about_text', 'About')}
+              </Link>
+              <Link
+                href="/#gallery"
                 className="inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-primary transition-colors"
               >
                 {getConfigValue('nav_gallery_text', 'Gallery')}
+              </Link>
+              <Link
+                href="/#booking"
+                className="inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-primary transition-colors"
+              >
+                {getConfigValue('nav_booking_text', 'Book Now')}
+              </Link>
+              <Link
+                href="/#contact"
+                className="inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-primary transition-colors"
+              >
+                {getConfigValue('nav_contact_text', 'Contact')}
               </Link>
               {user?.isAdmin && (
                 <Link
