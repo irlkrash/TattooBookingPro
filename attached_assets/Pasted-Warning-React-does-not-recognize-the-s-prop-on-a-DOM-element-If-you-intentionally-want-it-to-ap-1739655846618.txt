@@ -1,0 +1,48 @@
+Warning: React does not recognize the `%s` prop on a DOM element. If you intentionally want it to appear in the DOM as a custom attribute, spell it as lowercase `%s` instead. If you accidentally passed it from a parent component, remove it from the DOM element.%s displayMonth displaymonth 
+    at div
+    at Day (https://40c7bdf1-d2d1-4777-9cf8-a82c651c6f77-00-nyzdl68j3gdr.spock.replit.dev/src/components/availability-calendar.tsx:87:19)
+    at td
+    at tr
+    at Row (https://40c7bdf1-d2d1-4777-9cf8-a82c651c6f77-00-nyzdl68j3gdr.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-day-picker.js?v=b7447a7b:29295:12)
+    at tbody
+    at table
+    at Table (https://40c7bdf1-d2d1-4777-9cf8-a82c651c6f77-00-nyzdl68j3gdr.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-day-picker.js?v=b7447a7b:29347:12)
+    at div
+    at Month (https://40c7bdf1-d2d1-4777-9cf8-a82c651c6f77-00-nyzdl68j3gdr.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-day-picker.js?v=b7447a7b:29390:19)
+    at div
+    at Months (https://40c7bdf1-d2d1-4777-9cf8-a82c651c6f77-00-nyzdl68j3gdr.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-day-picker.js?v=b7447a7b:29419:12)
+    at div
+    at Root (https://40c7bdf1-d2d1-4777-9cf8-a82c651c6f77-00-nyzdl68j3gdr.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-day-picker.js?v=b7447a7b:29424:25)
+    at FocusProvider (https://40c7bdf1-d2d1-4777-9cf8-a82c651c6f77-00-nyzdl68j3gdr.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-day-picker.js?v=b7447a7b:28945:20)
+    at ModifiersProvider (https://40c7bdf1-d2d1-4777-9cf8-a82c651c6f77-00-nyzdl68j3gdr.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-day-picker.js?v=b7447a7b:28758:19)
+    at SelectRangeProvider (https://40c7bdf1-d2d1-4777-9cf8-a82c651c6f77-00-nyzdl68j3gdr.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-day-picker.js?v=b7447a7b:28593:31)
+    at SelectMultipleProvider (https://40c7bdf1-d2d1-4777-9cf8-a82c651c6f77-00-nyzdl68j3gdr.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-day-picker.js?v=b7447a7b:28498:34)
+    at SelectSingleProviderInternal (https://40c7bdf1-d2d1-4777-9cf8-a82c651c6f77-00-nyzdl68j3gdr.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-day-picker.js?v=b7447a7b:29034:25)
+    at SelectSingleProvider (https://40c7bdf1-d2d1-4777-9cf8-a82c651c6f77-00-nyzdl68j3gdr.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-day-picker.js?v=b7447a7b:29025:32)
+    at NavigationProvider (https://40c7bdf1-d2d1-4777-9cf8-a82c651c6f77-00-nyzdl68j3gdr.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-day-picker.js?v=b7447a7b:28338:19)
+    at DayPickerProvider (https://40c7bdf1-d2d1-4777-9cf8-a82c651c6f77-00-nyzdl68j3gdr.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-day-picker.js?v=b7447a7b:28171:28)
+    at RootProvider (https://40c7bdf1-d2d1-4777-9cf8-a82c651c6f77-00-nyzdl68j3gdr.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-day-picker.js?v=b7447a7b:29465:24)
+    at DayPicker
+    at Calendar (https://40c7bdf1-d2d1-4777-9cf8-a82c651c6f77-00-nyzdl68j3gdr.spock.replit.dev/src/components/ui/calendar.tsx:22:3)
+    at div
+    at div
+    at AvailabilityCalendar (https://40c7bdf1-d2d1-4777-9cf8-a82c651c6f77-00-nyzdl68j3gdr.spock.replit.dev/src/components/availability-calendar.tsx:32:48)
+    at div
+    at _c9 (https://40c7bdf1-d2d1-4777-9cf8-a82c651c6f77-00-nyzdl68j3gdr.spock.replit.dev/src/components/ui/card.tsx:106:12)
+    at div
+    at _c (https://40c7bdf1-d2d1-4777-9cf8-a82c651c6f77-00-nyzdl68j3gdr.spock.replit.dev/src/components/ui/card.tsx:20:11)
+    at div
+    at div
+    at section
+    at BookingSection (https://40c7bdf1-d2d1-4777-9cf8-a82c651c6f77-00-nyzdl68j3gdr.spock.replit.dev/src/pages/home-page.tsx:131:43)
+    at section
+    at main
+    at div
+    at HomePage (https://40c7bdf1-d2d1-4777-9cf8-a82c651c6f77-00-nyzdl68j3gdr.spock.replit.dev/src/pages/home-page.tsx:37:30)
+    at Route (https://40c7bdf1-d2d1-4777-9cf8-a82c651c6f77-00-nyzdl68j3gdr.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=b7447a7b:323:16)
+    at Switch (https://40c7bdf1-d2d1-4777-9cf8-a82c651c6f77-00-nyzdl68j3gdr.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=b7447a7b:379:17)
+    at Router
+    at AuthProvider (https://40c7bdf1-d2d1-4777-9cf8-a82c651c6f77-00-nyzdl68j3gdr.spock.replit.dev/src/hooks/use-auth.tsx:26:32)
+    at DesignConfigProvider (https://40c7bdf1-d2d1-4777-9cf8-a82c651c6f77-00-nyzdl68j3gdr.spock.replit.dev/src/providers/design-config-provider.tsx:21:40)
+    at QueryClientProvider (https://40c7bdf1-d2d1-4777-9cf8-a82c651c6f77-00-nyzdl68j3gdr.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=b7447a7b:2805:3)
+    at App

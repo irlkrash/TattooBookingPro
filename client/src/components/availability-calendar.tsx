@@ -75,7 +75,7 @@ export default function AvailabilityCalendar({ onDateSelect }: Props) {
             return date < today;
           }}
           components={{
-            Day: ({ date, ...props }) => {
+            Day: ({ date, displayMonth, ...props }) => {
               const dateStr = date.toISOString().split('T')[0];
               const morning = isTimeSlotAvailable(dateStr, TimeSlot.Morning);
               const afternoon = isTimeSlotAvailable(dateStr, TimeSlot.Afternoon);
@@ -85,9 +85,12 @@ export default function AvailabilityCalendar({ onDateSelect }: Props) {
               today.setHours(0, 0, 0, 0);
               const isDisabled = date < today;
 
+              // Remove displayMonth from props being spread to the div
+              const { displayMonth: _, ...restProps } = props;
+
               return (
                 <div
-                  {...props}
+                  {...restProps}
                   className="relative h-full"
                   onClick={() => onDateSelect?.(date)}
                 >
