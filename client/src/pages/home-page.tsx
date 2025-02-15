@@ -31,11 +31,11 @@ export default function HomePage() {
             </Button>
           </div>
         </section>
-        <section id="booking">
-          <BookingSection />
-        </section>
         <section id="about">
           <AboutSection />
+        </section>
+        <section id="booking">
+          <BookingSection />
         </section>
         <section id="gallery" className="py-16 px-4">
           <div className="container mx-auto">

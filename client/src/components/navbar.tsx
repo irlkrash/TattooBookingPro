@@ -94,16 +94,6 @@ export default function Navbar() {
                 {getConfigValue('nav_about_text', 'About')}
               </a>
               <a
-                href="/#gallery"
-                onClick={(e) => handleNavClick(e, 'gallery')}
-                className="inline-flex items-center px-1 pt-1 text-sm font-medium transition-colors"
-                style={linkStyle}
-                onMouseOver={(e) => (e.currentTarget.style.color = navHoverColor)}
-                onMouseOut={(e) => (e.currentTarget.style.color = navTextColor)}
-              >
-                {getConfigValue('nav_gallery_text', 'Gallery')}
-              </a>
-              <a
                 href="/#booking"
                 onClick={(e) => handleNavClick(e, 'booking')}
                 className="inline-flex items-center px-1 pt-1 text-sm font-medium transition-colors"
@@ -112,6 +102,16 @@ export default function Navbar() {
                 onMouseOut={(e) => (e.currentTarget.style.color = navTextColor)}
               >
                 {getConfigValue('nav_booking_text', 'Book Now')}
+              </a>
+              <a
+                href="/#gallery"
+                onClick={(e) => handleNavClick(e, 'gallery')}
+                className="inline-flex items-center px-1 pt-1 text-sm font-medium transition-colors"
+                style={linkStyle}
+                onMouseOver={(e) => (e.currentTarget.style.color = navHoverColor)}
+                onMouseOut={(e) => (e.currentTarget.style.color = navTextColor)}
+              >
+                {getConfigValue('nav_gallery_text', 'Gallery')}
               </a>
               <a
                 href="/#contact"
