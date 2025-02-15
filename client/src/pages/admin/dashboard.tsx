@@ -370,10 +370,18 @@ function DesignManager() {
   });
 
   const { toast } = useToast();
-  const sections = ['theme', 'nav', 'home', 'booking', 'about', 'gallery', 'contact'] as const;
+  const sections = [
+    'branding',
+    'layout',
+    'typography',
+    'colors',
+    'components',
+    'content',
+    'forms'
+  ] as const;
   type SectionType = typeof sections[number];
 
-  const [selectedSection, setSelectedSection] = useState<SectionType>('theme');
+  const [selectedSection, setSelectedSection] = useState<SectionType>('branding');
   const [pendingChanges, setPendingChanges] = useState<Record<number, string>>({});
   const hasUnsavedChanges = Object.keys(pendingChanges).length > 0;
 
@@ -391,85 +399,67 @@ function DesignManager() {
   };
 
   const defaultConfigs: DefaultConfigsType = {
-    theme: [
-      { key: 'primary_color', type: 'color', section: 'theme', value: '#2563eb' },
-      { key: 'secondary_color', type: 'color', section: 'theme', value: '#f9fafb' },
-      { key: 'accent_color', type: 'color', section: 'theme', value: '#84cc16' },
-      { key: 'background_color', type: 'color', section: 'theme', value: '#ffffff' },
-      { key: 'link_color', type: 'color', section: 'theme', value: '#2563eb' },
-      { key: 'link_hover_color', type: 'color', section: 'theme', value: '#1d4ed8' },
-      { key: 'button_primary_bg', type: 'color', section: 'theme', value: '#2563eb' },
-      { key: 'button_primary_text', type: 'color', section: 'theme', value: '#ffffff' },
-      { key: 'input_border_color', type: 'color', section: 'theme', value: '#e5e7eb' },
-      { key: 'input_focus_color', type: 'color', section: 'theme', value: '#3b82f6' },
-      { key: 'heading_font', type: 'font', section: 'theme', value: 'Montserrat' },
-      { key: 'body_font', type: 'font', section: 'theme', value: 'Inter' },
+    branding: [
+      { key: 'nav_logo_text', type: 'text', section: 'branding', value: "Luna's Mark Tattoos" },
+      { key: 'primary_color', type: 'color', section: 'branding', value: '#2563eb' },
+      { key: 'secondary_color', type: 'color', section: 'branding', value: '#f9fafb' },
+      { key: 'accent_color', type: 'color', section: 'branding', value: '#84cc16' },
     ],
-    home: [
-      // Hero section configurations
-      { key: 'hero_title', type: 'text', section: 'home', value: 'Welcome to Our Studio' },
-      { key: 'hero_subtitle', type: 'text', section: 'home', value: 'Where Art Meets Skin' },
-      { key: 'hero_text_color', type: 'color', section: 'home', value: '#1f2937' },
-      { key: 'hero_background_color', type: 'color', section: 'home', value: '#ffffff' },
-      { key: 'home_background_image', type: 'background_image', section: 'home', value: '' },
-      { key: 'cta_button_text', type: 'text', section: 'home', value: 'Book Now' },
-      { key: 'cta_gallery_text', type: 'text', section: 'home', value: 'View Gallery' },
+    layout: [
+      { key: 'nav_position', type: 'text', section: 'layout', value: 'fixed' },
+      { key: 'nav_padding', type: 'text', section: 'layout', value: '1rem' },
+      { key: 'nav_links_gap', type: 'text', section: 'layout', value: '2rem' },
+      { key: 'home_background_image', type: 'background_image', section: 'layout', value: '' },
+      { key: 'about_background_image', type: 'background_image', section: 'layout', value: '' },
+      { key: 'booking_background_image', type: 'background_image', section: 'layout', value: '' },
     ],
-    booking: [
-      // Booking section configurations
-      { key: 'booking_title', type: 'text', section: 'booking', value: 'Book Your Appointment' },
-      { key: 'booking_subtitle', type: 'text', section: 'booking', value: 'Schedule Your Session' },
-      { key: 'booking_description', type: 'text', section: 'booking', value: 'Choose your preferred date and time for your tattoo session' },
-      { key: 'booking_form_title', type: 'text', section: 'booking', value: 'Request Booking' },
-      { key: 'availability_title', type: 'text', section: 'booking', value: 'Available Dates' },
-      { key: 'booking_text_color', type: 'color', section: 'booking', value: '#1f2937' },
-      { key: 'booking_background_color', type: 'color', section: 'booking', value: '#ffffff' },
-      { key: 'booking_background_image', type: 'background_image', section: 'booking', value: '' },
-      { key: 'booking_button_text', type: 'text', section: 'booking', value: 'Submit Request' },
-      { key: 'booking_success_message', type: 'text', section: 'booking', value: 'Your booking request has been submitted successfully' },
-      { key: 'booking_form_subtitle', type: 'text', section: 'booking', value: 'Fill in your details below' },
-      { key: 'booking_availability_description', type: 'text', section: 'booking', value: 'Select from our available time slots' },
+    typography: [
+      { key: 'heading_font', type: 'font', section: 'typography', value: 'Montserrat' },
+      { key: 'body_font', type: 'font', section: 'typography', value: 'Inter' },
     ],
-    nav: [
-      // Navigation configuration
-      { key: 'nav_background_color', type: 'color', section: 'nav', value: '#1f2937' },
-      { key: 'nav_text_color', type: 'color', section: 'nav', value: '#ffffff' },
-      { key: 'nav_hover_color', type: 'color', section: 'nav', value: '#d1d5db' },
-      { key: 'nav_active_color', type: 'color', section: 'nav', value: '#60a5fa' },
-      { key: 'nav_padding', type: 'text', section: 'nav', value: '1rem' },
-      { key: 'nav_position', type: 'text', section: 'nav', value: 'fixed' },
-      { key: 'nav_links_gap', type: 'text', section: 'nav', value: '2rem' },
-      // Navigation text elements
-      { key: 'nav_logo_text', type: 'text', section: 'nav', value: "Luna's Mark Tattoos" },
-      { key: 'nav_home_text', type: 'text', section: 'nav', value: 'Home' },
-      { key: 'nav_about_text', type: 'text', section: 'nav', value: 'About' },
-      { key: 'nav_gallery_text', type: 'text', section: 'nav', value: 'Gallery' },
-      { key: 'nav_booking_text', type: 'text', section: 'nav', value: 'Book Now' },
-      { key: 'nav_contact_text', type: 'text', section: 'nav', value: 'Contact' },
-      { key: 'nav_admin_text', type: 'text', section: 'nav', value: 'Admin Dashboard' },
-      { key: 'nav_login_text', type: 'text', section: 'nav', value: 'Login' },
-      { key: 'nav_logout_text', type: 'text', section: 'nav', value: 'Logout' },
+    colors: [
+      { key: 'background_color', type: 'color', section: 'colors', value: '#ffffff' },
+      { key: 'text_color', type: 'color', section: 'colors', value: '#1f2937' },
+      { key: 'link_color', type: 'color', section: 'colors', value: '#2563eb' },
+      { key: 'link_hover_color', type: 'color', section: 'colors', value: '#1d4ed8' },
+      { key: 'nav_background_color', type: 'color', section: 'colors', value: '#1f2937' },
+      { key: 'nav_text_color', type: 'color', section: 'colors', value: '#ffffff' },
+      { key: 'nav_hover_color', type: 'color', section: 'colors', value: '#d1d5db' },
+      { key: 'nav_active_color', type: 'color', section: 'colors', value: '#60a5fa' },
     ],
-    about: [
-      { key: 'about_title', type: 'text', section: 'about', value: 'About Our Studio' },
-      { key: 'about_text', type: 'text', section: 'about', value: 'With years of experience and a passion for artistic expression, we pride ourselves on creating unique, meaningful tattoos that tell your story.' },
-      { key: 'about_description', type: 'text', section: 'about', value: 'Our studio maintains the highest standards of cleanliness and safety, ensuring you can focus entirely on your tattoo journey.' },
-      { key: 'about_image', type: 'background_image', section: 'about', value: '' },
-      { key: 'about_background_color', type: 'color', section: 'about', value: '#ffffff' },
-      { key: 'about_text_color', type: 'color', section: 'about', value: '#1f2937' },
+    components: [
+      { key: 'button_primary_bg', type: 'color', section: 'components', value: '#2563eb' },
+      { key: 'button_primary_text', type: 'color', section: 'components', value: '#ffffff' },
+      { key: 'input_border_color', type: 'color', section: 'components', value: '#e5e7eb' },
+      { key: 'input_focus_color', type: 'color', section: 'components', value: '#3b82f6' },
     ],
-    gallery: [
-      { key: 'gallery_title', type: 'text', section: 'gallery', value: 'Our Gallery' },
-      { key: 'gallery_background_color', type: 'color', section: 'gallery', value: '#f9fafb' },
-      { key: 'gallery_text_color', type: 'color', section: 'gallery', value: '#1f2937' },
+    content: [
+      { key: 'hero_title', type: 'text', section: 'content', value: 'Welcome to Our Studio' },
+      { key: 'hero_subtitle', type: 'text', section: 'content', value: 'Where Art Meets Skin' },
+      { key: 'about_title', type: 'text', section: 'content', value: 'About Our Studio' },
+      { key: 'about_text', type: 'text', section: 'content', value: 'With years of experience and a passion for artistic expression, we pride ourselves on creating unique, meaningful tattoos that tell your story.' },
+      { key: 'about_description', type: 'text', section: 'content', value: 'Our studio maintains the highest standards of cleanliness and safety, ensuring you can focus entirely on your tattoo journey.' },
+      { key: 'gallery_title', type: 'text', section: 'content', value: 'Our Gallery' },
+      { key: 'nav_home_text', type: 'text', section: 'content', value: 'Home' },
+      { key: 'nav_about_text', type: 'text', section: 'content', value: 'About' },
+      { key: 'nav_gallery_text', type: 'text', section: 'content', value: 'Gallery' },
+      { key: 'nav_booking_text', type: 'text', section: 'content', value: 'Book Now' },
+      { key: 'nav_contact_text', type: 'text', section: 'content', value: 'Contact' },
+      { key: 'nav_admin_text', type: 'text', section: 'content', value: 'Admin Dashboard' },
+      { key: 'nav_login_text', type: 'text', section: 'content', value: 'Login' },
+      { key: 'nav_logout_text', type: 'text', section: 'content', value: 'Logout' },
     ],
-    contact: [
-      { key: 'contact_title', type: 'text', section: 'contact', value: 'Get in Touch' },
-      { key: 'contact_info', type: 'text', section: 'contact', value: '' },
-      { key: 'contact_background_color', type: 'color', section: 'contact', value: '#ffffff' },
-      { key: 'contact_text_color', type: 'color', section: 'contact', value: '#1f2937' },
-      { key: 'contact_form_background', type: 'color', section: 'contact', value: '#f9fafb' },
-    ]
+    forms: [
+      { key: 'booking_title', type: 'text', section: 'forms', value: 'Book Your Appointment' },
+      { key: 'booking_subtitle', type: 'text', section: 'forms', value: 'Schedule Your Session' },
+      { key: 'booking_description', type: 'text', section: 'forms', value: 'Choose your preferred date and time for your tattoo session' },
+      { key: 'booking_form_title', type: 'text', section: 'forms', value: 'Request Booking' },
+      { key: 'booking_form_subtitle', type: 'text', section: 'forms', value: 'Fill in your details below' },
+      { key: 'booking_button_text', type: 'text', section: 'forms', value: 'Submit Request' },
+      { key: 'booking_success_message', type: 'text', section: 'forms', value: 'Your booking request has been submitted successfully' },
+      { key: 'contact_title', type: 'text', section: 'forms', value: 'Get in Touch' },
+      { key: 'contact_info', type: 'text', section: 'forms', value: '' },
+    ],
   };
 
   const updateDesignMutation = useMutation({
