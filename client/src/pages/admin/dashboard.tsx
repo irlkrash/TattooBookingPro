@@ -824,7 +824,7 @@ function GalleryManager() {
                 className="text-foreground"
               />
             </div>
-            <div className="space-y-2">
+            <div className="spacey-2">
               <Label htmlFor="alt" className="text-foreground">Alt Text (Optional)</Label>
               <Input
                 id="alt"

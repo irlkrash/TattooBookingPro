@@ -20,22 +20,26 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen">
+      {/* Single consolidated header section */}
       <header className="site-header">
-        {/* Navigation Bar */}
-        <nav className="nav-bar" style={{
+        <div className="nav-bar" style={{
           backgroundColor: getConfigValue("nav_background_color", "#1f2937"),
           color: getConfigValue("nav_text_color", "#ffffff"),
         }}>
-          <div className="nav-content">
-            <h1>{getConfigValue("logo_text", "Luna's Mark Tattoos")}</h1>
-            <div className="nav-links">
-              <a href="/gallery">Gallery</a>
-              <a href="/admin">Admin Dashboard</a>
+          <div className="container mx-auto px-4">
+            <div className="flex items-center justify-between py-4">
+              <h1 className="text-2xl font-bold">
+                {getConfigValue("logo_text", "Luna's Mark Tattoos")}
+              </h1>
+              <nav className="flex gap-6">
+                <a href="/gallery" className="hover:opacity-80 transition-opacity">Gallery</a>
+                <a href="/admin" className="hover:opacity-80 transition-opacity">Admin Dashboard</a>
+              </nav>
             </div>
           </div>
-        </nav>
+        </div>
 
-        {/* Hero Section */}
+        {/* Hero section */}
         <div className="hero-section" style={{
           backgroundColor: getConfigValue("hero_background_color", "#1f2937"),
           color: getConfigValue("hero_text_color", "#ffffff"),
@@ -118,7 +122,7 @@ function AboutSection() {
             </Button>
           </div>
           <div className="relative h-[400px] rounded-lg overflow-hidden">
-            <div className="absolute inset-0 bg-cover bg-center" style={{backgroundImage: `url(${getConfigValue("about_image", "https://images.unsplash.com/photo-1721305250037-c765d5435cb1")})`}}/>
+            <div className="absolute inset-0 bg-cover bg-center" style={{backgroundImage: `url(${getConfigValue("about_image", "")})`}}/>
           </div>
         </div>
       </div>
