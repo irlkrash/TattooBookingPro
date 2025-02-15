@@ -406,7 +406,7 @@ function DesignManager() {
       { key: 'body_font', type: 'font', section: 'theme', value: 'Inter' },
     ],
     home: [
-      // Hero section only - removed booking related fields
+      // Hero section only - removed all booking related fields
       { key: 'hero_title', type: 'text', section: 'home', value: 'Welcome to Our Studio' },
       { key: 'hero_subtitle', type: 'text', section: 'home', value: 'Where Art Meets Skin' },
       { key: 'hero_text_color', type: 'color', section: 'home', value: '#1f2937' },
