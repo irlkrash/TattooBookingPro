@@ -491,12 +491,12 @@ function DesignManager() {
       { key: 'body_font', type: 'font', section: 'theme', value: 'Inter' },
     ],
     header: [
-      // Header configuration
+      // Navigation bar configuration
       { key: 'logo_text', type: 'text', section: 'header', value: 'Luna\'s Mark Tattoos' },
-      { key: 'header_background_image', type: 'background_image', section: 'header', value: '' },
-      { key: 'header_background_color', type: 'color', section: 'header', value: '#1f2937' },
-      { key: 'header_text_color', type: 'color', section: 'header', value: '#ffffff' },
-      // Hero section configuration (moved from home)
+      { key: 'nav_background_color', type: 'color', section: 'header', value: '#1f2937' },
+      { key: 'nav_text_color', type: 'color', section: 'header', value: '#ffffff' },
+      { key: 'nav_background_image', type: 'background_image', section: 'header', value: '' },
+      // Hero section configuration
       { key: 'hero_heading', type: 'text', section: 'header', value: 'WE DOIN TATS' },
       { key: 'hero_subtext', type: 'text', section: 'header', value: 'COME GET TATS' },
       { key: 'hero_background_color', type: 'color', section: 'header', value: '#1f2937' },
@@ -817,15 +817,18 @@ function GalleryManager() {
               <Input
                 id="url"
                 name="url"
-                type="url                placeholder="https://example.com/image.jpg"                required
+                type="url"
+                placeholder="https://example.com/image.jpg"
+                required
                 className="text-foreground"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="alt" className="text-foreground">Alt Text (Optional)</Label>
+              <Label htmlFor="alt" className="text-foreground">AltText (Optional)</Label>
               <Input
                 id="alt"
-                name="alt"                type="text"
+                name="alt"
+                type="text"
                 placeholder="Description of the image"
                 className="text-foreground"
               />
