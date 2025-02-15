@@ -177,27 +177,36 @@ export class DatabaseStorage implements IStorage {
   }
 
   async upsertDesignConfig(config: InsertDesignConfig): Promise<DesignConfig> {
-    const existing = await this.getDesignConfigByKey(config.key);
+    try {
+      const existing = await this.getDesignConfigByKey(config.key);
 
-    if (existing) {
-      const [updated] = await db
-        .update(designConfig)
-        .set({
-          ...config,
-          updatedAt: new Date(),
-        })
-        .where(eq(designConfig.key, config.key))
-        .returning();
-      return updated;
-    } else {
-      const [created] = await db
-        .insert(designConfig)
-        .values({
-          ...config,
-          updatedAt: new Date(),
-        })
-        .returning();
-      return created;
+      if (existing) {
+        // If config exists, update it
+        const [updated] = await db
+          .update(designConfig)
+          .set({
+            value: config.value,
+            type: config.type,
+            section: config.section,
+            updatedAt: new Date(),
+          })
+          .where(eq(designConfig.key, config.key))
+          .returning();
+        return updated;
+      } else {
+        // If config doesn't exist, create it
+        const [created] = await db
+          .insert(designConfig)
+          .values({
+            ...config,
+            updatedAt: new Date(),
+          })
+          .returning();
+        return created;
+      }
+    } catch (error) {
+      console.error('Error in upsertDesignConfig:', error);
+      throw new Error(`Failed to update design configuration: ${error.message}`);
     }
   }
 

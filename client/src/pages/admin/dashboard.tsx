@@ -440,30 +440,28 @@ function DesignManager() {
     }
   };
 
-  useEffect(() => {
-    if (!designConfigs || isLoading) return;
-
-    const addMissingConfigs = async () => {
-      try {
-        for (const [section, configs] of Object.entries(defaultConfigs)) {
-          for (const config of configs) {
-            const exists = designConfigs.some(c => c.key === config.key);
-            if (!exists) {
+  async function addMissingConfigs(designConfigs: DesignConfig[]) {
+    const sections = ['theme', 'nav', 'home', 'about', 'gallery', 'contact'];
+    for (const section of sections) {
+      const configs = defaultConfigs[section];
+      if (configs) {
+        for (const config of configs) {
+          const exists = designConfigs.some(c => c.key === config.key);
+          if (!exists) {
+            try {
               await updateDesignMutation.mutateAsync(config);
+            } catch (error) {
+              console.error(`Error adding config ${config.key}:`, error);
             }
           }
         }
-      } catch (error) {
-        console.error('Error adding default configs:', error);
-        toast({
-          title: "Failed to add default configurations",
-          description: error instanceof Error ? error.message : "Unknown error",
-          variant: "destructive",
-        });
       }
-    };
+    }
+  }
 
-    addMissingConfigs();
+  useEffect(() => {
+    if (!designConfigs || isLoading) return;
+    addMissingConfigs(designConfigs);
   }, [designConfigs, isLoading]);
 
   if (isLoading) return <Loader2 className="h-8 w-8 animate-spin" />;
@@ -799,9 +797,7 @@ function GalleryManager() {
             </CardContent>
           </Card>
         ))}
-      </div>
-
-      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+      </div><Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
         <DialogContent className="text-foreground">
           <DialogHeader>
             <DialogTitle>Add New Image</DialogTitle>
