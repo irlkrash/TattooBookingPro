@@ -370,8 +370,8 @@ function DesignManager() {
   });
 
   const { toast } = useToast();
-  const sections = Array.from(new Set(designConfigs?.map(config => config.section) || ['home', 'theme', 'about', 'gallery', 'contact']));
-  const [selectedSection, setSelectedSection] = useState(sections[0] || 'home');
+  const sections = ['theme', 'home', 'about', 'gallery', 'contact']; // Make sections static
+  const [selectedSection, setSelectedSection] = useState('theme'); // Default to theme section
   const [pendingChanges, setPendingChanges] = useState<Record<number, string>>({});
   const hasUnsavedChanges = Object.keys(pendingChanges).length > 0;
 
@@ -880,8 +880,7 @@ function GalleryManager() {
                 <Input
                   id="edit-alt"
                   name="alt"
-                  defaultValue={selectedImage.alt || ''}
-                  className="text-foreground"
+                  defaultValue={selectedImage.alt || ''}                  className="text-foreground"
                 />
               </div>
 <div className="space-y-2">

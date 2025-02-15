@@ -45,22 +45,25 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
         const sectionStyles = sections.map(section => {
           // Find configurations for this section
           const bgImage = backgroundImageConfigs.find(c => c.key === `${section}_background_image`);
-          const bgColor = backgroundColorConfigs.find(c => c.key === `${section}_background_color`);
-          const selector = `.${section}-section`;
+          const bgColor = backgroundColorConfigs.find(c => c.key === `${section}_background_color`) ||
+            backgroundColorConfigs.find(c => c.key === `${section}_background`);
 
-          // Section-specific styles
+          const selector = `.${section}-section`;
           let styles = '';
 
           switch(section) {
             case 'header':
               styles = `
                 ${selector} {
-                  background-color: white;
+                  ${bgImage?.value ? `background-image: url('${bgImage.value}');` : ''}
+                  background-color: ${bgColor?.value || 'white'};
                   position: sticky;
                   top: 0;
                   z-index: 50;
                   padding: 1rem;
                   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                  background-size: cover;
+                  background-position: center;
                 }
               `;
               break;
@@ -68,7 +71,7 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
             case 'hero':
               styles = `
                 ${selector} {
-                  background-image: url('${bgImage?.value}');
+                  ${bgImage?.value ? `background-image: url('${bgImage.value}');` : ''}
                   background-color: ${bgColor?.value || 'transparent'};
                   background-size: cover;
                   background-position: center;
@@ -98,54 +101,33 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
               `;
               break;
 
-            case 'booking':
-              styles = `
-                ${selector} {
-                  background-color: ${bgColor?.value || '#f97316'};
-                  padding: 4rem 2rem;
-                  min-height: 50vh;
-                }
-              `;
-              break;
-
-            case 'about':
-              styles = `
-                ${selector} {
-                  background-color: white;
-                  padding: 4rem 2rem;
-                  position: relative;
-                }
-                ${selector} .content-image {
-                  background-image: url('${bgImage?.value}');
-                  background-size: cover;
-                  background-position: center;
-                  border-radius: 0.5rem;
-                  aspect-ratio: 16/9;
-                }
-              `;
-              break;
-
-            case 'contact':
-              styles = `
-                ${selector} {
-                  background-color: ${bgColor?.value || '#84cc16'};
-                  padding: 4rem 2rem;
-                  min-height: 50vh;
-                }
-              `;
-              break;
-
             default:
               styles = `
                 ${selector} {
-                  background-color: ${bgColor?.value || 'transparent'};
                   ${bgImage?.value ? `background-image: url('${bgImage.value}');` : ''}
+                  background-color: ${bgColor?.value || 'transparent'};
                   background-size: cover;
                   background-position: center;
                   min-height: 50vh;
                   padding: 2rem;
                   position: relative;
                 }
+                ${bgImage?.value ? `
+                  ${selector}::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0, 0, 0, 0.2);
+                    z-index: 1;
+                  }
+                  ${selector} > * {
+                    position: relative;
+                    z-index: 2;
+                  }
+                ` : ''}
               `;
           }
 
@@ -173,21 +155,6 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
             max-width: 600px;
             position: relative;
             z-index: 3;
-          }
-          /* Mobile Navigation */
-          .burger-menu {
-            color: var(--burger-menu-color, #FFFFFF);
-            z-index: 50;
-          }
-
-          /* Links */
-          .nav-link {
-            color: var(--nav-link-color, #FFFFFF);
-            transition: color 0.2s ease;
-          }
-
-          .nav-link:hover {
-            color: var(--nav-link-hover-color, rgba(255, 255, 255, 0.8));
           }
         `;
 
