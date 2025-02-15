@@ -370,7 +370,7 @@ function DesignManager() {
   });
 
   const { toast } = useToast();
-  const sections = ['theme', 'nav', 'home', 'about', 'gallery', 'contact'];
+  const sections = ['theme', 'nav', 'home', 'booking', 'about', 'gallery', 'contact'];
   const [selectedSection, setSelectedSection] = useState('theme');
   const [pendingChanges, setPendingChanges] = useState<Record<number, string>>({});
   const hasUnsavedChanges = Object.keys(pendingChanges).length > 0;
@@ -441,7 +441,7 @@ function DesignManager() {
   };
 
   async function addMissingConfigs(designConfigs: DesignConfig[]) {
-    const sections = ['theme', 'nav', 'home', 'about', 'gallery', 'contact'];
+    const sections = ['theme', 'nav', 'home', 'booking', 'about', 'gallery', 'contact'];
     for (const section of sections) {
       const configs = defaultConfigs[section];
       if (configs) {
@@ -477,7 +477,6 @@ function DesignManager() {
       { key: 'secondary_color', type: 'color', section: 'theme', value: '#f9fafb' },
       { key: 'accent_color', type: 'color', section: 'theme', value: '#84cc16' },
       { key: 'background_color', type: 'color', section: 'theme', value: '#ffffff' },
-      { key: 'muted_text_color', type: 'color', section: 'theme', value: '#6b7280' },
       { key: 'link_color', type: 'color', section: 'theme', value: '#2563eb' },
       { key: 'link_hover_color', type: 'color', section: 'theme', value: '#1d4ed8' },
       { key: 'button_primary_bg', type: 'color', section: 'theme', value: '#2563eb' },
@@ -488,22 +487,21 @@ function DesignManager() {
       { key: 'body_font', type: 'font', section: 'theme', value: 'Inter' },
     ],
     home: [
-      // Hero section
+      // Hero section only
       { key: 'hero_title', type: 'text', section: 'home', value: 'Welcome to Our Studio' },
       { key: 'hero_subtitle', type: 'text', section: 'home', value: 'Where Art Meets Skin' },
       { key: 'hero_text_color', type: 'color', section: 'home', value: '#1f2937' },
       { key: 'hero_background_color', type: 'color', section: 'home', value: '#ffffff' },
-
-      // Booking section
-      { key: 'booking_title', type: 'text', section: 'home', value: 'Book Your Appointment' },
-      { key: 'booking_form_title', type: 'text', section: 'home', value: 'Request Booking' },
-      { key: 'availability_title', type: 'text', section: 'home', value: 'Available Dates' },
-      { key: 'booking_text_color', type: 'color', section: 'home', value: '#1f2937' },
-      { key: 'booking_background_color', type: 'color', section: 'home', value: '#ffffff' },
-
-      // CTA buttons
       { key: 'book_now_button_text', type: 'text', section: 'home', value: 'Book Now' },
       { key: 'view_gallery_button_text', type: 'text', section: 'home', value: 'View Gallery' },
+    ],
+    booking: [
+      // Booking section configurations
+      { key: 'booking_title', type: 'text', section: 'booking', value: 'Book Your Appointment' },
+      { key: 'booking_form_title', type: 'text', section: 'booking', value: 'Request Booking' },
+      { key: 'availability_title', type: 'text', section: 'booking', value: 'Available Dates' },
+      { key: 'booking_text_color', type: 'color', section: 'booking', value: '#1f2937' },
+      { key: 'booking_background_color', type: 'color', section: 'booking', value: '#ffffff' },
     ],
     nav: [
       // Navigation configuration
@@ -785,9 +783,9 @@ function GalleryManager() {
               <img
                 src={image.url}
                 alt={image.alt || ''}
-                className="w-full h-80 object-cover transition-transform duration-300 group-hover:scale-105"
+                className="w-full h-80 objectcover transition-transform duration-300 group-hover:scale-105"
               />
-              <div className="absolute inset-0`bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4">
+              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4">
                 <div className="flex justify-end gap-2">
                   <Button
                     size="sm"
@@ -809,7 +807,8 @@ function GalleryManager() {
             </CardContent>
           </Card>
         ))}
-      </div><Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+      </div>
+      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
         <DialogContent className="text-foreground">
           <DialogHeader>
             <DialogTitle>Add New Image</DialogTitle>
