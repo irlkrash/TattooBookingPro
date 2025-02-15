@@ -38,14 +38,14 @@ export const availability = pgTable("availability", {
 
 export const designConfig = pgTable("design_config", {
   id: serial("id").primaryKey(),
-  key: text("key").notNull().unique(), 
+  key: text("key").notNull().unique(),
   value: text("value").notNull().default(''),
-  type: text("type", { 
-    enum: ['text', 'font', 'color', 'background_image', 'background_color'] 
+  type: text("type", {
+    enum: ['text', 'font', 'color', 'background_image', 'background_color']
   }).notNull(),
   section: text("section", {
     enum: ['theme', 'nav', 'home', 'hero', 'about', 'booking', 'contact', 'gallery', 'footer']
-  }).notNull(), 
+  }).notNull(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
