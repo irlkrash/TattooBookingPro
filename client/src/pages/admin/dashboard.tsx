@@ -370,10 +370,99 @@ function DesignManager() {
   });
 
   const { toast } = useToast();
-  const sections = ['theme', 'nav', 'home', 'booking', 'about', 'gallery', 'contact'];
-  const [selectedSection, setSelectedSection] = useState('theme');
+  const sections = ['theme', 'nav', 'home', 'booking', 'about', 'gallery', 'contact'] as const;
+  type SectionType = typeof sections[number];
+
+  const [selectedSection, setSelectedSection] = useState<SectionType>('theme');
   const [pendingChanges, setPendingChanges] = useState<Record<number, string>>({});
   const hasUnsavedChanges = Object.keys(pendingChanges).length > 0;
+
+  // Type for a single config entry
+  type ConfigEntry = {
+    key: string;
+    type: string;
+    section: string;
+    value: string;
+  };
+
+  // Type for the defaultConfigs object with index signature
+  type DefaultConfigsType = {
+    [key in SectionType]: ConfigEntry[];
+  };
+
+  const defaultConfigs: DefaultConfigsType = {
+    theme: [
+      { key: 'primary_color', type: 'color', section: 'theme', value: '#2563eb' },
+      { key: 'secondary_color', type: 'color', section: 'theme', value: '#f9fafb' },
+      { key: 'accent_color', type: 'color', section: 'theme', value: '#84cc16' },
+      { key: 'background_color', type: 'color', section: 'theme', value: '#ffffff' },
+      { key: 'link_color', type: 'color', section: 'theme', value: '#2563eb' },
+      { key: 'link_hover_color', type: 'color', section: 'theme', value: '#1d4ed8' },
+      { key: 'button_primary_bg', type: 'color', section: 'theme', value: '#2563eb' },
+      { key: 'button_primary_text', type: 'color', section: 'theme', value: '#ffffff' },
+      { key: 'input_border_color', type: 'color', section: 'theme', value: '#e5e7eb' },
+      { key: 'input_focus_color', type: 'color', section: 'theme', value: '#3b82f6' },
+      { key: 'heading_font', type: 'font', section: 'theme', value: 'Montserrat' },
+      { key: 'body_font', type: 'font', section: 'theme', value: 'Inter' },
+    ],
+    home: [
+      // Hero section only
+      { key: 'hero_title', type: 'text', section: 'home', value: 'Welcome to Our Studio' },
+      { key: 'hero_subtitle', type: 'text', section: 'home', value: 'Where Art Meets Skin' },
+      { key: 'hero_text_color', type: 'color', section: 'home', value: '#1f2937' },
+      { key: 'hero_background_color', type: 'color', section: 'home', value: '#ffffff' },
+      { key: 'book_now_button_text', type: 'text', section: 'home', value: 'Book Now' },
+      { key: 'view_gallery_button_text', type: 'text', section: 'home', value: 'View Gallery' },
+    ],
+    booking: [
+      // Booking section configurations
+      { key: 'booking_title', type: 'text', section: 'booking', value: 'Book Your Appointment' },
+      { key: 'booking_form_title', type: 'text', section: 'booking', value: 'Request Booking' },
+      { key: 'availability_title', type: 'text', section: 'booking', value: 'Available Dates' },
+      { key: 'booking_text_color', type: 'color', section: 'booking', value: '#1f2937' },
+      { key: 'booking_background_color', type: 'color', section: 'booking', value: '#ffffff' },
+    ],
+    nav: [
+      // Navigation configuration
+      { key: 'nav_background_color', type: 'color', section: 'nav', value: '#1f2937' },
+      { key: 'nav_text_color', type: 'color', section: 'nav', value: '#ffffff' },
+      { key: 'nav_hover_color', type: 'color', section: 'nav', value: '#d1d5db' },
+      { key: 'nav_active_color', type: 'color', section: 'nav', value: '#60a5fa' },
+      { key: 'nav_padding', type: 'text', section: 'nav', value: '1rem' },
+      { key: 'nav_position', type: 'text', section: 'nav', value: 'fixed' },
+      { key: 'nav_links_gap', type: 'text', section: 'nav', value: '2rem' },
+      // Navigation text elements
+      { key: 'nav_logo_text', type: 'text', section: 'nav', value: "Luna's Mark Tattoos" },
+      { key: 'nav_home_text', type: 'text', section: 'nav', value: 'Home' },
+      { key: 'nav_about_text', type: 'text', section: 'nav', value: 'About' },
+      { key: 'nav_gallery_text', type: 'text', section: 'nav', value: 'Gallery' },
+      { key: 'nav_booking_text', type: 'text', section: 'nav', value: 'Book Now' },
+      { key: 'nav_contact_text', type: 'text', section: 'nav', value: 'Contact' },
+      { key: 'nav_admin_text', type: 'text', section: 'nav', value: 'Admin Dashboard' },
+      { key: 'nav_login_text', type: 'text', section: 'nav', value: 'Login' },
+      { key: 'nav_logout_text', type: 'text', section: 'nav', value: 'Logout' },
+    ],
+    about: [
+      { key: 'about_title', type: 'text', section: 'about', value: 'About Our Studio' },
+      { key: 'about_text', type: 'text', section: 'about', value: 'With years of experience and a passion for artistic expression, we pride ourselves on creating unique, meaningful tattoos that tell your story.' },
+      { key: 'about_description', type: 'text', section: 'about', value: 'Our studio maintains the highest standards of cleanliness and safety, ensuring you can focus entirely on your tattoo journey.' },
+      { key: 'about_image', type: 'background_image', section: 'about', value: '' },
+      { key: 'about_background_color', type: 'color', section: 'about', value: '#ffffff' },
+      { key: 'about_text_color', type: 'color', section: 'about', value: '#1f2937' },
+    ],
+    gallery: [
+      { key: 'gallery_title', type: 'text', section: 'gallery', value: 'Our Gallery' },
+      { key: 'gallery_background_color', type: 'color', section: 'gallery', value: '#f9fafb' },
+      { key: 'gallery_text_color', type: 'color', section: 'gallery', value: '#1f2937' },
+    ],
+    contact: [
+      { key: 'contact_title', type: 'text', section: 'contact', value: 'Get in Touch' },
+      { key: 'contact_info', type: 'text', section: 'contact', value: '' },
+      { key: 'contact_background_color', type: 'color', section: 'contact', value: '#ffffff' },
+      { key: 'contact_text_color', type: 'color', section: 'contact', value: '#1f2937' },
+      { key: 'contact_form_background', type: 'color', section: 'contact', value: '#f9fafb' },
+    ]
+  };
 
   const updateDesignMutation = useMutation({
     mutationFn: async ({ key, value, type, section }: { key: string; value: string; type: string; section: string }) => {
@@ -441,7 +530,6 @@ function DesignManager() {
   };
 
   async function addMissingConfigs(designConfigs: DesignConfig[]) {
-    const sections = ['theme', 'nav', 'home', 'booking', 'about', 'gallery', 'contact'];
     for (const section of sections) {
       const configs = defaultConfigs[section];
       if (configs) {
@@ -469,80 +557,6 @@ function DesignManager() {
   const filteredConfigs = designConfigs
     ?.filter(config => config.section === selectedSection)
     .sort((a, b) => a.id - b.id) || [];
-
-  const defaultConfigs = {
-    theme: [
-      // Colors
-      { key: 'primary_color', type: 'color', section: 'theme', value: '#2563eb' },
-      { key: 'secondary_color', type: 'color', section: 'theme', value: '#f9fafb' },
-      { key: 'accent_color', type: 'color', section: 'theme', value: '#84cc16' },
-      { key: 'background_color', type: 'color', section: 'theme', value: '#ffffff' },
-      { key: 'link_color', type: 'color', section: 'theme', value: '#2563eb' },
-      { key: 'link_hover_color', type: 'color', section: 'theme', value: '#1d4ed8' },
-      { key: 'button_primary_bg', type: 'color', section: 'theme', value: '#2563eb' },
-      { key: 'button_primary_text', type: 'color', section: 'theme', value: '#ffffff' },
-      { key: 'input_border_color', type: 'color', section: 'theme', value: '#e5e7eb' },
-      { key: 'input_focus_color', type: 'color', section: 'theme', value: '#3b82f6' },
-      { key: 'heading_font', type: 'font', section: 'theme', value: 'Montserrat' },
-      { key: 'body_font', type: 'font', section: 'theme', value: 'Inter' },
-    ],
-    home: [
-      // Hero section only
-      { key: 'hero_title', type: 'text', section: 'home', value: 'Welcome to Our Studio' },
-      { key: 'hero_subtitle', type: 'text', section: 'home', value: 'Where Art Meets Skin' },
-      { key: 'hero_text_color', type: 'color', section: 'home', value: '#1f2937' },
-      { key: 'hero_background_color', type: 'color', section: 'home', value: '#ffffff' },
-      { key: 'book_now_button_text', type: 'text', section: 'home', value: 'Book Now' },
-      { key: 'view_gallery_button_text', type: 'text', section: 'home', value: 'View Gallery' },
-    ],
-    booking: [
-      // Booking section configurations
-      { key: 'booking_title', type: 'text', section: 'booking', value: 'Book Your Appointment' },
-      { key: 'booking_form_title', type: 'text', section: 'booking', value: 'Request Booking' },
-      { key: 'availability_title', type: 'text', section: 'booking', value: 'Available Dates' },
-      { key: 'booking_text_color', type: 'color', section: 'booking', value: '#1f2937' },
-      { key: 'booking_background_color', type: 'color', section: 'booking', value: '#ffffff' },
-    ],
-    nav: [
-      // Navigation configuration
-      { key: 'nav_background_color', type: 'color', section: 'nav', value: '#1f2937' },
-      { key: 'nav_text_color', type: 'color', section: 'nav', value: '#ffffff' },
-      { key: 'nav_hover_color', type: 'color', section: 'nav', value: '#d1d5db' },
-      { key: 'nav_active_color', type: 'color', section: 'nav', value: '#60a5fa' },
-      { key: 'nav_padding', type: 'text', section: 'nav', value: '1rem' },
-      { key: 'nav_position', type: 'text', section: 'nav', value: 'fixed' },
-      { key: 'nav_links_gap', type: 'text', section: 'nav', value: '2rem' },
-      // Navigation text elements
-      { key: 'nav_logo_text', type: 'text', section: 'nav', value: "Luna's Mark Tattoos" },
-      { key: 'nav_home_text', type: 'text', section: 'nav', value: 'Home' },
-      { key: 'nav_about_text', type: 'text', section: 'nav', value: 'About' },
-      { key: 'nav_gallery_text', type: 'text', section: 'nav', value: 'Gallery' },
-      { key: 'nav_booking_text', type: 'text', section: 'nav', value: 'Book Now' },
-      { key: 'nav_contact_text', type: 'text', section: 'nav', value: 'Contact' },
-      { key: 'nav_admin_text', type: 'text', section: 'nav', value: 'Admin Dashboard' },
-      { key: 'nav_login_text', type: 'text', section: 'nav', value: 'Login' },
-      { key: 'nav_logout_text', type: 'text', section: 'nav', value: 'Logout' },
-    ],
-    about: [
-      { key: 'about_title', type: 'text', section: 'about', value: 'About Our Studio' },
-      { key: 'about_text', type: 'text', section: 'about', value: 'With years of experience and a passion for artistic expression, we pride ourselves on creating unique, meaningful tattoos that tell your story.' },
-      { key: 'about_description', type: 'text', section: 'about', value: 'Our studio maintains the highest standards of cleanliness and safety, ensuring you can focus entirely on your tattoo journey.' },
-      { key: 'about_image', type: 'background_image', section: 'about', value: '' },
-      { key: 'about_background_color', type: 'color', section: 'about', value: '#ffffff' },
-      { key: 'about_text_color', type: 'color', section: 'about', value: '#1f2937' },
-    ],
-    gallery: [
-      { key: 'gallery_background_color', type: 'color', section: 'gallery', value: '#f9fafb' },
-      { key: 'gallery_text_color', type: 'color', section: 'gallery', value: '#1f2937' },
-    ],
-    contact: [
-      { key: 'contact_title', type: 'text', section: 'contact', value: 'Get in Touch' },
-      { key: 'contact_info', type: 'text', section: 'contact', value: '' },
-      { key: 'contact_background_color', type: 'color', section: 'contact', value: '#ffffff' },
-      { key: 'contact_text_color', type: 'color', section: 'contact', value: '#1f2937' },
-      { key: 'contact_form_background', type: 'color', section: 'contact', value: '#f9fafb' },
-    ]
-  };
 
   return (
     <div className="relative min-h-[600px] container mx-auto">
@@ -776,7 +790,7 @@ function GalleryManager() {
             onDrop={(e) => {
               e.preventDefault();
               const draggedId = parseInt(e.dataTransfer.getData("text/plain"));
-              handleDrop(draggedId, image.id);
+                            handleDrop(draggedId, image.id);
             }}
           >
             <CardContent className="p-0 relative">
