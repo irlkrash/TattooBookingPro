@@ -21,17 +21,17 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Header specific styles */
 .site-header {
-  @apply relative h-20 z-50;
+  @apply relative z-50;
 }
 
 .header-background {
-  @apply absolute inset-0 w-full h-full;
+  @apply w-full min-h-[600px];
   background-size: cover;
   background-position: center;
 }
 
 .header-content {
-  @apply relative z-10 container mx-auto px-4 h-full flex items-center justify-between;
+  @apply container mx-auto px-4 pt-6 flex items-center justify-between;
 }
 
 .header-content h1 {
@@ -48,13 +48,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Other section styles */
-.hero-section {
-  @apply relative min-h-[600px] bg-cover bg-center;
-  background-image: var(--hero-bg-image, none);
-  background-color: var(--hero-bg-color, #1f2937);
-  color: var(--text-color);
-}
-
 .booking-section {
   @apply relative py-16 bg-cover bg-center;
   background-image: var(--booking-bg-image, none);
