@@ -375,9 +375,6 @@ function DesignManager() {
   const uiSections = [
     'branding',
     'layout',
-    'typography',
-    'colors',
-    'components',
     'content',
     'forms'
   ] as const;
@@ -388,9 +385,6 @@ function DesignManager() {
   const sectionMapping = {
     branding: 'theme',
     layout: 'nav',
-    typography: 'theme',
-    colors: 'theme',
-    components: 'theme',
     content: 'home',
     forms: 'booking'
   } as const;
@@ -418,20 +412,10 @@ function DesignManager() {
       { key: 'primary_color', type: 'color', section: 'theme', value: '#2563eb' },
       { key: 'secondary_color', type: 'color', section: 'theme', value: '#f9fafb' },
       { key: 'accent_color', type: 'color', section: 'theme', value: '#84cc16' },
-    ],
-    layout: [
-      { key: 'nav_position', type: 'text', section: 'nav', value: 'fixed' },
-      { key: 'nav_padding', type: 'text', section: 'nav', value: '1rem' },
-      { key: 'nav_links_gap', type: 'text', section: 'nav', value: '2rem' },
-      { key: 'home_background_image', type: 'background_image', section: 'home', value: '' },
-      { key: 'about_background_image', type: 'background_image', section: 'about', value: '' },
-      { key: 'booking_background_image', type: 'background_image', section: 'booking', value: '' },
-    ],
-    typography: [
+      // Added from typography section
       { key: 'heading_font', type: 'font', section: 'theme', value: 'Montserrat' },
       { key: 'body_font', type: 'font', section: 'theme', value: 'Inter' },
-    ],
-    colors: [
+      // Added from colors section
       { key: 'background_color', type: 'color', section: 'theme', value: '#ffffff' },
       { key: 'text_color', type: 'color', section: 'theme', value: '#1f2937' },
       { key: 'link_color', type: 'color', section: 'theme', value: '#2563eb' },
@@ -440,12 +424,19 @@ function DesignManager() {
       { key: 'nav_text_color', type: 'color', section: 'nav', value: '#ffffff' },
       { key: 'nav_hover_color', type: 'color', section: 'nav', value: '#d1d5db' },
       { key: 'nav_active_color', type: 'color', section: 'nav', value: '#60a5fa' },
-    ],
-    components: [
+      // Added from components section
       { key: 'button_primary_bg', type: 'color', section: 'theme', value: '#2563eb' },
       { key: 'button_primary_text', type: 'color', section: 'theme', value: '#ffffff' },
       { key: 'input_border_color', type: 'color', section: 'theme', value: '#e5e7eb' },
       { key: 'input_focus_color', type: 'color', section: 'theme', value: '#3b82f6' },
+    ],
+    layout: [
+      { key: 'nav_position', type: 'text', section: 'nav', value: 'fixed' },
+      { key: 'nav_padding', type: 'text', section: 'nav', value: '1rem' },
+      { key: 'nav_links_gap', type: 'text', section: 'nav', value: '2rem' },
+      { key: 'home_background_image', type: 'background_image', section: 'home', value: '' },
+      { key: 'about_background_image', type: 'background_image', section: 'about', value: '' },
+      { key: 'booking_background_image', type: 'background_image', section: 'booking', value: '' },
     ],
     content: [
       { key: 'hero_title', type: 'text', section: 'home', value: 'Welcome to Our Studio' },
