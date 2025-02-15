@@ -499,6 +499,13 @@ function DesignManager() {
       { key: 'nav_padding', type: 'text', section: 'nav', value: '1rem' },
       { key: 'nav_position', type: 'text', section: 'nav', value: 'fixed' },
       { key: 'nav_links_gap', type: 'text', section: 'nav', value: '2rem' },
+      // Navigation text elements
+      { key: 'nav_logo_text', type: 'text', section: 'nav', value: "Luna's Mark Tattoos" },
+      { key: 'nav_home_text', type: 'text', section: 'nav', value: 'Home' },
+      { key: 'nav_about_text', type: 'text', section: 'nav', value: 'About' },
+      { key: 'nav_gallery_text', type: 'text', section: 'nav', value: 'Gallery' },
+      { key: 'nav_booking_text', type: 'text', section: 'nav', value: 'Book Now' },
+      { key: 'nav_contact_text', type: 'text', section: 'nav', value: 'Contact' },
     ],
     home: [
       // Only booking-related configurations
