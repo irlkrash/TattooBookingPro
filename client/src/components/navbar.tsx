@@ -9,9 +9,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { User } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { useScroll } from "@/hooks/use-scroll";
+import { useLocation } from "wouter";
 
 export default function Navbar() {
   const { user, logoutMutation } = useAuth();
+  const { scrollToSection } = useScroll();
+  const [location] = useLocation();
 
   // Fetch design configurations
   const { data: designConfigs } = useQuery({
@@ -24,6 +28,15 @@ export default function Navbar() {
     return config?.value || defaultValue;
   };
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, sectionId: string) => {
+    e.preventDefault();
+    if (location !== '/') {
+      window.location.href = `/#${sectionId}`;
+    } else {
+      scrollToSection(sectionId);
+    }
+  };
+
   return (
     <nav className="border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -33,36 +46,41 @@ export default function Navbar() {
               {getConfigValue('nav_logo_text', 'Tattoo Studio')}
             </Link>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-              <Link
+              <a
                 href="/#home"
+                onClick={(e) => handleNavClick(e, 'home')}
                 className="inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-primary transition-colors"
               >
                 {getConfigValue('nav_home_text', 'Home')}
-              </Link>
-              <Link
+              </a>
+              <a
                 href="/#about"
+                onClick={(e) => handleNavClick(e, 'about')}
                 className="inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-primary transition-colors"
               >
                 {getConfigValue('nav_about_text', 'About')}
-              </Link>
-              <Link
+              </a>
+              <a
                 href="/#gallery"
+                onClick={(e) => handleNavClick(e, 'gallery')}
                 className="inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-primary transition-colors"
               >
                 {getConfigValue('nav_gallery_text', 'Gallery')}
-              </Link>
-              <Link
+              </a>
+              <a
                 href="/#booking"
+                onClick={(e) => handleNavClick(e, 'booking')}
                 className="inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-primary transition-colors"
               >
                 {getConfigValue('nav_booking_text', 'Book Now')}
-              </Link>
-              <Link
+              </a>
+              <a
                 href="/#contact"
+                onClick={(e) => handleNavClick(e, 'contact')}
                 className="inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-primary transition-colors"
               >
                 {getConfigValue('nav_contact_text', 'Contact')}
-              </Link>
+              </a>
               {user?.isAdmin && (
                 <Link
                   href="/admin"
