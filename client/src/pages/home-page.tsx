@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import BookingForm from "@/components/booking-form";
 import AvailabilityCalendar from "@/components/availability-calendar";
+import GalleryCarousel from "@/components/gallery-carousel";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertInquirySchema } from "@shared/schema";
@@ -36,10 +37,12 @@ export default function HomePage() {
         <section id="about">
           <AboutSection />
         </section>
-        <section id="gallery">
-          {/* Gallery section placeholder */}
-          <div className="py-16">
-            <h2 className="text-3xl font-bold text-center">Our Gallery</h2>
+        <section id="gallery" className="py-16 px-4">
+          <div className="container mx-auto">
+            <h2 className="text-3xl font-bold text-center mb-8">
+              {getConfigValue("gallery_title", "Our Gallery")}
+            </h2>
+            <GalleryCarousel />
           </div>
         </section>
         <section id="contact">
