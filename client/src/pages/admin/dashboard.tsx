@@ -502,16 +502,14 @@ function DesignManager() {
       { key: 'logo_text', type: 'text', section: 'header', value: 'Tattoo Studio' },
     ],
     home: [
-      // Hero Section
-      { key: 'hero_heading', type: 'text', section: 'home', value: 'Create Your Story in Ink' },
-      { key: 'hero_subtext', type: 'text', section: 'home', value: 'Professional tattoo artistry in a clean, welcoming environment. Book your consultation today and bring your vision to life.' },
-      { key: 'hero_background_color', type: 'color', section: 'home', value: '#1f2937' },
-      { key: 'hero_text_color', type: 'color', section: 'home', value: '#ffffff' },
-
       // Booking Section
       { key: 'booking_title', type: 'text', section: 'home', value: 'Book Your Appointment' },
       { key: 'booking_background_color', type: 'color', section: 'home', value: '#ffffff' },
       { key: 'booking_text_color', type: 'color', section: 'home', value: '#1f2937' },
+
+      // Hero Section
+      { key: 'hero_heading', type: 'text', section: 'home', value: 'Create Your Story in Ink' },
+      { key: 'hero_subtext', type: 'text', section: 'home', value: 'Professional tattoo artistry in a clean, welcoming environment. Book your consultation today and bring your vision to life.' },
     ],
     about: [
       { key: 'about_title', type: 'text', section: 'about', value: 'About Our Studio' },

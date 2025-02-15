@@ -20,6 +20,7 @@ export default function HomePage() {
   const headerImage = getConfigValue("header_background_image", "");
   const headerColor = getConfigValue("header_background_color", "#1f2937");
   const headerTextColor = getConfigValue("header_text_color", "#ffffff");
+  const logoText = getConfigValue("logo_text", "Tattoo Studio");
 
   return (
     <div className="min-h-screen">
@@ -32,7 +33,7 @@ export default function HomePage() {
           }}
         />
         <div className="header-content" style={{ color: headerTextColor }}>
-          <h1>Tattoo Studio</h1>
+          <h1>{logoText}</h1>
           <nav>
             <a href="/gallery">Gallery</a>
             <a href="/admin">Admin Dashboard</a>
