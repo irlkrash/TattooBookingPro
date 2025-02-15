@@ -495,6 +495,9 @@ function DesignManager() {
       { key: 'header_background_color', type: 'color', section: 'header', value: '#1f2937' },
       { key: 'header_text_color', type: 'color', section: 'header', value: '#ffffff' },
       { key: 'logo_text', type: 'text', section: 'header', value: 'Tattoo Studio' },
+      // Moving hero-related fields to header since they're part of the header section
+      { key: 'hero_background_color', type: 'color', section: 'header', value: '#1f2937' },
+      { key: 'hero_text_color', type: 'color', section: 'header', value: '#ffffff' },
     ],
     home: [
       { key: 'hero_heading', type: 'text', section: 'home', value: 'Create Your Story in Ink' },
@@ -813,8 +816,7 @@ function GalleryManager() {
                 id="url"
                 name="url"
                 type="url"
-                placeholder="https://example.com/image.jpg"
-                required
+                placeholder="https://example.com/image.jpg"                required
                 className="text-foreground"
               />
             </div>
