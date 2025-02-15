@@ -1,3 +1,24 @@
+/* Apply theme variables */
+:root {
+  --primary-color: var(--theme-primary-color, #2563eb);
+  --secondary-color: var(--theme-secondary-color, #f9fafb);
+  --accent-color: var(--theme-accent-color, #84cc16);
+  --background-color: var(--theme-background-color, #ffffff);
+  --text-color: var(--theme-text-color, #1f2937);
+  --muted-text-color: var(--theme-muted-text-color, #6b7280);
+  --link-color: var(--theme-link-color, #2563eb);
+  --link-hover-color: var(--theme-link-hover-color, #1d4ed8);
+  --button-primary-bg: var(--theme-button-primary-bg, #2563eb);
+  --button-primary-text: var(--theme-button-primary-text, #ffffff);
+  --input-border-color: var(--theme-input-border-color, #e5e7eb);
+  --input-focus-color: var(--theme-input-focus-color, #3b82f6);
+  font-family: var(--theme-body-font, 'Inter'), sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--theme-heading-font, 'Montserrat'), sans-serif;
+}
+
 /* Header specific styles */
 .site-header {
   @apply relative h-20 z-50;
@@ -23,6 +44,7 @@
 
 .header-content a {
   @apply hover:opacity-80;
+  color: inherit;
 }
 
 /* Other section styles */
@@ -30,22 +52,26 @@
   @apply relative min-h-[600px] bg-cover bg-center;
   background-image: var(--hero-bg-image, none);
   background-color: var(--hero-bg-color, #1f2937);
+  color: var(--text-color);
 }
 
 .booking-section {
   @apply relative py-16 bg-cover bg-center;
   background-image: var(--booking-bg-image, none);
   background-color: var(--booking-bg-color, #ffffff);
+  color: var(--text-color);
 }
 
 .about-section {
   @apply relative py-16 bg-cover bg-center;
   background-image: var(--about-bg-image, none);
   background-color: var(--about-bg-color, #ffffff);
+  color: var(--text-color);
 }
 
 .contact-section {
   @apply relative py-16 bg-cover bg-center;
   background-image: var(--contact-bg-image, none);
   background-color: var(--contact-bg-color, #ffffff);
+  color: var(--text-color);
 }
