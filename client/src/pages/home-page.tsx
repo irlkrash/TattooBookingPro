@@ -21,9 +21,30 @@ export default function HomePage() {
   return (
     <div className="min-h-screen">
       <main>
-        <BookingSection />
-        <AboutSection />
-        <ContactSection />
+        <section id="home" className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold mb-4">{getConfigValue("hero_title", "Welcome to Our Studio")}</h1>
+            <p className="text-xl mb-8">{getConfigValue("hero_subtitle", "Where Art Meets Skin")}</p>
+            <Button asChild>
+              <a href="#booking">Book Now</a>
+            </Button>
+          </div>
+        </section>
+        <section id="booking">
+          <BookingSection />
+        </section>
+        <section id="about">
+          <AboutSection />
+        </section>
+        <section id="gallery">
+          {/* Gallery section placeholder */}
+          <div className="py-16">
+            <h2 className="text-3xl font-bold text-center">Our Gallery</h2>
+          </div>
+        </section>
+        <section id="contact">
+          <ContactSection />
+        </section>
       </main>
     </div>
   );
