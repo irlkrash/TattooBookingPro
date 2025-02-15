@@ -370,7 +370,7 @@ function DesignManager() {
   });
 
   const { toast } = useToast();
-  const sections = ['theme', 'header', 'home', 'about', 'gallery', 'contact'];
+  const sections = ['theme', 'nav', 'home', 'about', 'gallery', 'contact'];
   const [selectedSection, setSelectedSection] = useState('theme');
   const [pendingChanges, setPendingChanges] = useState<Record<number, string>>({});
   const hasUnsavedChanges = Object.keys(pendingChanges).length > 0;
@@ -490,16 +490,15 @@ function DesignManager() {
       { key: 'heading_font', type: 'font', section: 'theme', value: 'Montserrat' },
       { key: 'body_font', type: 'font', section: 'theme', value: 'Inter' },
     ],
-    header: [
-      // Navigation bar configuration
-      { key: 'logo_text', type: 'text', section: 'header', value: 'Luna\'s Mark Tattoos' },
-      { key: 'nav_background_color', type: 'color', section: 'header', value: '#1f2937' },
-      { key: 'nav_text_color', type: 'color', section: 'header', value: '#ffffff' },
-      // Hero section configuration
-      { key: 'hero_heading', type: 'text', section: 'header', value: 'WE DOIN TATS' },
-      { key: 'hero_subtext', type: 'text', section: 'header', value: 'COME GET TATS' },
-      { key: 'hero_background_color', type: 'color', section: 'header', value: '#1f2937' },
-      { key: 'hero_text_color', type: 'color', section: 'header', value: '#ffffff' },
+    nav: [
+      // Navigation configuration
+      { key: 'nav_background_color', type: 'color', section: 'nav', value: '#1f2937' },
+      { key: 'nav_text_color', type: 'color', section: 'nav', value: '#ffffff' },
+      { key: 'nav_hover_color', type: 'color', section: 'nav', value: '#d1d5db' },
+      { key: 'nav_active_color', type: 'color', section: 'nav', value: '#60a5fa' },
+      { key: 'nav_padding', type: 'text', section: 'nav', value: '1rem' },
+      { key: 'nav_position', type: 'text', section: 'nav', value: 'fixed' },
+      { key: 'nav_links_gap', type: 'text', section: 'nav', value: '2rem' },
     ],
     home: [
       // Only booking-related configurations
