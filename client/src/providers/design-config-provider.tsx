@@ -13,18 +13,27 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
     try {
       const applyConfig = (configs: DesignConfig[]) => {
         const root = document.documentElement;
+
+        // Group configurations by type
         const styleConfigs = configs.filter(c => c.type === 'color');
         const backgroundImageConfigs = configs.filter(c => c.type === 'background_image');
         const backgroundColorConfigs = configs.filter(c => c.type === 'background_color');
         const textConfigs = configs.filter(c => c.type === 'text');
+        const fontConfigs = configs.filter(c => c.type === 'font');
 
-        // Apply color configurations
+        // Apply global color configurations
         styleConfigs.forEach(cfg => {
           const cssVar = `--${cfg.key.replace(/_/g, '-')}`;
           root.style.setProperty(cssVar, cfg.value);
         });
 
-        // Create a style element for the dynamic styles if it doesn't exist
+        // Apply font configurations
+        fontConfigs.forEach(cfg => {
+          const cssVar = `--${cfg.key.replace(/_/g, '-')}`;
+          root.style.setProperty(cssVar, cfg.value);
+        });
+
+        // Create or update style element for dynamic styles
         let styleElement = document.getElementById('dynamic-styles');
         if (!styleElement) {
           styleElement = document.createElement('style');
@@ -32,45 +41,46 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
           document.head.appendChild(styleElement);
         }
 
-        // Generate CSS for sections
-        const sectionStyles = Array.from(new Set([...backgroundImageConfigs, ...backgroundColorConfigs].map(cfg => cfg.section)))
-          .map(section => {
-            const bgImage = backgroundImageConfigs.find(cfg => cfg.section === section);
-            const bgColor = backgroundColorConfigs.find(cfg => cfg.section === section);
-            const selector = `.${section}-section`;
+        // Generate section-specific styles
+        const sections = ['hero', 'about', 'booking', 'contact', 'gallery', 'header', 'footer'];
+        const sectionStyles = sections.map(section => {
+          const bgImage = backgroundImageConfigs.find(cfg => cfg.section === section);
+          const bgColor = backgroundColorConfigs.find(cfg => cfg.section === section);
+          const selector = `.${section}-section`;
 
-            return `
-              ${selector} {
-                background-color: ${bgColor?.value || '#f5f5f5'};
-                background-image: ${bgImage?.value ? `url(${bgImage.value})` : 'none'};
-                background-size: cover;
-                background-position: center;
-                background-repeat: no-repeat;
-                position: relative;
-                transition: background-color 0.3s ease, background-image 0.3s ease;
+          return `
+            ${selector} {
+              background-color: ${bgColor?.value || '#ffffff'};
+              background-image: ${bgImage?.value ? `url('${bgImage.value}')` : 'none'};
+              background-size: cover;
+              background-position: center;
+              background-repeat: no-repeat;
+              position: relative;
+              transition: all 0.3s ease;
+            }
+
+            /* Add overlay for better text visibility if background image exists */
+            ${bgImage?.value ? `
+              ${selector}::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.4);
+                z-index: 1;
               }
+              ${selector} > * {
+                position: relative;
+                z-index: 2;
+                color: white;
+              }
+            ` : ''}
+          `;
+        }).join('\n');
 
-              /* Add overlay for better text visibility if background image exists */
-              ${bgImage?.value ? `
-                ${selector}::before {
-                  content: '';
-                  position: absolute;
-                  top: 0;
-                  left: 0;
-                  right: 0;
-                  bottom: 0;
-                  background: rgba(0, 0, 0, 0.3);
-                  z-index: 1;
-                }
-                ${selector} > * {
-                  position: relative;
-                  z-index: 2;
-                }
-              ` : ''}
-            `;
-          }).join('\n');
-
-        // Update all dynamic styles in one go
+        // Update all dynamic styles
         styleElement.textContent = `
           /* Theme Colors */
           :root {
@@ -80,57 +90,28 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
           /* Section Styles */
           ${sectionStyles}
 
-          /* Additional Styles */
+          /* Form Containers */
           .form-container {
-            background-color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-radius: var(--radius);
             padding: 2rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
           }
 
-          /* Mobile Burger Menu */
+          /* Mobile Navigation */
           .burger-menu {
             color: var(--burger-menu-color, #FFFFFF);
           }
 
-          /* Link Styles */
-          a:not(.no-theme) {
-            color: var(--link-color, #000000);
-            text-decoration: none;
+          /* Links */
+          .nav-link {
+            color: var(--nav-link-color, #FFFFFF);
             transition: color 0.2s ease;
           }
 
-          a:not(.no-theme):hover {
-            color: var(--link-hover-color, #4a5568);
-          }
-
-          /* Navigation Links */
-          .nav-link {
-            color: var(--nav-link-color, #000000);
-          }
-
           .nav-link:hover {
-            color: var(--nav-link-hover-color, #4a5568);
-          }
-
-          /* Default Styles */
-          body {
-            background-color: var(--background-color, #ffffff);
-          }
-
-          .theme-background {
-            background-color: var(--background-color, #ffffff);
-          }
-
-          .theme-primary {
-            background-color: var(--primary-color, #000000);
-            color: var(--primary-text-color, #ffffff);
-          }
-
-          .theme-secondary {
-            background-color: var(--secondary-color, #6b7280);
-            color: var(--secondary-text-color, #ffffff);
+            color: var(--nav-link-hover-color, rgba(255, 255, 255, 0.8));
           }
         `;
 
