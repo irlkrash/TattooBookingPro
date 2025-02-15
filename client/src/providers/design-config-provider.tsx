@@ -34,7 +34,7 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
         }
 
         // Generate CSS for different sections
-        const sections = ['hero', 'about', 'featured', 'cta', 'gallery', 'contact'];
+        const sections = ['hero', 'about', 'featured', 'cta', 'gallery', 'contact', 'booking', 'header'];
         const sectionStyles = sections.map(section => {
           const bgImage = backgroundImageConfigs.find(c => c.key === `${section}_background_image`);
           const bgColor = configs.find(c => c.key === `${section}_background_color`);
@@ -43,13 +43,13 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
           return `
             .${section}-section {
               ${bgImage?.value ? `background-image: url('${bgImage.value}');` : ''}
-              background-color: ${bgColor?.value || 'transparent'};
-              color: ${textColor?.value || 'inherit'};
+              ${bgColor?.value ? `background-color: ${bgColor.value};` : ''}
+              ${textColor?.value ? `color: ${textColor.value};` : ''}
               background-size: cover;
               background-position: center;
               position: relative;
-              padding: 4rem 2rem;
-              min-height: ${section === 'hero' ? '80vh' : '50vh'};
+              padding: ${section === 'header' ? '1rem 0' : '4rem 2rem'};
+              min-height: ${section === 'hero' ? '80vh' : section === 'header' ? 'auto' : '50vh'};
             }
 
             ${bgImage?.value ? `
@@ -60,7 +60,7 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
                 left: 0;
                 right: 0;
                 bottom: 0;
-                background: rgba(0, 0, 0, 0.4);
+                background: rgba(0, 0, 0, ${section === 'header' ? '0.2' : '0.4'});
                 z-index: 1;
               }
 

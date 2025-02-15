@@ -52,8 +52,8 @@ function BookingSection() {
   const { getConfigValue } = useDesignContext();
 
   return (
-    <section id="booking" className="booking-section py-16">
-      <div className="container mx-auto px-4">
+    <section id="booking" className="booking-section">
+      <div className="container mx-auto px-4 py-16">
         <h2 className="text-3xl font-bold text-center mb-12">
           {getConfigValue("booking_title", "Book Your Appointment")}
         </h2>
