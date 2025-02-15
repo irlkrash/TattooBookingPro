@@ -14,10 +14,18 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
       const applyConfig = (configs: DesignConfig[]) => {
         const root = document.documentElement;
 
-        // Group configurations by type
+        // Group configurations by type and create a map for easy section access
         const styleConfigs = configs.filter(c => c.type === 'color');
-        const backgroundImageConfigs = configs.filter(c => c.type === 'background_image');
-        const backgroundColorConfigs = configs.filter(c => c.type === 'background_color');
+        const backgroundImageConfigs = new Map(
+          configs
+            .filter(c => c.type === 'background_image')
+            .map(c => [c.section, c])
+        );
+        const backgroundColorConfigs = new Map(
+          configs
+            .filter(c => c.type === 'background_color')
+            .map(c => [c.section, c])
+        );
         const textConfigs = configs.filter(c => c.type === 'text');
         const fontConfigs = configs.filter(c => c.type === 'font');
 
@@ -33,7 +41,6 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
           root.style.setProperty(cssVar, cfg.value);
         });
 
-        // Create or update style element for dynamic styles
         let styleElement = document.getElementById('dynamic-styles');
         if (!styleElement) {
           styleElement = document.createElement('style');
@@ -44,23 +51,26 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
         // Generate section-specific styles
         const sections = ['hero', 'about', 'booking', 'contact', 'gallery', 'header', 'footer'];
         const sectionStyles = sections.map(section => {
-          const bgImage = backgroundImageConfigs.find(cfg => cfg.section === section);
-          const bgColor = backgroundColorConfigs.find(cfg => cfg.section === section);
+          const bgImage = backgroundImageConfigs.get(section);
+          const bgColor = backgroundColorConfigs.get(section);
           const selector = `.${section}-section`;
 
-          return `
+          let styles = `
             ${selector} {
-              background-color: ${bgColor?.value || '#ffffff'};
-              background-image: ${bgImage?.value ? `url('${bgImage.value}')` : 'none'};
+              background-color: ${bgColor?.value || 'transparent'};
+              ${bgImage ? `background-image: url('${bgImage.value}');` : ''}
               background-size: cover;
               background-position: center;
               background-repeat: no-repeat;
               position: relative;
               transition: all 0.3s ease;
+              min-height: ${section === 'hero' ? '80vh' : '50vh'};
             }
+          `;
 
-            /* Add overlay for better text visibility if background image exists */
-            ${bgImage?.value ? `
+          // Add overlay for sections with background images
+          if (bgImage) {
+            styles += `
               ${selector}::before {
                 content: '';
                 position: absolute;
@@ -76,8 +86,10 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
                 z-index: 2;
                 color: white;
               }
-            ` : ''}
-          `;
+            `;
+          }
+
+          return styles;
         }).join('\n');
 
         // Update all dynamic styles
@@ -97,11 +109,16 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
             border-radius: var(--radius);
             padding: 2rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 2rem auto;
+            max-width: 600px;
+            position: relative;
+            z-index: 3;
           }
 
           /* Mobile Navigation */
           .burger-menu {
             color: var(--burger-menu-color, #FFFFFF);
+            z-index: 50;
           }
 
           /* Links */
@@ -119,7 +136,7 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
         textConfigs.forEach(configItem => {
           const elements = document.querySelectorAll(`[data-config-key="${configItem.key}"]`);
           elements.forEach(element => {
-            element.textContent = configItem.value;
+            if (element) element.textContent = configItem.value;
           });
         });
       };
