@@ -16,16 +16,8 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
 
         // Group configurations by type
         const styleConfigs = configs.filter(c => c.type === 'color');
-        const backgroundImageConfigs = new Map(
-          configs
-            .filter(c => c.type === 'background_image')
-            .map(c => [c.section, c])
-        );
-        const backgroundColorConfigs = new Map(
-          configs
-            .filter(c => c.type === 'background_color')
-            .map(c => [c.section, c])
-        );
+        const backgroundImageConfigs = configs.filter(c => c.type === 'background_image');
+        const backgroundColorConfigs = configs.filter(c => c.type === 'background_color');
         const textConfigs = configs.filter(c => c.type === 'text');
         const fontConfigs = configs.filter(c => c.type === 'font');
 
@@ -51,48 +43,110 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
         // Generate section-specific styles
         const sections = ['hero', 'about', 'booking', 'contact', 'gallery', 'header', 'footer'];
         const sectionStyles = sections.map(section => {
-          const bgImage = backgroundImageConfigs.get(section);
-          const bgColor = backgroundColorConfigs.get(section);
+          // Find configurations for this section
+          const bgImage = backgroundImageConfigs.find(c => c.key === `${section}_background_image`);
+          const bgColor = backgroundColorConfigs.find(c => c.key === `${section}_background_color`);
           const selector = `.${section}-section`;
 
-          // If we have a background image, it should take precedence
-          const backgroundStyles = bgImage 
-            ? `background-image: url('${bgImage.value}'); background-color: transparent;` 
-            : bgColor 
-              ? `background-color: ${bgColor.value};` 
-              : 'background-color: transparent;';
+          // Section-specific styles
+          let styles = '';
 
-          let styles = `
-            ${selector} {
-              ${backgroundStyles}
-              background-size: cover;
-              background-position: center;
-              background-repeat: no-repeat;
-              position: relative;
-              transition: all 0.3s ease;
-              min-height: ${section === 'hero' ? '80vh' : '50vh'};
-            }
-          `;
+          switch(section) {
+            case 'header':
+              styles = `
+                ${selector} {
+                  background-color: white;
+                  position: sticky;
+                  top: 0;
+                  z-index: 50;
+                  padding: 1rem;
+                  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                }
+              `;
+              break;
 
-          // Add overlay for sections with background images
-          if (bgImage) {
-            styles += `
-              ${selector}::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(0, 0, 0, 0.4);
-                z-index: 1;
-              }
-              ${selector} > * {
-                position: relative;
-                z-index: 2;
-                color: white;
-              }
-            `;
+            case 'hero':
+              styles = `
+                ${selector} {
+                  background-image: url('${bgImage?.value}');
+                  background-color: ${bgColor?.value || 'transparent'};
+                  background-size: cover;
+                  background-position: center;
+                  min-height: 80vh;
+                  position: relative;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  color: white;
+                  text-align: center;
+                  padding: 2rem;
+                }
+                ${selector}::before {
+                  content: '';
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  right: 0;
+                  bottom: 0;
+                  background: rgba(0, 0, 0, 0.4);
+                  z-index: 1;
+                }
+                ${selector} > * {
+                  position: relative;
+                  z-index: 2;
+                }
+              `;
+              break;
+
+            case 'booking':
+              styles = `
+                ${selector} {
+                  background-color: ${bgColor?.value || '#f97316'};
+                  padding: 4rem 2rem;
+                  min-height: 50vh;
+                }
+              `;
+              break;
+
+            case 'about':
+              styles = `
+                ${selector} {
+                  background-color: white;
+                  padding: 4rem 2rem;
+                  position: relative;
+                }
+                ${selector} .content-image {
+                  background-image: url('${bgImage?.value}');
+                  background-size: cover;
+                  background-position: center;
+                  border-radius: 0.5rem;
+                  aspect-ratio: 16/9;
+                }
+              `;
+              break;
+
+            case 'contact':
+              styles = `
+                ${selector} {
+                  background-color: ${bgColor?.value || '#84cc16'};
+                  padding: 4rem 2rem;
+                  min-height: 50vh;
+                }
+              `;
+              break;
+
+            default:
+              styles = `
+                ${selector} {
+                  background-color: ${bgColor?.value || 'transparent'};
+                  ${bgImage?.value ? `background-image: url('${bgImage.value}');` : ''}
+                  background-size: cover;
+                  background-position: center;
+                  min-height: 50vh;
+                  padding: 2rem;
+                  position: relative;
+                }
+              `;
           }
 
           return styles;
@@ -102,7 +156,7 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
         styleElement.textContent = `
           /* Theme Colors */
           :root {
-            ${styleConfigs.map(cfg => `--${cfg.key.replace(/_/g, '-')}: ${cfg.value};`).join('\n            ')}
+            ${styleConfigs.map(cfg => `--${cfg.key.replace(/_/g, '-')}: ${cfg.value};`).join('\n')}
           }
 
           /* Section Styles */
@@ -120,7 +174,6 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
             position: relative;
             z-index: 3;
           }
-
           /* Mobile Navigation */
           .burger-menu {
             color: var(--burger-menu-color, #FFFFFF);
