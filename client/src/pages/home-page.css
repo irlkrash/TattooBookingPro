@@ -1,0 +1,23 @@
+.hero-section {
+  @apply relative min-h-[600px] bg-cover bg-center;
+  background-image: var(--hero-bg-image, none);
+  background-color: var(--hero-bg-color, #1f2937);
+}
+
+.booking-section {
+  @apply relative py-16 bg-cover bg-center;
+  background-image: var(--booking-bg-image, none);
+  background-color: var(--booking-bg-color, #ffffff);
+}
+
+.about-section {
+  @apply relative py-16 bg-cover bg-center;
+  background-image: var(--about-bg-image, none);
+  background-color: var(--about-bg-color, #ffffff);
+}
+
+.contact-section {
+  @apply relative py-16 bg-cover bg-center;
+  background-image: var(--contact-bg-image, none);
+  background-color: var(--contact-bg-color, #ffffff);
+}

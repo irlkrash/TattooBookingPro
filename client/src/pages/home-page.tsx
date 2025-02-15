@@ -13,14 +13,32 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { useDesignContext } from "@/providers/design-config-provider";
+import "./home-page.css";
 
 export default function HomePage() {
+  const { getConfigValue } = useDesignContext();
+  const headerImage = getConfigValue("header_background_image", "");
+  const headerColor = getConfigValue("header_background_color", "#1f2937");
+
   return (
     <div className="min-h-screen">
-      <Hero />
-      <BookingSection />
-      <AboutSection />
-      <ContactSection />
+      <header 
+        className="relative w-full h-20 z-50"
+        style={{
+          backgroundColor: headerColor,
+          backgroundImage: headerImage ? `url(${headerImage})` : 'none',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        {/* Header content goes here */}
+      </header>
+      <main>
+        <Hero />
+        <BookingSection />
+        <AboutSection />
+        <ContactSection />
+      </main>
     </div>
   );
 }
