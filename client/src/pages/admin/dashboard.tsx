@@ -498,21 +498,25 @@ function DesignManager() {
       { key: 'header_background_image', type: 'background_image', section: 'header', value: '' },
       { key: 'header_background_color', type: 'color', section: 'header', value: '#1f2937' },
       { key: 'header_text_color', type: 'color', section: 'header', value: '#ffffff' },
+      { key: 'logo_image', type: 'background_image', section: 'header', value: '' },
+      { key: 'logo_text', type: 'text', section: 'header', value: 'Tattoo Studio' },
     ],
     home: [
       // Hero Section
-      { key: 'hero_background_image', type: 'background_image', section: 'home', value: '' },
+      { key: 'hero_heading', type: 'text', section: 'home', value: 'Create Your Story in Ink' },
+      { key: 'hero_subtext', type: 'text', section: 'home', value: 'Professional tattoo artistry in a clean, welcoming environment. Book your consultation today and bring your vision to life.' },
       { key: 'hero_background_color', type: 'color', section: 'home', value: '#1f2937' },
       { key: 'hero_text_color', type: 'color', section: 'home', value: '#ffffff' },
-      { key: 'hero_heading', type: 'text', section: 'home', value: 'Welcome to Our Tattoo Studio' },
-      { key: 'hero_subtext', type: 'text', section: 'home', value: 'Expert artists, unique designs' },
 
       // Booking Section
-      { key: 'booking_background_image', type: 'background_image', section: 'home', value: '' },
+      { key: 'booking_title', type: 'text', section: 'home', value: 'Book Your Appointment' },
       { key: 'booking_background_color', type: 'color', section: 'home', value: '#ffffff' },
       { key: 'booking_text_color', type: 'color', section: 'home', value: '#1f2937' },
     ],
     about: [
+      { key: 'about_title', type: 'text', section: 'about', value: 'About Our Studio' },
+      { key: 'about_text', type: 'text', section: 'about', value: 'With years of experience and a passion for artistic expression, we pride ourselves on creating unique, meaningful tattoos that tell your story.' },
+      { key: 'about_description', type: 'text', section: 'about', value: 'Our studio maintains the highest standards of cleanliness and safety, ensuring you can focus entirely on your tattoo journey.' },
       { key: 'about_image', type: 'background_image', section: 'about', value: '' },
       { key: 'about_background_color', type: 'color', section: 'about', value: '#ffffff' },
       { key: 'about_text_color', type: 'color', section: 'about', value: '#1f2937' },
@@ -522,6 +526,8 @@ function DesignManager() {
       { key: 'gallery_text_color', type: 'color', section: 'gallery', value: '#1f2937' },
     ],
     contact: [
+      { key: 'contact_title', type: 'text', section: 'contact', value: 'Get in Touch' },
+      { key: 'contact_info', type: 'text', section: 'contact', value: '' },
       { key: 'contact_background_color', type: 'color', section: 'contact', value: '#ffffff' },
       { key: 'contact_text_color', type: 'color', section: 'contact', value: '#1f2937' },
       { key: 'contact_form_background', type: 'color', section: 'contact', value: '#f9fafb' },
