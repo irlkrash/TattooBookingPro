@@ -502,6 +502,11 @@ function DesignManager() {
       { key: 'hero_heading', type: 'text', section: 'home', value: 'Welcome to Our Tattoo Studio' },
       { key: 'hero_subtext', type: 'text', section: 'home', value: 'Expert artists, unique designs' },
 
+      // Header Section
+      { key: 'header_background_image', type: 'background_image', section: 'home', value: '' },
+      { key: 'header_background_color', type: 'color', section: 'home', value: '#1f2937' },
+      { key: 'header_text_color', type: 'color', section: 'home', value: '#ffffff' },
+
       // Featured Section
       { key: 'featured_background_color', type: 'color', section: 'home', value: '#ffffff' },
       { key: 'featured_background_image', type: 'background_image', section: 'home', value: '' },
@@ -834,7 +839,7 @@ function GalleryManager() {
             <div className="space-y-2">
               <Label htmlFor="credit" className="text-foreground">Photo Credit (Optional)</Label>
               <Input
-                id="credit"
+                                id="credit"
                 name="credit"
                 placeholder="Photographer or source"
                 className="text-foreground"
