@@ -37,54 +37,97 @@ export default function Navbar() {
     }
   };
 
+  // Get nav styling values
+  const navBgColor = getConfigValue('nav_background_color', '#1f2937');
+  const navTextColor = getConfigValue('nav_text_color', '#ffffff');
+  const navHoverColor = getConfigValue('nav_hover_color', '#d1d5db');
+  const navActiveColor = getConfigValue('nav_active_color', '#60a5fa');
+  const navPadding = getConfigValue('nav_padding', '1rem');
+  const navPosition = getConfigValue('nav_position', 'fixed');
+  const navLinksGap = getConfigValue('nav_links_gap', '2rem');
+
+  const navStyle = {
+    backgroundColor: navBgColor,
+    padding: navPadding,
+    position: navPosition === 'fixed' ? 'fixed' : 'relative',
+    width: '100%',
+    zIndex: 50,
+  } as React.CSSProperties;
+
+  const linkStyle = {
+    color: navTextColor,
+    transition: 'color 0.2s',
+  };
+
+  const activeLinkStyle = {
+    ...linkStyle,
+    color: navActiveColor,
+  };
+
   return (
-    <nav className="border-b">
+    <nav style={navStyle}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
-            <Link href="/" className="flex items-center px-2 text-xl font-bold">
+            <Link href="/" className="flex items-center px-2 text-xl font-bold" style={linkStyle}>
               {getConfigValue('nav_logo_text', 'Tattoo Studio')}
             </Link>
-            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+            <div className="hidden sm:ml-6 sm:flex" style={{ gap: navLinksGap }}>
               <a
                 href="/#home"
                 onClick={(e) => handleNavClick(e, 'home')}
-                className="inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-primary transition-colors"
+                className="inline-flex items-center px-1 pt-1 text-sm font-medium transition-colors"
+                style={linkStyle}
+                onMouseOver={(e) => (e.currentTarget.style.color = navHoverColor)}
+                onMouseOut={(e) => (e.currentTarget.style.color = navTextColor)}
               >
                 {getConfigValue('nav_home_text', 'Home')}
               </a>
               <a
                 href="/#about"
                 onClick={(e) => handleNavClick(e, 'about')}
-                className="inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-primary transition-colors"
+                className="inline-flex items-center px-1 pt-1 text-sm font-medium transition-colors"
+                style={linkStyle}
+                onMouseOver={(e) => (e.currentTarget.style.color = navHoverColor)}
+                onMouseOut={(e) => (e.currentTarget.style.color = navTextColor)}
               >
                 {getConfigValue('nav_about_text', 'About')}
               </a>
               <a
                 href="/#gallery"
                 onClick={(e) => handleNavClick(e, 'gallery')}
-                className="inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-primary transition-colors"
+                className="inline-flex items-center px-1 pt-1 text-sm font-medium transition-colors"
+                style={linkStyle}
+                onMouseOver={(e) => (e.currentTarget.style.color = navHoverColor)}
+                onMouseOut={(e) => (e.currentTarget.style.color = navTextColor)}
               >
                 {getConfigValue('nav_gallery_text', 'Gallery')}
               </a>
               <a
                 href="/#booking"
                 onClick={(e) => handleNavClick(e, 'booking')}
-                className="inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-primary transition-colors"
+                className="inline-flex items-center px-1 pt-1 text-sm font-medium transition-colors"
+                style={linkStyle}
+                onMouseOver={(e) => (e.currentTarget.style.color = navHoverColor)}
+                onMouseOut={(e) => (e.currentTarget.style.color = navTextColor)}
               >
                 {getConfigValue('nav_booking_text', 'Book Now')}
               </a>
               <a
                 href="/#contact"
                 onClick={(e) => handleNavClick(e, 'contact')}
-                className="inline-flex items-center px-1 pt-1 text-sm font-medium hover:text-primary transition-colors"
+                className="inline-flex items-center px-1 pt-1 text-sm font-medium transition-colors"
+                style={linkStyle}
+                onMouseOver={(e) => (e.currentTarget.style.color = navHoverColor)}
+                onMouseOut={(e) => (e.currentTarget.style.color = navTextColor)}
               >
                 {getConfigValue('nav_contact_text', 'Contact')}
               </a>
               {user?.isAdmin && (
                 <Link
                   href="/admin"
-                  className="inline-flex items-center px-1 pt-1 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+                  className="inline-flex items-center px-1 pt-1 text-sm font-medium transition-colors"
+                  style={activeLinkStyle}
                 >
                   {getConfigValue('nav_admin_text', 'Admin Dashboard')}
                 </Link>
@@ -95,7 +138,7 @@ export default function Navbar() {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
+                  <Button variant="ghost" size="icon" style={{ color: navTextColor }}>
                     <User className="h-5 w-5" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -120,7 +163,9 @@ export default function Navbar() {
               </DropdownMenu>
             ) : (
               <Link href="/auth">
-                <Button variant="default">{getConfigValue('nav_login_text', 'Login')}</Button>
+                <Button variant="default" style={{ color: navTextColor }}>
+                  {getConfigValue('nav_login_text', 'Login')}
+                </Button>
               </Link>
             )}
           </div>
