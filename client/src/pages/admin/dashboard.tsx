@@ -406,7 +406,7 @@ function DesignManager() {
       { key: 'body_font', type: 'font', section: 'theme', value: 'Inter' },
     ],
     home: [
-      // Hero section only
+      // Hero section only - removed booking related fields
       { key: 'hero_title', type: 'text', section: 'home', value: 'Welcome to Our Studio' },
       { key: 'hero_subtitle', type: 'text', section: 'home', value: 'Where Art Meets Skin' },
       { key: 'hero_text_color', type: 'color', section: 'home', value: '#1f2937' },
@@ -777,9 +777,9 @@ function GalleryManager() {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Gallery Management</h2>
-        <Button onClick={() => setIsAddDialogOpen(true)}>Add Image</Button>
-      </div>
+          <h2 className="text-2xl font-bold">Gallery Management</h2>
+          <Button onClick={() => setIsAddDialogOpen(true)}>Add Image</Button>
+        </div>
 
       <div className="grid grid-cols-1 md:gridcols-2 lg:grid-cols-3 gap-6">
         {images?.map((image) => (
