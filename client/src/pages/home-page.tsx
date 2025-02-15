@@ -27,98 +27,92 @@ export default function HomePage() {
 
 function Hero() {
   const { getConfigValue } = useDesignContext();
-  const heroTitle = getConfigValue("hero_title", "Create Your Story in Ink");
-  const heroSubtitle = getConfigValue("hero_subtitle", "Professional tattoo artistry in a clean, welcoming environment. Book your consultation today and bring your vision to life.");
 
   return (
-    <div className="relative">
-      <div className="absolute inset-0 bg-gradient-to-r from-black to-transparent z-10" />
-      <div 
-        className="h-[600px] bg-cover bg-center"
-        style={{ backgroundImage: `url('${getConfigValue("background_image", "https://images.unsplash.com/photo-1721305254301-bc22475ccf14")}')`}}
-      >
-        <div className="relative z-20 container mx-auto px-4 h-full flex items-center">
-          <div className="max-w-xl text-white">
-            <h1 className="text-5xl font-bold mb-6">{heroTitle}</h1>
-            <p className="text-xl mb-8">
-              {heroSubtitle}
-            </p>
-            <Button size="lg" asChild>
-              <a href="#booking">Book Appointment</a>
-            </Button>
-          </div>
+    <section className="hero-section">
+      <div className="relative z-20 container mx-auto px-4 h-full flex items-center">
+        <div className="max-w-xl text-white">
+          <h1 className="text-5xl font-bold mb-6">
+            {getConfigValue("hero_heading", "Create Your Story in Ink")}
+          </h1>
+          <p className="text-xl mb-8">
+            {getConfigValue("hero_subtext", "Professional tattoo artistry in a clean, welcoming environment. Book your consultation today and bring your vision to life.")}
+          </p>
+          <Button size="lg" asChild>
+            <a href="#booking">Book Appointment</a>
+          </Button>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 
 function BookingSection() {
   const [selectedDate, setSelectedDate] = useState<Date>();
   const { getConfigValue } = useDesignContext();
-  const bookingTitle = getConfigValue("booking_title", "Book Your Appointment");
-  const availabilityTitle = getConfigValue("availability_title", "Available Dates");
-  const bookingFormTitle = getConfigValue("booking_form_title", "Request Booking");
-  const bookingSectionBg = getConfigValue("booking_section_background", "#f5f5f5");
 
   return (
-    <div id="booking" className="py-16" style={{ backgroundColor: bookingSectionBg }}>
+    <section id="booking" className="booking-section py-16">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-12">{bookingTitle}</h2>
+        <h2 className="text-3xl font-bold text-center mb-12">
+          {getConfigValue("booking_title", "Book Your Appointment")}
+        </h2>
         <div className="grid md:grid-cols-2 gap-8">
           <Card>
             <CardContent className="p-6">
-              <h3 className="text-xl font-semibold text-center mb-4">{availabilityTitle}</h3>
+              <h3 className="text-xl font-semibold text-center mb-4">
+                {getConfigValue("availability_title", "Available Dates")}
+              </h3>
               <AvailabilityCalendar onDateSelect={setSelectedDate} />
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-6">
-              <h3 className="text-xl font-semibold text-center mb-4">{bookingFormTitle}</h3>
+              <h3 className="text-xl font-semibold text-center mb-4">
+                {getConfigValue("booking_form_title", "Request Booking")}
+              </h3>
               <BookingForm selectedDate={selectedDate} />
             </CardContent>
           </Card>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 
 function AboutSection() {
   const { getConfigValue } = useDesignContext();
-  const aboutTitle = getConfigValue("about_title", "About Our Studio");
-  const aboutText = getConfigValue("about_text", "With years of experience and a passion for artistic expression, we pride ourselves on creating unique, meaningful tattoos that tell your story.");
-  const aboutDescription = getConfigValue("about_description", "Our studio maintains the highest standards of cleanliness and safety, ensuring you can focus entirely on your tattoo journey.");
-  const aboutImage = getConfigValue("about_image", "https://images.unsplash.com/photo-1721305250037-c765d5435cb1");
 
   return (
-    <div className="py-16">
+    <section className="about-section py-16">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 className="text-3xl font-bold mb-6">{aboutTitle}</h2>
-            <p className="text-lg mb-4">{aboutText}</p>
-            <p className="text-lg mb-6">{aboutDescription}</p>
+            <h2 className="text-3xl font-bold mb-6">
+              {getConfigValue("about_title", "About Our Studio")}
+            </h2>
+            <p className="text-lg mb-4">
+              {getConfigValue("about_text", "With years of experience and a passion for artistic expression, we pride ourselves on creating unique, meaningful tattoos that tell your story.")}
+            </p>
+            <p className="text-lg mb-6">
+              {getConfigValue("about_description", "Our studio maintains the highest standards of cleanliness and safety, ensuring you can focus entirely on your tattoo journey.")}
+            </p>
             <Button variant="outline" asChild>
               <a href="/gallery">View Our Work</a>
             </Button>
           </div>
-          <div 
-            className="h-[400px] bg-cover bg-center rounded-lg"
-            style={{ backgroundImage: `url('${aboutImage}')`}}
-          />
+          <div className="relative h-[400px] rounded-lg overflow-hidden">
+            <div className="absolute inset-0 bg-cover bg-center" style={{backgroundImage: `url(${getConfigValue("about_image", "https://images.unsplash.com/photo-1721305250037-c765d5435cb1")})`}}/>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 
 function ContactSection() {
   const { toast } = useToast();
   const { getConfigValue } = useDesignContext();
-  const contactTitle = getConfigValue("contact_title", "Get in Touch");
-  const contactInfo = getConfigValue("contact_info", "");
-  const contactSectionBg = getConfigValue("contact_section_background", "#f5f5f5");
 
   const form = useForm({
     resolver: zodResolver(insertInquirySchema),
@@ -146,11 +140,13 @@ function ContactSection() {
   });
 
   return (
-    <div className="py-16" style={{ backgroundColor: contactSectionBg }}>
+    <section className="contact-section py-16">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-12">{contactTitle}</h2>
-        {contactInfo && (
-          <p className="text-center mb-8">{contactInfo}</p>
+        <h2 className="text-3xl font-bold text-center mb-12">
+          {getConfigValue("contact_title", "Get in Touch")}
+        </h2>
+        {getConfigValue("contact_info") && (
+          <p className="text-center mb-8">{getConfigValue("contact_info")}</p>
         )}
         <div className="max-w-md mx-auto">
           <Card>
@@ -209,6 +205,6 @@ function ContactSection() {
           </Card>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
