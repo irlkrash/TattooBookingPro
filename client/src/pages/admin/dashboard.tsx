@@ -474,44 +474,57 @@ function DesignManager() {
 
   const defaultConfigs = {
     theme: [
-      // Header and About Backgrounds
-      { key: 'header_background', type: 'color', section: 'theme', value: '#ffffff' },
-      { key: 'header_background_image', type: 'background_image', section: 'theme', value: null },
-      { key: 'about_background', type: 'color', section: 'theme', value: '#f5f5f5' },
-      { key: 'about_background_image', type: 'background_image', section: 'theme', value: null },
-
-      // Section Backgrounds
-      { key: 'booking_section_background', type: 'color', section: 'theme', value: '#f5f5f5' },
-      { key: 'booking_background_image', type: 'background_image', section: 'theme', value: null },
-      { key: 'contact_section_background', type: 'color', section: 'theme', value: '#f5f5f5' },
-      { key: 'contact_background_image', type: 'background_image', section: 'theme', value: null },
-
-      // Form Backgrounds
-      { key: 'booking_form_background', type: 'color', section: 'theme', value: '#f8fafc' },
-      { key: 'contact_form_background', type: 'color', section: 'theme', value: '#f8fafc' },
-
-      // Calendar
-      { key: 'available_dates_background', type: 'color', section: 'theme', value: '#4ade80' },
-
-      // Text Colors
-      { key: 'gallery_description_color', type: 'color', section: 'theme', value: '#6b7280' },
-      { key: 'primary_text_color', type: 'color', section: 'theme', value: '#000000' },
-      { key: 'secondary_text_color', type: 'color', section: 'theme', value: '#6b7280' },
-
-      // Link Colors
+      // Colors
+      { key: 'primary_color', type: 'color', section: 'theme', value: '#2563eb' },
+      { key: 'secondary_color', type: 'color', section: 'theme', value: '#f9fafb' },
+      { key: 'accent_color', type: 'color', section: 'theme', value: '#84cc16' },
+      { key: 'background_color', type: 'color', section: 'theme', value: '#ffffff' },
+      { key: 'text_color', type: 'color', section: 'theme', value: '#1f2937' },
+      { key: 'muted_text_color', type: 'color', section: 'theme', value: '#6b7280' },
       { key: 'link_color', type: 'color', section: 'theme', value: '#2563eb' },
       { key: 'link_hover_color', type: 'color', section: 'theme', value: '#1d4ed8' },
 
-      // Background Colors
-      { key: 'background_color', type: 'color', section: 'theme', value: '#ffffff' },
-      { key: 'secondary_background', type: 'color', section: 'theme', value: '#f9fafb' },
+      // Fonts
+      { key: 'heading_font', type: 'font', section: 'theme', value: 'Montserrat' },
+      { key: 'body_font', type: 'font', section: 'theme', value: 'Inter' },
 
-      // Button Colors
-      { key: 'primary_button_background', type: 'color', section: 'theme', value: '#2563eb' },
-      { key: 'primary_button_text', type: 'color', section: 'theme', value: '#ffffff' },
+      // Component Colors
+      { key: 'button_primary_bg', type: 'color', section: 'theme', value: '#2563eb' },
+      { key: 'button_primary_text', type: 'color', section: 'theme', value: '#ffffff' },
+      { key: 'input_border_color', type: 'color', section: 'theme', value: '#e5e7eb' },
+      { key: 'input_focus_color', type: 'color', section: 'theme', value: '#3b82f6' },
+    ],
+    home: [
+      // Hero Section
+      { key: 'hero_background_image', type: 'background_image', section: 'home', value: '' },
+      { key: 'hero_background_color', type: 'color', section: 'home', value: '#1f2937' },
+      { key: 'hero_text_color', type: 'color', section: 'home', value: '#ffffff' },
+      { key: 'hero_heading', type: 'text', section: 'home', value: 'Welcome to Our Tattoo Studio' },
+      { key: 'hero_subtext', type: 'text', section: 'home', value: 'Expert artists, unique designs' },
+
+      // Featured Section
+      { key: 'featured_background_color', type: 'color', section: 'home', value: '#ffffff' },
+      { key: 'featured_background_image', type: 'background_image', section: 'home', value: '' },
+      { key: 'featured_text_color', type: 'color', section: 'home', value: '#1f2937' },
+
+      // CTA Section
+      { key: 'cta_background_color', type: 'color', section: 'home', value: '#84cc16' },
+      { key: 'cta_text_color', type: 'color', section: 'home', value: '#ffffff' },
+      { key: 'cta_button_color', type: 'color', section: 'home', value: '#2563eb' },
     ],
     about: [
-      { key: 'about_image', type: 'background_image', section: 'about', value: null }
+      { key: 'about_image', type: 'background_image', section: 'about', value: '' },
+      { key: 'about_background_color', type: 'color', section: 'about', value: '#ffffff' },
+      { key: 'about_text_color', type: 'color', section: 'about', value: '#1f2937' },
+    ],
+    gallery: [
+      { key: 'gallery_background_color', type: 'color', section: 'gallery', value: '#f9fafb' },
+      { key: 'gallery_text_color', type: 'color', section: 'gallery', value: '#1f2937' },
+    ],
+    contact: [
+      { key: 'contact_background_color', type: 'color', section: 'contact', value: '#ffffff' },
+      { key: 'contact_text_color', type: 'color', section: 'contact', value: '#1f2937' },
+      { key: 'contact_form_background', type: 'color', section: 'contact', value: '#f9fafb' },
     ]
   };
 
@@ -880,10 +893,11 @@ function GalleryManager() {
                 <Input
                   id="edit-alt"
                   name="alt"
-                  defaultValue={selectedImage.alt || ''}                  className="text-foreground"
+                  defaultValue={selectedImage.alt || ''}
+                  className="text-foreground"
                 />
               </div>
-<div className="space-y-2">
+              <div className="space-y-2">
                 <Label htmlFor="edit-credit" className="text-foreground">Photo Credit</Label>
                 <Input
                   id="edit-credit"

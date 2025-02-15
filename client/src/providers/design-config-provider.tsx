@@ -17,18 +17,11 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
         // Group configurations by type
         const styleConfigs = configs.filter(c => c.type === 'color');
         const backgroundImageConfigs = configs.filter(c => c.type === 'background_image');
-        const backgroundColorConfigs = configs.filter(c => c.type === 'background_color');
         const textConfigs = configs.filter(c => c.type === 'text');
         const fontConfigs = configs.filter(c => c.type === 'font');
 
-        // Apply global color configurations
-        styleConfigs.forEach(cfg => {
-          const cssVar = `--${cfg.key.replace(/_/g, '-')}`;
-          root.style.setProperty(cssVar, cfg.value);
-        });
-
-        // Apply font configurations
-        fontConfigs.forEach(cfg => {
+        // Apply color and font configurations to CSS variables
+        [...styleConfigs, ...fontConfigs].forEach(cfg => {
           const cssVar = `--${cfg.key.replace(/_/g, '-')}`;
           root.style.setProperty(cssVar, cfg.value);
         });
@@ -40,103 +33,48 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
           document.head.appendChild(styleElement);
         }
 
-        // Generate section-specific styles
-        const sections = ['hero', 'about', 'booking', 'contact', 'gallery', 'header', 'footer'];
+        // Generate CSS for different sections
+        const sections = ['hero', 'about', 'featured', 'cta', 'gallery', 'contact'];
         const sectionStyles = sections.map(section => {
-          // Find configurations for this section
           const bgImage = backgroundImageConfigs.find(c => c.key === `${section}_background_image`);
-          const bgColor = backgroundColorConfigs.find(c => c.key === `${section}_background_color`) ||
-            backgroundColorConfigs.find(c => c.key === `${section}_background`);
+          const bgColor = configs.find(c => c.key === `${section}_background_color`);
+          const textColor = configs.find(c => c.key === `${section}_text_color`);
 
-          const selector = `.${section}-section`;
-          let styles = '';
+          return `
+            .${section}-section {
+              ${bgImage?.value ? `background-image: url('${bgImage.value}');` : ''}
+              background-color: ${bgColor?.value || 'transparent'};
+              color: ${textColor?.value || 'inherit'};
+              background-size: cover;
+              background-position: center;
+              position: relative;
+              padding: 4rem 2rem;
+              min-height: ${section === 'hero' ? '80vh' : '50vh'};
+            }
 
-          switch(section) {
-            case 'header':
-              styles = `
-                ${selector} {
-                  ${bgImage?.value ? `background-image: url('${bgImage.value}');` : ''}
-                  background-color: ${bgColor?.value || 'white'};
-                  position: sticky;
-                  top: 0;
-                  z-index: 50;
-                  padding: 1rem;
-                  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                  background-size: cover;
-                  background-position: center;
-                }
-              `;
-              break;
+            ${bgImage?.value ? `
+              .${section}-section::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.4);
+                z-index: 1;
+              }
 
-            case 'hero':
-              styles = `
-                ${selector} {
-                  ${bgImage?.value ? `background-image: url('${bgImage.value}');` : ''}
-                  background-color: ${bgColor?.value || 'transparent'};
-                  background-size: cover;
-                  background-position: center;
-                  min-height: 80vh;
-                  position: relative;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  color: white;
-                  text-align: center;
-                  padding: 2rem;
-                }
-                ${selector}::before {
-                  content: '';
-                  position: absolute;
-                  top: 0;
-                  left: 0;
-                  right: 0;
-                  bottom: 0;
-                  background: rgba(0, 0, 0, 0.4);
-                  z-index: 1;
-                }
-                ${selector} > * {
-                  position: relative;
-                  z-index: 2;
-                }
-              `;
-              break;
-
-            default:
-              styles = `
-                ${selector} {
-                  ${bgImage?.value ? `background-image: url('${bgImage.value}');` : ''}
-                  background-color: ${bgColor?.value || 'transparent'};
-                  background-size: cover;
-                  background-position: center;
-                  min-height: 50vh;
-                  padding: 2rem;
-                  position: relative;
-                }
-                ${bgImage?.value ? `
-                  ${selector}::before {
-                    content: '';
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    background: rgba(0, 0, 0, 0.2);
-                    z-index: 1;
-                  }
-                  ${selector} > * {
-                    position: relative;
-                    z-index: 2;
-                  }
-                ` : ''}
-              `;
-          }
-
-          return styles;
+              .${section}-section > * {
+                position: relative;
+                z-index: 2;
+              }
+            ` : ''}
+          `;
         }).join('\n');
 
-        // Update all dynamic styles
+        // Update dynamic styles
         styleElement.textContent = `
-          /* Theme Colors */
+          /* CSS Variables */
           :root {
             ${styleConfigs.map(cfg => `--${cfg.key.replace(/_/g, '-')}: ${cfg.value};`).join('\n')}
           }
@@ -144,17 +82,30 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
           /* Section Styles */
           ${sectionStyles}
 
-          /* Form Containers */
+          /* Component Styles */
+          .primary-button {
+            background-color: var(--button-primary-bg);
+            color: var(--button-primary-text);
+          }
+
           .form-container {
-            background-color: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: var(--radius);
+            background-color: var(--contact-form-background, #ffffff);
+            border-radius: 0.5rem;
             padding: 2rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin: 2rem auto;
-            max-width: 600px;
             position: relative;
             z-index: 3;
+          }
+
+          /* Text Styles */
+          body {
+            font-family: var(--body-font, 'Inter'), sans-serif;
+            color: var(--text-color);
+            background-color: var(--background-color);
+          }
+
+          h1, h2, h3, h4, h5, h6 {
+            font-family: var(--heading-font, 'Montserrat'), sans-serif;
           }
         `;
 
@@ -168,7 +119,6 @@ export function DesignConfigProvider({ children }: { children: React.ReactNode }
       };
 
       applyConfig(config.configs);
-
     } catch (error) {
       console.error('Error applying design config:', error);
     }
