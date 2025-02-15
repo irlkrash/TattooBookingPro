@@ -25,7 +25,6 @@ export default function HomePage() {
         <nav className="nav-bar" style={{
           backgroundColor: getConfigValue("nav_background_color", "#1f2937"),
           color: getConfigValue("nav_text_color", "#ffffff"),
-          backgroundImage: getConfigValue("nav_background_image") ? `url(${getConfigValue("nav_background_image")})` : 'none',
         }}>
           <div className="nav-content">
             <h1>{getConfigValue("logo_text", "Luna's Mark Tattoos")}</h1>

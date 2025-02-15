@@ -495,7 +495,6 @@ function DesignManager() {
       { key: 'logo_text', type: 'text', section: 'header', value: 'Luna\'s Mark Tattoos' },
       { key: 'nav_background_color', type: 'color', section: 'header', value: '#1f2937' },
       { key: 'nav_text_color', type: 'color', section: 'header', value: '#ffffff' },
-      { key: 'nav_background_image', type: 'background_image', section: 'header', value: '' },
       // Hero section configuration
       { key: 'hero_heading', type: 'text', section: 'header', value: 'WE DOIN TATS' },
       { key: 'hero_subtext', type: 'text', section: 'header', value: 'COME GET TATS' },
@@ -845,21 +844,14 @@ function GalleryManager() {
               />
             </div>
             <DialogFooter>
-              <Button
-                type="submit"
-                disabled={createMutation.isPending}
-                className="text-foreground"
-              >
-                {createMutation.isPending && (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                )}
+              <Button type="submit" disabled={createMutation.isPending}>
+                {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Add Image
               </Button>
             </DialogFooter>
           </form>
         </DialogContent>
       </Dialog>
-
       <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
         <DialogContent className="text-foreground">
           <DialogHeader>
