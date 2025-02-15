@@ -491,16 +491,19 @@ function DesignManager() {
       { key: 'body_font', type: 'font', section: 'theme', value: 'Inter' },
     ],
     header: [
+      // Header section configurations
       { key: 'header_background_image', type: 'background_image', section: 'header', value: '' },
       { key: 'header_background_color', type: 'color', section: 'header', value: '#1f2937' },
       { key: 'header_text_color', type: 'color', section: 'header', value: '#ffffff' },
       { key: 'logo_text', type: 'text', section: 'header', value: 'Luna\'s Mark Tattoos' },
+      // Hero section moved to header
+      { key: 'hero_heading', type: 'text', section: 'header', value: 'Create Your Story in Ink' },
+      { key: 'hero_subtext', type: 'text', section: 'header', value: 'Professional tattoo artistry in a clean, welcoming environment. Book your consultation today and bring your vision to life.' },
       { key: 'hero_background_color', type: 'color', section: 'header', value: '#1f2937' },
       { key: 'hero_text_color', type: 'color', section: 'header', value: '#ffffff' },
     ],
     home: [
-      { key: 'hero_heading', type: 'text', section: 'home', value: 'Create Your Story in Ink' },
-      { key: 'hero_subtext', type: 'text', section: 'home', value: 'Professional tattoo artistry in a clean, welcoming environment. Book your consultation today and bring your vision to life.' },
+      // Only booking-related configurations
       { key: 'booking_title', type: 'text', section: 'home', value: 'Book Your Appointment' },
       { key: 'booking_background_color', type: 'color', section: 'home', value: '#ffffff' },
       { key: 'booking_text_color', type: 'color', section: 'home', value: '#1f2937' },

@@ -54,7 +54,10 @@ function Hero() {
   const { getConfigValue } = useDesignContext();
 
   return (
-    <section className="hero-section">
+    <section className="hero-section" style={{
+      backgroundColor: getConfigValue("hero_background_color", "#1f2937"),
+      color: getConfigValue("hero_text_color", "#ffffff")
+    }}>
       <div className="relative z-20 container mx-auto px-4 h-full flex items-center">
         <div className="max-w-xl text-white">
           <h1 className="text-5xl font-bold mb-6">
