@@ -26,7 +26,10 @@ export default function HomePage() {
           <div className="text-center">
             <h1 className="text-4xl font-bold mb-4">{getConfigValue("hero_title", "Welcome to Our Studio")}</h1>
             <p className="text-xl mb-8">{getConfigValue("hero_subtitle", "Where Art Meets Skin")}</p>
-            <Button asChild>
+            <Button 
+              asChild
+              style={{ backgroundColor: getConfigValue("home_button_color", "#2563eb") }}
+            >
               <a href="#booking">Book Now</a>
             </Button>
           </div>
@@ -103,12 +106,19 @@ function AboutSection() {
             <p className="text-lg mb-6">
               {getConfigValue("about_description", "Our studio maintains the highest standards of cleanliness and safety, ensuring you can focus entirely on your tattoo journey.")}
             </p>
-            <Button variant="outline" asChild>
+            <Button 
+              variant="outline" 
+              asChild
+              style={{ color: getConfigValue("about_button_text_color", "#ffffff") }}
+            >
               <a href="/gallery">View Our Work</a>
             </Button>
           </div>
           <div className="relative h-[400px] rounded-lg overflow-hidden">
-            <div className="absolute inset-0 bg-cover bg-center" style={{backgroundImage: `url(${getConfigValue("about_image", "")})`}}/>
+            <div 
+              className="absolute inset-0 bg-cover bg-center" 
+              style={{backgroundImage: `url(${getConfigValue("about_image", "")})`}}
+            />
           </div>
         </div>
       </div>
