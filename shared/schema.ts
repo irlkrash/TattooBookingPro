@@ -44,7 +44,7 @@ export const designConfig = pgTable("design_config", {
     enum: ['text', 'font', 'color', 'background_image', 'background_color'] 
   }).notNull(),
   section: text("section", {
-    enum: ['theme', 'hero', 'about', 'booking', 'contact', 'gallery', 'header', 'footer']
+    enum: ['theme', 'home', 'hero', 'about', 'booking', 'contact', 'gallery', 'header', 'footer']
   }).notNull(), 
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
@@ -121,7 +121,7 @@ export const insertDesignConfigSchema = createInsertSchema(designConfig)
     key: z.string().min(1, "Key is required"),
     value: z.string().default(''),
     type: z.enum(['text', 'font', 'color', 'background_image', 'background_color']),
-    section: z.enum(['theme', 'hero', 'about', 'booking', 'contact', 'gallery', 'header', 'footer']),
+    section: z.enum(['theme', 'home', 'hero', 'about', 'booking', 'contact', 'gallery', 'header', 'footer']),
   });
 
 export const insertGalleryImageSchema = createInsertSchema(galleryImages)
