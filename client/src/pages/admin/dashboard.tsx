@@ -505,6 +505,8 @@ function DesignManager() {
     home: [
       // Only booking-related configurations
       { key: 'booking_title', type: 'text', section: 'home', value: 'Book Your Appointment' },
+      { key: 'booking_form_title', type: 'text', section: 'home', value: 'Request Booking' },
+      { key: 'availability_title', type: 'text', section: 'home', value: 'Available Dates' },
       { key: 'booking_background_color', type: 'color', section: 'home', value: '#ffffff' },
       { key: 'booking_text_color', type: 'color', section: 'home', value: '#1f2937' },
     ],
@@ -824,7 +826,7 @@ function GalleryManager() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="alt" className="text-foreground">AltText (Optional)</Label>
+              <Label htmlFor="alt" className="text-foreground">Alt Text (Optional)</Label>
               <Input
                 id="alt"
                 name="alt"
