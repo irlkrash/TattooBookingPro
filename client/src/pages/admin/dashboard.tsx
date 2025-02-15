@@ -408,7 +408,7 @@ function DesignManager() {
 
   const defaultConfigs: DefaultConfigsType = {
     branding: [
-      { key: 'nav_logo_text', type: 'text', section: 'nav', value: "Luna's Mark Tattoos" },
+      { key: 'nav_logo_text', type: 'text', section: 'theme', value: "Luna's Mark Tattoos" },
       { key: 'primary_color', type: 'color', section: 'theme', value: '#2563eb' },
       { key: 'secondary_color', type: 'color', section: 'theme', value: '#f9fafb' },
       { key: 'accent_color', type: 'color', section: 'theme', value: '#84cc16' },
@@ -429,6 +429,9 @@ function DesignManager() {
       { key: 'button_primary_text', type: 'color', section: 'theme', value: '#ffffff' },
       { key: 'input_border_color', type: 'color', section: 'theme', value: '#e5e7eb' },
       { key: 'input_focus_color', type: 'color', section: 'theme', value: '#3b82f6' },
+      // Added new button color configurations
+      { key: 'home_button_color', type: 'color', section: 'home', value: '#2563eb' },
+      { key: 'about_button_text_color', type: 'color', section: 'about', value: '#ffffff' },
     ],
     layout: [
       { key: 'nav_position', type: 'text', section: 'nav', value: 'fixed' },
@@ -802,8 +805,7 @@ function GalleryManager() {
               <img
                 src={image.url}
                 alt={image.alt || ''}
-                className="w-full h-80 objectcover transition-transform duration-300 group-hover:scale-105"
-              />
+                className="w-full h-80 objectcover transition-transform duration-300 group-hover:scale-105"/>
               <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4">
                 <div className="flex justify-end gap-2">
                   <Button
