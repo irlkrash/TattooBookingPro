@@ -19,50 +19,6 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--theme-heading-font, 'Montserrat'), sans-serif;
 }
 
-/* Header specific styles */
-.site-header {
-  @apply relative z-50;
-}
-
-.nav-bar {
-  @apply w-full;
-  position: relative;
-  z-index: 20;
-}
-
-.nav-bar a {
-  @apply hover:opacity-80 transition-opacity;
-  color: inherit;
-}
-
-.nav-content {
-  @apply container mx-auto px-4 flex items-center justify-between;
-}
-
-.nav-content h1 {
-  @apply text-2xl font-bold;
-}
-
-.nav-links {
-  @apply flex gap-6;
-}
-
-.nav-links a {
-  @apply hover:opacity-80 transition-opacity;
-  color: inherit;
-}
-
-/* Hero section styles */
-.hero-section {
-  @apply w-full py-20;
-  position: relative;
-  z-index: 10;
-}
-
-.hero-content {
-  @apply container mx-auto px-4 max-w-4xl text-center;
-}
-
 /* Other section styles */
 .booking-section {
   @apply relative py-16 bg-cover bg-center;

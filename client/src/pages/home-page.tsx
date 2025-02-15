@@ -20,44 +20,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen">
-      {/* Single consolidated header section */}
-      <header className="site-header">
-        <div className="nav-bar" style={{
-          backgroundColor: getConfigValue("nav_background_color", "#1f2937"),
-          color: getConfigValue("nav_text_color", "#ffffff"),
-        }}>
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between py-4">
-              <h1 className="text-2xl font-bold">
-                {getConfigValue("logo_text", "Luna's Mark Tattoos")}
-              </h1>
-              <nav className="flex gap-6">
-                <a href="/gallery" className="hover:opacity-80 transition-opacity">Gallery</a>
-                <a href="/admin" className="hover:opacity-80 transition-opacity">Admin Dashboard</a>
-              </nav>
-            </div>
-          </div>
-        </div>
-
-        {/* Hero section */}
-        <div className="hero-section" style={{
-          backgroundColor: getConfigValue("hero_background_color", "#1f2937"),
-          color: getConfigValue("hero_text_color", "#ffffff"),
-        }}>
-          <div className="hero-content">
-            <h2 className="text-5xl font-bold mb-6">
-              {getConfigValue("hero_heading", "WE DOIN TATS")}
-            </h2>
-            <p className="text-xl mb-8">
-              {getConfigValue("hero_subtext", "COME GET TATS")}
-            </p>
-            <Button size="lg" asChild>
-              <a href="#booking">Book Appointment</a>
-            </Button>
-          </div>
-        </div>
-      </header>
-
       <main>
         <BookingSection />
         <AboutSection />
