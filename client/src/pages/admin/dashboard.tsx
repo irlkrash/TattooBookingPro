@@ -496,9 +496,9 @@ function DesignManager() {
       { key: 'header_background_image', type: 'background_image', section: 'header', value: '' },
       { key: 'header_background_color', type: 'color', section: 'header', value: '#1f2937' },
       { key: 'header_text_color', type: 'color', section: 'header', value: '#ffffff' },
-      // Hero section (part of header)
-      { key: 'hero_heading', type: 'text', section: 'header', value: 'Create Your Story in Ink' },
-      { key: 'hero_subtext', type: 'text', section: 'header', value: 'Professional tattoo artistry in a clean, welcoming environment. Book your consultation today and bring your vision to life.' },
+      // Hero section configuration (moved from home)
+      { key: 'hero_heading', type: 'text', section: 'header', value: 'WE DOIN TATS' },
+      { key: 'hero_subtext', type: 'text', section: 'header', value: 'COME GET TATS' },
       { key: 'hero_background_color', type: 'color', section: 'header', value: '#1f2937' },
       { key: 'hero_text_color', type: 'color', section: 'header', value: '#ffffff' },
     ],
@@ -817,8 +817,7 @@ function GalleryManager() {
               <Input
                 id="url"
                 name="url"
-                type="url"
-                placeholder="https://example.com/image.jpg"                required
+                type="url                placeholder="https://example.com/image.jpg"                required
                 className="text-foreground"
               />
             </div>

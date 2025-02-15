@@ -17,49 +17,44 @@ import "./home-page.css";
 
 export default function HomePage() {
   const { getConfigValue } = useDesignContext();
-  const headerImage = getConfigValue("header_background_image", "");
-  const headerColor = getConfigValue("header_background_color", "#1f2937");
-  const headerTextColor = getConfigValue("header_text_color", "#ffffff");
-  const logoText = getConfigValue("logo_text", "Tattoo Studio");
-  const heroHeading = getConfigValue("hero_heading", "Create Your Story in Ink");
-  const heroSubtext = getConfigValue("hero_subtext", "Professional tattoo artistry in a clean, welcoming environment. Book your consultation today and bring your vision to life.");
-  const heroBackgroundColor = getConfigValue("hero_background_color", "#1f2937");
-  const heroTextColor = getConfigValue("hero_text_color", "#ffffff");
 
   return (
     <div className="min-h-screen">
       <header className="site-header">
-        <div 
-          className="header-background"
-          style={{
-            backgroundColor: headerColor,
-            backgroundImage: headerImage ? `url(${headerImage})` : 'none',
-          }}
-        >
-          <div className="header-content" style={{ color: headerTextColor }}>
-            <h1>{logoText}</h1>
+        {/* Navigation Bar */}
+        <div className="nav-bar" style={{
+          backgroundColor: getConfigValue("header_background_color", "#1f2937"),
+          color: getConfigValue("header_text_color", "#ffffff"),
+          backgroundImage: getConfigValue("header_background_image", "") ? `url(${getConfigValue("header_background_image")})` : 'none',
+        }}>
+          <div className="header-content">
+            <h1>{getConfigValue("logo_text", "Luna's Mark Tattoos")}</h1>
             <nav>
               <a href="/gallery">Gallery</a>
               <a href="/admin">Admin Dashboard</a>
             </nav>
           </div>
+        </div>
 
-          {/* Hero section integrated into header */}
-          <div className="relative z-20 container mx-auto px-4 py-20">
-            <div className="max-w-xl" style={{ color: heroTextColor }}>
-              <h2 className="text-5xl font-bold mb-6">
-                {heroHeading}
-              </h2>
-              <p className="text-xl mb-8">
-                {heroSubtext}
-              </p>
-              <Button size="lg" asChild>
-                <a href="#booking">Book Appointment</a>
-              </Button>
-            </div>
+        {/* Hero Section */}
+        <div className="hero-section" style={{
+          backgroundColor: getConfigValue("hero_background_color", "#1f2937"),
+          color: getConfigValue("hero_text_color", "#ffffff"),
+        }}>
+          <div className="hero-content">
+            <h2 className="text-5xl font-bold mb-6">
+              {getConfigValue("hero_heading", "WE DOIN TATS")}
+            </h2>
+            <p className="text-xl mb-8">
+              {getConfigValue("hero_subtext", "COME GET TATS")}
+            </p>
+            <Button size="lg" asChild>
+              <a href="#booking">Book Appointment</a>
+            </Button>
           </div>
         </div>
       </header>
+
       <main>
         <BookingSection />
         <AboutSection />

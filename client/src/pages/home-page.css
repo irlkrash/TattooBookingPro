@@ -24,14 +24,14 @@ h1, h2, h3, h4, h5, h6 {
   @apply relative z-50;
 }
 
-.header-background {
-  @apply w-full min-h-[600px];
+.nav-bar {
+  @apply w-full;
   background-size: cover;
   background-position: center;
 }
 
 .header-content {
-  @apply container mx-auto px-4 pt-6 flex items-center justify-between;
+  @apply container mx-auto px-4 py-6 flex items-center justify-between;
 }
 
 .header-content h1 {
@@ -47,24 +47,30 @@ h1, h2, h3, h4, h5, h6 {
   color: inherit;
 }
 
+/* Hero section styles */
+.hero-section {
+  @apply w-full py-20;
+}
+
+.hero-content {
+  @apply container mx-auto px-4 max-w-4xl;
+}
+
 /* Other section styles */
 .booking-section {
   @apply relative py-16 bg-cover bg-center;
-  background-image: var(--booking-bg-image, none);
   background-color: var(--booking-bg-color, #ffffff);
   color: var(--text-color);
 }
 
 .about-section {
   @apply relative py-16 bg-cover bg-center;
-  background-image: var(--about-bg-image, none);
   background-color: var(--about-bg-color, #ffffff);
   color: var(--text-color);
 }
 
 .contact-section {
   @apply relative py-16 bg-cover bg-center;
-  background-image: var(--contact-bg-image, none);
   background-color: var(--contact-bg-color, #ffffff);
   color: var(--text-color);
 }
