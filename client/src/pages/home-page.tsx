@@ -19,19 +19,25 @@ export default function HomePage() {
   const { getConfigValue } = useDesignContext();
   const headerImage = getConfigValue("header_background_image", "");
   const headerColor = getConfigValue("header_background_color", "#1f2937");
+  const headerTextColor = getConfigValue("header_text_color", "#ffffff");
 
   return (
     <div className="min-h-screen">
-      <header 
-        className="relative w-full h-20 z-50"
-        style={{
-          backgroundColor: headerColor,
-          backgroundImage: headerImage ? `url(${headerImage})` : 'none',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      >
-        {/* Header content goes here */}
+      <header className="site-header">
+        <div 
+          className="header-background"
+          style={{
+            backgroundColor: headerColor,
+            backgroundImage: headerImage ? `url(${headerImage})` : 'none',
+          }}
+        />
+        <div className="header-content" style={{ color: headerTextColor }}>
+          <h1>Tattoo Studio</h1>
+          <nav>
+            <a href="/gallery">Gallery</a>
+            <a href="/admin">Admin Dashboard</a>
+          </nav>
+        </div>
       </header>
       <main>
         <Hero />

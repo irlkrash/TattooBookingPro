@@ -1,3 +1,31 @@
+/* Header specific styles */
+.site-header {
+  @apply relative h-20 z-50;
+}
+
+.header-background {
+  @apply absolute inset-0 w-full h-full;
+  background-size: cover;
+  background-position: center;
+}
+
+.header-content {
+  @apply relative z-10 container mx-auto px-4 h-full flex items-center justify-between;
+}
+
+.header-content h1 {
+  @apply text-xl font-bold;
+}
+
+.header-content nav {
+  @apply flex gap-4;
+}
+
+.header-content a {
+  @apply hover:opacity-80;
+}
+
+/* Other section styles */
 .hero-section {
   @apply relative min-h-[600px] bg-cover bg-center;
   background-image: var(--hero-bg-image, none);
