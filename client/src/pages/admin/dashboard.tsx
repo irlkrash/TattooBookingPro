@@ -477,7 +477,6 @@ function DesignManager() {
       { key: 'secondary_color', type: 'color', section: 'theme', value: '#f9fafb' },
       { key: 'accent_color', type: 'color', section: 'theme', value: '#84cc16' },
       { key: 'background_color', type: 'color', section: 'theme', value: '#ffffff' },
-      { key: 'text_color', type: 'color', section: 'theme', value: '#1f2937' },
       { key: 'muted_text_color', type: 'color', section: 'theme', value: '#6b7280' },
       { key: 'link_color', type: 'color', section: 'theme', value: '#2563eb' },
       { key: 'link_hover_color', type: 'color', section: 'theme', value: '#1d4ed8' },
@@ -487,6 +486,24 @@ function DesignManager() {
       { key: 'input_focus_color', type: 'color', section: 'theme', value: '#3b82f6' },
       { key: 'heading_font', type: 'font', section: 'theme', value: 'Montserrat' },
       { key: 'body_font', type: 'font', section: 'theme', value: 'Inter' },
+    ],
+    home: [
+      // Hero section
+      { key: 'hero_title', type: 'text', section: 'home', value: 'Welcome to Our Studio' },
+      { key: 'hero_subtitle', type: 'text', section: 'home', value: 'Where Art Meets Skin' },
+      { key: 'hero_text_color', type: 'color', section: 'home', value: '#1f2937' },
+      { key: 'hero_background_color', type: 'color', section: 'home', value: '#ffffff' },
+
+      // Booking section
+      { key: 'booking_title', type: 'text', section: 'home', value: 'Book Your Appointment' },
+      { key: 'booking_form_title', type: 'text', section: 'home', value: 'Request Booking' },
+      { key: 'availability_title', type: 'text', section: 'home', value: 'Available Dates' },
+      { key: 'booking_text_color', type: 'color', section: 'home', value: '#1f2937' },
+      { key: 'booking_background_color', type: 'color', section: 'home', value: '#ffffff' },
+
+      // CTA buttons
+      { key: 'book_now_button_text', type: 'text', section: 'home', value: 'Book Now' },
+      { key: 'view_gallery_button_text', type: 'text', section: 'home', value: 'View Gallery' },
     ],
     nav: [
       // Navigation configuration
@@ -507,14 +524,6 @@ function DesignManager() {
       { key: 'nav_admin_text', type: 'text', section: 'nav', value: 'Admin Dashboard' },
       { key: 'nav_login_text', type: 'text', section: 'nav', value: 'Login' },
       { key: 'nav_logout_text', type: 'text', section: 'nav', value: 'Logout' },
-    ],
-    home: [
-      // Only booking-related configurations
-      { key: 'booking_title', type: 'text', section: 'home', value: 'Book Your Appointment' },
-      { key: 'booking_form_title', type: 'text', section: 'home', value: 'Request Booking' },
-      { key: 'availability_title', type: 'text', section: 'home', value: 'Available Dates' },
-      { key: 'booking_background_color', type: 'color', section: 'home', value: '#ffffff' },
-      { key: 'booking_text_color', type: 'color', section: 'home', value: '#1f2937' },
     ],
     about: [
       { key: 'about_title', type: 'text', section: 'about', value: 'About Our Studio' },
@@ -778,7 +787,7 @@ function GalleryManager() {
                 alt={image.alt || ''}
                 className="w-full h-80 object-cover transition-transform duration-300 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4">
+              <div className="absolute inset-0`bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4">
                 <div className="flex justify-end gap-2">
                   <Button
                     size="sm"
