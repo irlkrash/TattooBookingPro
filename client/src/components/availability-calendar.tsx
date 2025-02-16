@@ -81,11 +81,16 @@ export default function AvailabilityCalendar({ onDateSelect }: Props) {
               const afternoon = isTimeSlotAvailable(dateStr, TimeSlot.Afternoon);
               const evening = isTimeSlotAvailable(dateStr, TimeSlot.Evening);
 
+              const timeSlots = [
+                { slot: TimeSlot.Morning, isAvailable: morning, position: 'top-0' },
+                { slot: TimeSlot.Afternoon, isAvailable: afternoon, position: 'top-1/3' },
+                { slot: TimeSlot.Evening, isAvailable: evening, position: 'top-2/3' },
+              ];
+
               const today = new Date();
               today.setHours(0, 0, 0, 0);
               const isDisabled = date < today;
 
-              // Remove displayMonth from props being spread to the div
               const { displayMonth: _, ...restProps } = props;
 
               return (
@@ -103,19 +108,15 @@ export default function AvailabilityCalendar({ onDateSelect }: Props) {
                     <time dateTime={dateStr} className="relative z-10">
                       {date.getDate()}
                     </time>
-                    {!isDisabled && (
-                      <>
-                        {morning && (
-                          <div className={`absolute top-0 left-0 right-0 h-1/3 opacity-20 pointer-events-none ${timeSlotColors[TimeSlot.Morning]}`} />
-                        )}
-                        {afternoon && (
-                          <div className={`absolute top-1/3 left-0 right-0 h-1/3 opacity-20 pointer-events-none ${timeSlotColors[TimeSlot.Afternoon]}`} />
-                        )}
-                        {evening && (
-                          <div className={`absolute top-2/3 left-0 right-0 h-1/3 opacity-20 pointer-events-none ${timeSlotColors[TimeSlot.Evening]}`} />
-                        )}
-                      </>
-                    )}
+                    {!isDisabled &&
+                      timeSlots.map(({ slot, isAvailable, position }) =>
+                        isAvailable ? (
+                          <div
+                            key={slot}
+                            className={`absolute ${position} left-0 right-0 h-1/3 opacity-20 pointer-events-none ${timeSlotColors[slot]}`}
+                          />
+                        ) : null
+                      )}
                   </button>
                 </div>
               );
@@ -132,8 +133,9 @@ export default function AvailabilityCalendar({ onDateSelect }: Props) {
           {Object.entries(TimeSlot).map(([name, slot]) => (
             <div key={slot} className="flex items-center gap-2">
               <div className={`w-4 h-4 rounded ${timeSlotColors[slot]}`} />
-              <span className="text-sm">{name} {name === 'Morning' ? '(8am - 12pm)' :
-                name === 'Afternoon' ? '(12pm - 4pm)' : '(4pm - 8pm)'}</span>
+              <span className="text-sm">
+                {name} {name === 'Morning' ? '(8am - 12pm)' : name === 'Afternoon' ? '(12pm - 4pm)' : '(4pm - 8pm)'}
+              </span>
             </div>
           ))}
         </div>
