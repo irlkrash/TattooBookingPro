@@ -71,7 +71,7 @@ function BookingSection() {
         </h2>
         <div className="grid md:grid-cols-2 gap-8">
           <Card>
-            <CardContent className="p-4 h-[300px] overflow-auto"> 
+            <CardContent className="p-4 h-[400px] overflow-auto"> 
               <h3 className="text-xl font-semibold text-center mb-4">
                 {getConfigValue("availability_title", "Available Dates")}
               </h3>
@@ -79,7 +79,7 @@ function BookingSection() {
             </CardContent>
           </Card>
           <Card>
-            <CardContent className="p-4 h-[300px] overflow-auto"> 
+            <CardContent className="p-4 h-[400px] overflow-auto"> 
               <h3 className="text-xl font-semibold text-center mb-4">
                 {getConfigValue("booking_form_title", "Request Booking")}
               </h3>
