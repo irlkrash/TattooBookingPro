@@ -37,6 +37,12 @@ const timeSlotLabels = {
   [TimeSlot.Evening]: 'Evening (4pm - 8pm)',
 };
 
+const timeSlotOrder = {
+  [TimeSlot.Morning]: 0,
+  [TimeSlot.Afternoon]: 1,
+  [TimeSlot.Evening]: 2,
+};
+
 export default function BookingForm({ selectedDate }: { selectedDate?: Date }) {
   const { toast } = useToast();
 
@@ -116,7 +122,11 @@ export default function BookingForm({ selectedDate }: { selectedDate?: Date }) {
         .map(a => ({
           value: a.timeSlot,
           label: timeSlotLabels[a.timeSlot as keyof typeof timeSlotLabels]
-        })) || []
+        }))
+        .sort((a, b) => 
+          timeSlotOrder[a.value as keyof typeof timeSlotOrder] - 
+          timeSlotOrder[b.value as keyof typeof timeSlotOrder]
+        ) || []
     : [];
 
   return (
