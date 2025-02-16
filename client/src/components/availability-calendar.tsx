@@ -43,7 +43,7 @@ export default function AvailabilityCalendar({ onDateSelect }: Props) {
 
   return (
     <div className="space-y-6">
-      <div className="w-full">
+      <div className="w-full h-[400px]"> 
         <Calendar
           mode="single"
           selected={undefined}
